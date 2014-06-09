@@ -25,7 +25,6 @@ from PyQt4 import QtCore
 
 from core.ConfigHandler import myConfig
 from gui.App_PyPlane import PyplaneMainWindow
-from gui.Ui_linearization import Ui_Form
 from core.Logging import myLogger
 from core.EquilibriumHandler import myEquilibria
 from core.NullclineHandler import myNullclines
