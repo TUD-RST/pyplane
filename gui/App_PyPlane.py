@@ -32,7 +32,7 @@ import numpy as np
 import ast
 
 from Ui_PyPlane import Ui_pyplane
-from Ui_linearization_clean import Ui_Form
+from Ui_Pyplane_linearization import Ui_Form
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 from core.Graph import Graph
