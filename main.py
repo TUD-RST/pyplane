@@ -333,7 +333,7 @@ class MainApp(PyplaneMainWindow):
                                 "\n"
                                 "    PyPlane 0.1.7\n"
                                 "\n"
-                                "    Copyright (C) 2013\n"
+                                "    Copyright (C) 2013-2014\n"
                                 "    by Klemens Fritzsche, Carsten Knoll\n"
                                 "\n"
                                 "    Dresden University of Technology\n"
