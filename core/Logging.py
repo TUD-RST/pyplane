@@ -26,7 +26,7 @@ import time
 
 from PyQt4 import QtCore, QtGui
 
-defaultLogFileName = 'logmessages.txt'
+defaultLogFileName = 'config/logmessages.txt'
 
 
 class Logger(object):
