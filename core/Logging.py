@@ -1,0 +1,144 @@
+# -*- coding: utf-8 -*-
+
+#    Copyright (C) 2013
+#    by Klemens Fritzsche, pyplane@leckstrom.de
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+__author__ = 'Klemens Fritzsche'
+
+"""
+Module implementing logging capabilities
+"""
+
+import time
+
+from PyQt4 import QtCore, QtGui
+
+defaultLogFileName = 'logmessages.txt'
+
+
+class Logger(object):
+    """
+    simple Logger, that prints messages to the screen
+    and saves them to a file
+    """
+
+    def __init__(self, fname=None):
+        if not isinstance(fname, str):
+            fname = defaultLogFileName
+        self.fname = fname
+        self.create_file()
+
+        self.msg_list = []
+
+        self.err_flag = False
+        self.signalemitter = QtCore.QObject()
+
+        # TODO Read This from Config
+        self.dbg_verbosity_level = 5
+        #self.logtime = myConfig.get_boolean("Logging","log_showTime")
+
+        self.t_zero = time.time()
+        #         self.message(" ------ Logging started: %s -----" % time.ctime() )
+
+        # hardcoded logging values for the time before existance of myConfig
+        # instance
+        self.show_error = True
+        self.show_warning = True
+        self.show_debug = True
+
+    def initialize(self):
+        """
+        this function gets called after myConfig instance has been created.
+        logging before that is possible with hardcoded values.
+        """
+        from core.ConfigHandler import myConfig
+
+        self.show_error = myConfig.get_boolean("Logging", "log_showError")
+        self.show_warning = myConfig.get_boolean("Logging", "log_showWarning")
+        self.show_debug = myConfig.get_boolean("Logging", "log_showDbg")
+
+        myLogger.debug_message("Logging class initialized.")
+
+    def register_output(self, terminal):
+        # output in logField
+        assert isinstance(terminal, QtGui.QTextEdit)
+        self.ppTerminal = terminal
+
+    def sec_to_string(self, sec):
+        """
+        converts a given number (seconds) to a string
+        hh:mm:ss
+        """
+        # use modulo %
+
+        s = sec % 60
+
+        mins = (sec - s) / 60
+        m = mins % 60
+        h = (mins - m) / 60
+
+        string = "%02i:%02i:%04.1f" % (h, m, s)
+        return string
+
+    def message(self, msg, color='white'):
+
+        # set text color
+        if color == 'white':
+            self.ppTerminal.setTextColor(QtGui.QColor(255, 255, 255, 255))
+        elif color == 'red':
+            self.ppTerminal.setTextColor(QtGui.QColor(221, 30, 47, 255))
+        elif color == 'gray':
+            self.ppTerminal.setTextColor(QtGui.QColor(105, 105, 105, 255))
+        else:
+            # gray, too
+            self.ppTerminal.setTextColor(QtGui.QColor(105, 105, 105, 255))
+
+        t = time.time() - self.t_zero
+
+        msg = "%s: %s" % (self.sec_to_string(t), msg)
+
+        self.ppTerminal.append(msg)
+
+        #msg=time.ctime()+" "+msg
+        self.msg_list.append(msg)
+        self.append_to_file(msg)
+
+    def error_message(self, msg):
+        if self.show_error:
+            self.err_flag = True
+            self.message("(Error!  %s): %s" % (time.ctime().split()[3], msg), 'red')
+
+    def warn_message(self, msg):
+        if self.show_warning:
+            assert isinstance(msg, str)
+            self.message("(Warning!): %s" % msg, 'red')
+
+    def debug_message(self, msg, level=5):
+        if self.show_debug:
+            self.message(msg, 'gray')
+
+    def create_file(self):
+        # erase all
+        thefile = open(self.fname, 'w')
+        thefile.close()
+
+    def append_to_file(self, msg):
+        # open in append mode
+        with open(self.fname, 'a') as thefile:
+            thefile.writelines(msg + '\n')
+
+# prepare logservice for importing
+myLogger = Logger()
