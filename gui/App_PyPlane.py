@@ -25,6 +25,8 @@ __version__ = "0.1"
 
 from PyQt4 import QtGui
 from PyQt4 import QtCore
+import traceback
+import sys
 
 import sympy as sp
 from IPython import embed
@@ -43,6 +45,23 @@ from core.StreamlineHandler import myStreamlines
 from core.VectorfieldHandler import myVectorfield, VectorfieldHandler
 from core.EquilibriumHandler import myEquilibria
 from core.TrajectoryHandler import myTrajectories
+
+
+def handle_exception(error):
+
+    myLogger.error_message("Error: An Python Exception occured.")
+    myLogger.debug_message(str(type(error)))
+    myLogger.debug_message(str(error))
+    myLogger.message("See the log file config/logmessages.txt for full traceback ")
+
+    exc_type, exc_value, exc_tb = sys.exc_info()
+    lines = traceback.format_exception(exc_type, exc_value, exc_tb)
+    tb_msg = "".join(lines)
+    myLogger.append_to_file(tb_msg)
+
+
+
+
 
 
 class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
@@ -362,9 +381,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
                     myLogger.message("    y' = " + str(mySystem.what_is_my_system()[1]) + "\n", )
 
                 except Exception as error:
-                    myLogger.error_message("Error! something strange happened!")
-                    myLogger.debug_message(str(type(error)))
-                    myLogger.debug_message(str(error))
+                    handle_exception(error)
             else:
                 myLogger.error_message("No system entered")
 
@@ -571,9 +588,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
                 myLogger.message("function plot: 0 = " + self.fct_string)
 
             except Exception as error:
-                myLogger.error_message("error! something strange happened!")
-                myLogger.debug_message(str(type(error)))
-                myLogger.debug_message(str(error))
+                handle_exception(error)
         else:
             myLogger.error_message("Please enter function.")
 
