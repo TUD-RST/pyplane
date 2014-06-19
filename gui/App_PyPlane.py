@@ -295,7 +295,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             if myConfig.get_boolean(section, token + "showTitle"):
                 title1 = str(ep_character) + r': (' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')'
                 #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
-                self.plotCanvas_Lin.axes.set_title(r'$' + str(title1)+"$\n"+title_matrix, loc='center', fontsize=11)
+                self.plotCanvas_Lin.axes.set_title(r'$' + str(title1)+"$\n"+title_matrix, fontsize=11)
             else:
                 self.plotCanvas_Lin.fig.subplots_adjust(top=0.99)
 
