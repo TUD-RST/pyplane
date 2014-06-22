@@ -115,7 +115,7 @@ class Graph(object):
         if myConfig.get_boolean(section, token + "showTitle"):
             title_x_dot = sp.latex(mySystem.what_is_my_system()[0])
             title_y_dot = sp.latex(mySystem.what_is_my_system()[1])
-            Graph.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$", loc='center')
+            Graph.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$")
         else:
             Graph.fig.subplots_adjust(top=0.99)
 
