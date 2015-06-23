@@ -32,6 +32,10 @@ from core.TrajectoryHandler import myTrajectories
 from core.StreamlineHandler import myStreamlines
 from core.VectorfieldHandler import myVectorfield
 
+# This import is required by PyInstaller in order to produce a
+# correctly working executable
+import FileDialog
+
 
 # noinspection PyUnresolvedReferences
 class MainApp(PyplaneMainWindow):

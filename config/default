@@ -105,7 +105,7 @@ traj_integrationstep = 0.0005
 fct_gridPointsInX = 500
 fct_gridPointsInY = 500
 fct_linewidth = 1
-fct_color = green
+fct_color = red
 
 [Export]
 pdf_exportInSeparateFiles = False
