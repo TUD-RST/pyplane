@@ -243,31 +243,115 @@ class MainApp(PyplaneMainWindow):
             label.setText(str(item_description) + ":")
             label.setAlignment(QtCore.Qt.AlignRight)
 
-            lineedit = QtGui.QLineEdit()
-            lineedit.setObjectName(i[0])
-            lineedit.setFixedWidth(100)
-            lineedit.setAlignment(QtCore.Qt.AlignRight)
+            #lineedit = QtGui.QLineEdit()
+            #lineedit.setObjectName(i[0])
+            #lineedit.setFixedWidth(100)
+            #lineedit.setAlignment(QtCore.Qt.AlignRight)
             value = myConfig.read(self.section, i[0])
-            lineedit.setText(value)
-
+            #lineedit.setText(value)
+            
+            if (value.lower() == "true") | (value.lower() == "false"):
+                input_widget = self.create_boolean_combo_box(i[0], value)
+            elif "color" in item_description.lower():
+                input_widget = self.create_color_chooser(i[0], value)
+            else:
+                input_widget = self.create_line_edit(i[0], value)
+                
+            
             # add to stack_visible:
             # what was the 0 for?
             self.stack_visible.append([label, 0])
-            self.stack_visible.append([lineedit, self.section, str(i[0])])
-            self.add_to_layout(label, lineedit)
+            #self.stack_visible.append([lineedit, self.section, str(i[0])])
+            #self.add_to_layout(label, lineedit)
+            self.stack_visible.append([input_widget, self.section, str(i[0])])
+            self.add_to_layout(label, input_widget)
 
             # detect if entered new value
             # google "python lambda loop parameter" or see
             # http://stackoverflow.com/questions/938429/
             #                                       scope-of-python-lambda-functions-and-their-parameters/938493#938493
             # noinspection PyUnresolvedReferences
-            lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
+            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
+            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
             #lineedit.textEdited.connect(lambda lineedit=lineedit: self.new_value(lineedit,self.section,i[0]))
 
             #print(self.stack_visible)
 
-    def callback_factory(self, lineedit, section, value):
-        return lambda: self.new_value(lineedit, section, value)
+    def create_boolean_combo_box(self, name, value):
+        """ 
+        Creates a combo-box with the two entries "true" and "false" and
+        connects its signal "currentIndexChanged" with the method "new_value"
+        via the "callback_factory"
+        
+        Parameter:
+        name  -- the name of the parameter represented by the value of the box
+        value -- the current value of the parmeter
+        """
+        cbox = QtGui.QComboBox(self)
+        cbox.setObjectName(name)
+        cbox.setFixedWidth(100)
+        cbox.addItem("true", "true")
+        cbox.addItem("false", "false")
+        if value.lower() == "true":
+            cbox.setCurrentIndex(0)
+        else:
+            cbox.setCurrentIndex(1)
+        cbox.currentIndexChanged.connect(self.callback_factory(cbox, self.section, name))            
+        return cbox
+        
+    def create_line_edit(self, name, value):
+        """ 
+        Creates a lineedit box and connects its signal "textEdited" 
+        with the method "new_value" via the "callback_factory"
+        
+        Parameter:
+        name  -- the name of the parameter represented by the value of the box
+        value -- the current value of the parmeter
+        """
+        lineedit = QtGui.QLineEdit(self)
+        lineedit.setObjectName(name)
+        lineedit.setFixedWidth(100)
+        lineedit.setAlignment(QtCore.Qt.AlignRight)           
+        lineedit.setText(value)
+        lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, name))
+        return lineedit
+        
+    def create_color_chooser(self, name, value):
+        """ 
+        Creates a combo-box with some basic colors and connects its signal 
+        "currentIndexChanged" with the method "new_value" via the 
+        "callback_factory". The colors are presented in human readable names,
+        but are represented by RGB-hex-strings in the background
+        
+        Parameter:
+        name  -- the name of the parameter represented by the value of the box
+        value -- the current value of the parmeter
+        """
+        ccbox = QtGui.QComboBox(self)
+        ccbox.setObjectName(name)
+        ccbox.setFixedWidth(100)
+        ccbox.addItem("red", "#ff0000")
+        ccbox.addItem("blue", "#0000ff")
+        ccbox.addItem("green", "#008000")
+        ccbox.addItem("orange", "#ff6600")
+        ccbox.addItem("cyan", "#00ffff")
+        ccbox.addItem("magenta", "#ff00ff")
+        ccbox.addItem("purple", "#800080")
+        ccbox.addItem("black", "#000000")
+        ccbox.addItem("dark grey", "#666666")
+        ccbox.addItem("light grey", "#b3b3b3")
+        ccbox.addItem("white", "#ffffff")
+        ccbox.addItem("custom...", "#d1193b")
+        ind = ccbox.findData(QtCore.QVariant(value.lower()))
+        if ind == -1:
+            ccbox.setCurrentIndex(ccbox.count()-1)
+        else:
+            ccbox.setCurrentIndex(ind)
+        ccbox.currentIndexChanged.connect(self.callback_factory(ccbox, self.section, name))
+        return ccbox
+
+    def callback_factory(self, input_widget, section, value):
+        return lambda: self.new_value(input_widget, section, value)
 
     def add_to_layout(self, Label, LineEdit):
         count = self.SectionLayout.rowCount()
@@ -288,11 +372,30 @@ class MainApp(PyplaneMainWindow):
                 except Exception as error:
                     print("Could not remove element")
 
-    def new_value(self, lineedit, section, variable):
+    def new_value(self, input_widget, section, variable):
+        """ 
+        Ensures that a changed parameter in the ui is written into the
+        configuration data. 
+        
+        Parameter:
+        input_widget -- the widget the value of which has been changed by the
+                        user
+        section      -- the configuration section the variable refers to
+        variable     -- the name of the parameter
+        """
+        
         # read lineedit
         #QtCore.pyqtRemoveInputHook()
         #embed()
-        new_value = str(lineedit.text())
+    
+        if input_widget.metaObject().className() == "QLineEdit":
+            new_value = str(input_widget.text())
+        elif input_widget.metaObject().className() == "QComboBox":
+            new_value = input_widget.itemData(input_widget.currentIndex()).toString()
+        else:
+            myLogger.debug_message("Unsupported widget type passed!")
+            return
+            
         # write config file
         myConfig.write(section, variable, new_value)
         myLogger.debug_message("New value for " + str(variable) + ":" + new_value)

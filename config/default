@@ -1,5 +1,5 @@
 [Logging]
-log_showDbg = True
+log_showDbg = false
 log_showError = True
 log_showWarning = True
 log_showTime = True
@@ -65,7 +65,7 @@ max_norm = 1e5
 
 [Vectorfield]
 vf_onByDefault = True
-vf_color = #b5b5b5
+vf_color = #b3b3b3
 vf_gridPointsInX = 50
 vf_gridPointsInY = 25
 vf_arrowHeadWidth = 4.5
@@ -75,7 +75,7 @@ vf_arrowPivot = middle
 
 [Streamlines]
 stream_onByDefault = False
-stream_color = #000000
+stream_color = #0000ff
 stream_density = 2
 stream_linewidth = .5
 stream_gridPointsInX = 50
@@ -83,19 +83,19 @@ stream_gridPointsInY = 50
 
 [Nullclines]
 nc_onByDefault = False
-nc_color_xdot = magenta
-nc_color_ydot = blue
+nc_color_xdot = #ff00ff
+nc_color_ydot = #ff6600
 nc_linewidth = 1.
 nc_gridPointsInX = 500
 nc_gridPointsInY = 500
 
 [Trajectories]
-traj_ppForwardColor = black
-traj_ppBackwardColor = black
-traj_x_tColor = black
-traj_y_tColor = #000000
+traj_ppForwardColor = #0000ff
+traj_ppBackwardColor = #0000ff
+traj_x_tColor = #0000ff
+traj_y_tColor = #0000ff
 traj_plotInitPoint = True
-traj_initPointColor = black
+traj_initPointColor = #ff0000
 traj_checkForwardByDefault = True
 traj_checkBackwardByDefault = True
 traj_integrationtime = 10.
@@ -105,7 +105,7 @@ traj_integrationstep = 0.0005
 fct_gridPointsInX = 500
 fct_gridPointsInY = 500
 fct_linewidth = 1
-fct_color = red
+fct_color = #008000
 
 [Export]
 pdf_exportInSeparateFiles = False
