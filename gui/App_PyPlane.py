@@ -17,7 +17,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __author__ = 'Klemens Fritzsche'
-__version__ = "0.1"
+__version__ = "1.0"
 
 # this file contains the central class that inherits from the base gui class (VIEW) that
 # was created using qt4-designer and pyuic4

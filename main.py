@@ -25,6 +25,7 @@ from PyQt4 import QtCore
 
 from core.ConfigHandler import myConfig
 from gui.App_PyPlane import PyplaneMainWindow
+from gui.Dlg_PyPlane_about import AboutDialog
 from core.Logging import myLogger
 from core.EquilibriumHandler import myEquilibria
 from core.NullclineHandler import myNullclines
@@ -212,6 +213,8 @@ class MainApp(PyplaneMainWindow):
         self.stack_visible = []
 
     def settings_item_clicked(self, index):
+        # TODO: May be we should change this mechanism to a clear model-view
+        #       process. Maybe a tree view is appropriate?
         self.remove_visible_items()
 
         # set section title
@@ -436,21 +439,23 @@ class MainApp(PyplaneMainWindow):
         self.close()
 
     def about(self):
-        QtGui.QMessageBox.about(self, "About", (
-                                "\n"
-                                "    PyPlane 0.1.7\n"
-                                "\n"
-                                "    Copyright (C) 2013-2014\n"
-                                "    by Klemens Fritzsche, Carsten Knoll\n"
-                                "\n"
-                                "    Dresden University of Technology\n"
-                                "    Institute of Control Theory\n"
-                                "\n"
-                                "    This code is free software, licensed under the terms of the\n"
-                                "    GNU General Public License, version 3\n"
-                                "    <http://www.gnu.org/license/>.\n"
-                                "\n")
-        )
+        AboutDialog()
+        
+#        QtGui.QMessageBox.about(self, "About", (
+#                                "\n"
+#                                "    PyPlane 0.1.7\n"
+#                                "\n"
+#                                "    Copyright (C) 2013-2014\n"
+#                                "    by Klemens Fritzsche, Carsten Knoll\n"
+#                                "\n"
+#                                "    Dresden University of Technology\n"
+#                                "    Institute of Control Theory\n"
+#                                "\n"
+#                                "    This code is free software, licensed under the terms of the\n"
+#                                "    GNU General Public License, version 3\n"
+#                                "    <http://www.gnu.org/license/>.\n"
+#                                "\n")
+#        )
 
 app = QtGui.QApplication(sys.argv)
 main = MainApp()
