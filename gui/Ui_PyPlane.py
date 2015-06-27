@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Ui_PyPlane.ui'
+# Form implementation generated from reading ui file 'gui/Ui_PyPlane.ui'
 #
-# Created: Thu Mar  6 16:33:27 2014
-#      by: PyQt4 UI code generator 4.10.3
+# Created: Wed Jun 24 11:46:39 2015
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -633,7 +633,7 @@ class Ui_pyplane(object):
         self.gridLayout.addLayout(self.full, 0, 0, 1, 1)
         pyplane.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(pyplane)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 770, 18))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 770, 21))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         pyplane.setMenuBar(self.menubar)
         self.actionNew = QtGui.QAction(pyplane)

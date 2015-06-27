@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Ui_linearization_clean.ui'
+# Form implementation generated from reading ui file 'gui/Ui_PyPlane_linearization.ui'
 #
-# Created: Tue Apr 29 14:57:04 2014
-#      by: PyQt4 UI code generator 4.10.4
+# Created: Wed Jun 24 11:46:39 2015
+#      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
 
