@@ -1,4 +1,4 @@
 *.pyc
 /windows
 /config/logmessages.txt
-/library/tmp.ppf
+library/tmp.ppf
