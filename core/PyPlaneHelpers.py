@@ -27,6 +27,7 @@ Created on Wed Jul 29 09:24:52 2015
 
 import os
 import subprocess as subproc
+import matplotlib.pyplot as plt
 
 
 def check_if_latex():
@@ -35,12 +36,13 @@ def check_if_latex():
     """
     FNULL = open(os.devnull, 'w')
 
+    # Check if latex and dvipng commands respond
     try:
         subproc.check_call(["latex", "--version"], stdout=FNULL, stderr=subproc.STDOUT)
         subproc.check_call(["dvipng", "--version"], stdout=FNULL, stderr=subproc.STDOUT)
     except OSError:
         return False
         
-    FNULL.close()
+    FNULL.close()   
         
     return True

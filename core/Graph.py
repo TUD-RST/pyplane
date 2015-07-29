@@ -37,6 +37,8 @@ from core.TrajectoryHandler import myTrajectories
 from core.StreamlineHandler import myStreamlines
 from core.VectorfieldHandler import myVectorfield
 
+from PyQt4.QtGui import QMessageBox
+
 
 class Graph(object):
     """
@@ -155,7 +157,15 @@ class Graph(object):
     def update_graph(self, Graph):
         """ This function updates a graph.
         """
-        Graph.draw()
+        try:
+            Graph.draw()
+        except Exception as e: 
+            if 'latex' in e.message.lower():
+                QMessageBox.critical(None, 'Error', 'LaTeX not properly installed! Please check the following message:\n\n' + e.message)
+            else:
+                QMessageBox.critical(None, 'Error', 'Something seems to be wrong with matplotlib. Please check the following message:\n\n' + e.message)
+            exit()
+                    
 
     def update_all(self):
         """ This function updates every graph.
