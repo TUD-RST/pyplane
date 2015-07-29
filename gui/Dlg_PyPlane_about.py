@@ -15,11 +15,15 @@ from Ui_PyPlane_about import Ui_DlgAbout
 
 
 class AboutDialog(QtGui.QDialog, Ui_DlgAbout):
-    def __init__(self):
+    def __init__(self, version, date):
         self.status = None
         QtGui.QDialog.__init__(self)
 
         self.setupUi(self)
+        
+        self.pyplane_version_info.setText(version)
+        self.pyplane_date.setText(date)
+        self.pyplane_platform.setText(sys.platform)
 
         self.python_version_info.setText(sys.version)
         self.qt_version_info.setText(QT_VERSION_STR)
