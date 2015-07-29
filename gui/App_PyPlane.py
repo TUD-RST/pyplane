@@ -442,11 +442,18 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """ export dialog for pyplane plot
         """
 
+        # TODO: jw: Under some linuxes all instances of QFileDialog throw the error
+        # Object::connect: No such signal org::freedesktop::UPower::DeviceAdded(QDBusObjectPath)
+        # Object::connect: No such signal org::freedesktop::UPower::DeviceRemoved(QDBusObjectPath)
+        # 
+        # Does this occur also when the creating a QFileDialog object directly, i.e. without
+        # using the static methods getSaveFile...  ??
+        # Any ideas how we can fix this?
         files_types = "png;;svg;;pdf;;eps"
         file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
                                                                        'Export PyPlane Plot', '',
                                                                        files_types)
-
+        
         if len(file_name) > 0:
             if filter == "png":
                 self.export_as_png(file_name)
