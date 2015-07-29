@@ -7,14 +7,25 @@
 !define PRODUCT_WEB_SITE "https://github.com/TUD-RST/pyplane.git"
 
 ; MUI 1.67 compatible ------
-!include "MUI.nsh"
+!include "MUI2.nsh"
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
+!define MUI_ICON "resources\pyplane_icon_32px.ico"
 
 ; Welcome page
+;!define WELCOME_TITLE 'PyPlane will install a folder on your desktop which contains the required files. A shortcut for launching the program will be put on the desktop, too. No modifications will be done in the registry!'
+;!define MUI_WELCOMEPAGE_TITLE '${WELCOME_TITLE}'
+;!define MUI_WELCOMEPAGE_TITLE_3LINES
+
+!define MUI_TEXT_WELCOME_INFO_TEXT "PyPlane ${PRODUCT_VERSION} will be installed into a new folder on your desktop . A short-cut for launching the program will be put on the desktop, too. No modifications will be done in the registry!$\n$\n\
+Setup will guide you through the installation of PyPlane.$\n$\n\
+Please check $\n$\n${PRODUCT_WEB_SITE} $\n$\nfor updates regularly!"
+!define MUI_PAGE_CUSTOMFUNCTION_SHOW MyWelcomeShowCallback
 !insertmacro MUI_PAGE_WELCOME
+
+; License page
+!insertmacro MUI_PAGE_LICENSE "LICENSE"
 
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
@@ -29,6 +40,10 @@
 !insertmacro MUI_LANGUAGE "English"
 
 ; MUI end ------
+
+Function MyWelcomeShowCallback
+SendMessage $mui.WelcomePage.Text ${WM_SETTEXT} 0 "STR:$(MUI_TEXT_WELCOME_INFO_TEXT)"
+FunctionEnd
 
 RequestExecutionLevel user
 
