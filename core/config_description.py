@@ -29,7 +29,7 @@
     "pp_showMinorTicks": ["Show minor ticks", True],
     "pp_showSpines": ["Show surrounding rectangle (spines)", True],
     "pp_showGrid": ["Show grid", True],
-    "pp_showTitle": ["Show system in title (latex)", True],
+    "pp_showTitle": ["Show system in title", True],
     "pp_showXLabel": ["Show x label", False],
     "pp_showYLabel": ["Show y label", False],
     "pp_labelFontSize": ["Label font size", 12],

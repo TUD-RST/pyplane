@@ -45,6 +45,7 @@ from core.StreamlineHandler import myStreamlines
 from core.VectorfieldHandler import myVectorfield, VectorfieldHandler
 from core.EquilibriumHandler import myEquilibria
 from core.TrajectoryHandler import myTrajectories
+import core.PyPlaneHelpers as myHelpers
 
 
 def handle_exception(error):
@@ -73,16 +74,21 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         myLogger.register_output(self.logField)
 
+        # Check if LaTeX and dvipng is installed on the system. This
+        # is required in order to ensure that advanced formatting in
+        # matplotlib works correctly (\left, \begin{array} etc.)
+        self.latex_installed = myHelpers.check_if_latex()
+
         self.myLayout1 = QtGui.QVBoxLayout(self.frame1)
-        self.plotCanvas1 = Canvas(self.frame1)
+        self.plotCanvas1 = Canvas(self.latex_installed, self.frame1)
         self.myLayout1.addWidget(self.plotCanvas1)
 
         self.myLayout2 = QtGui.QVBoxLayout(self.frame2)
-        self.plotCanvas2 = Canvas(self.frame2)
+        self.plotCanvas2 = Canvas(self.latex_installed, self.frame2)
         self.myLayout2.addWidget(self.plotCanvas2)
 
         self.myLayout3 = QtGui.QVBoxLayout(self.frame3)
-        self.plotCanvas3 = Canvas(self.frame3)
+        self.plotCanvas3 = Canvas(self.latex_installed, self.frame3)
         self.myLayout3.addWidget(self.plotCanvas3)
 
         self.myGraph = Graph(parent=self, plot_pp=self.plotCanvas1,
@@ -113,7 +119,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             self.forwardCheckbox.setChecked(True)
         if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
             self.backwardCheckbox.setChecked(True)
-
+            
         self.initializing()
 
     def initializing(self):
@@ -156,7 +162,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
             # add content to linearization tab!
             self.myLayout_Lin = QtGui.QVBoxLayout(myWidget.frame_lin)
-            self.plotCanvas_Lin = Canvas(myWidget.frame_lin)
+            self.plotCanvas_Lin = Canvas(self.latex_installed, myWidget.frame_lin)
             self.myLayout_Lin.addWidget(self.plotCanvas_Lin)
 
             # window range should be equal to window range of phase plane
@@ -229,7 +235,10 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
 
             # set title
-            title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + str(jac[0,0]) + r' & ' + str(jac[0,1]) + r'\\ ' + str(jac[1,0]) + r' & ' + str(jac[1,1]) + r' \end{array} \right)$'
+            if self.latex_installed == True:
+                title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + str(jac[0,0]) + r' & ' + str(jac[0,1]) + r'\\ ' + str(jac[1,0]) + r' & ' + str(jac[1,1]) + r' \end{array} \right)$'
+            else:
+                title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + str(jac[0,0]) + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[0,1]) + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,0]) +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,1]) + r'$'
 
             # characterize EP:
             # stable focus:     SFOC
@@ -293,9 +302,9 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
 
             if myConfig.get_boolean(section, token + "showTitle"):
-                title1 = str(ep_character) + r': (' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')'
+                title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + str(ep_character) + r': $(' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')$'
                 #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
-                self.plotCanvas_Lin.axes.set_title(r'$' + str(title1)+"$\n"+title_matrix, fontsize=11)
+                self.plotCanvas_Lin.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
             else:
                 self.plotCanvas_Lin.fig.subplots_adjust(top=0.99)
 
