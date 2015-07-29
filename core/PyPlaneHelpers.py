@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 
 #    Copyright (C) 2015
 #    by Jan Winkler, jan.winkler@tu-dresden.de
@@ -28,14 +28,16 @@ Created on Wed Jul 29 09:24:52 2015
 import os
 import subprocess as subproc
 
+
 def check_if_latex():
     """This function checks if the commands latex and dvipng are 
        installed on the systems and callable
     """
     FNULL = open(os.devnull, 'w')
+
     try:
-        subproc.check_call("latex --version", stdout=FNULL, stderr=subproc.STDOUT)
-        subproc.check_call("dvipng --version", stdout=FNULL, stderr=subproc.STDOUT)
+        subproc.check_call(["latex", "--version"], stdout=FNULL, stderr=subproc.STDOUT)
+        subproc.check_call(["dvipng", "--version"], stdout=FNULL, stderr=subproc.STDOUT)
     except OSError:
         return False
         
