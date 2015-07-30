@@ -27,6 +27,7 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 import traceback
 import sys
+import os
 
 import sympy as sp
 from IPython import embed
@@ -442,26 +443,49 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """ export dialog for pyplane plot
         """
 
-        # TODO: jw: Under some linuxes all instances of QFileDialog throw the error
-        # Object::connect: No such signal org::freedesktop::UPower::DeviceAdded(QDBusObjectPath)
-        # Object::connect: No such signal org::freedesktop::UPower::DeviceRemoved(QDBusObjectPath)
-        # 
-        # Does this occur also when the creating a QFileDialog object directly, i.e. without
-        # using the static methods getSaveFile...  ??
-        # Any ideas how we can fix this?
-        files_types = "png;;svg;;pdf;;eps"
-        file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                       'Export PyPlane Plot', '',
-                                                                       files_types)
-        
-        if len(file_name) > 0:
-            if filter == "png":
+        q_files_types = QtCore.QString(".png;;.svg;;.pdf;;.eps")
+        q_file_name, q_file_type = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
+                                                                       "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
+                                                                       q_files_types)
+        # Ensure we are out of the QString world in the following                                                               
+        file_name = str(q_file_name)
+        file_type = str(q_file_type)
+            
+        if file_name:
+            # Fix: Under some KDE's the file_type is returned empty because
+            # of a "DBUS-error". Hence, in such cases, we try to take the 
+            # file_type from the extension specified by the user . If no valid extension 
+            # is set by the user file_type is set to png. This bugfix is addressed
+            # in the first part of the "if not" structure.
+            #
+            # In the else part of the "if not" structure the case is handled
+            # where the user wants to have dots in the basename of the file
+            # (affects all operating systems)
+            #
+            file_name2, file_type2 = os.path.splitext(file_name)
+            if not file_type:
+                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:                    
+                    file_type = ".png"
+                else:
+                    # Allow things like figure.case21.pdf
+                    file_name = file_name2
+                    file_type = file_type2
+            else:
+                # This part runs on non KDE-systems or KDE-systems without
+                # the DBUS error:                
+                # drop accidently added duplicate file extensions
+                # (avoid figure.png.png but allow figure.case1.png)
+                if file_type2 == file_type:
+                    file_name = file_name2
+            # ------
+
+            if file_type == ".png":
                 self.export_as_png(file_name)
-            elif filter == "svg":
+            elif file_type == ".svg":
                 self.export_as_svg(file_name)
-            elif filter == "pdf":
+            elif file_type == ".pdf":
                 self.export_as_pdf(file_name)
-            elif filter == "eps":
+            elif file_type == ".eps":
                 self.export_as_eps(file_name)
             else:
                 myLogger.error_message("Filetype-Error")
@@ -493,18 +517,18 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def export_as_png(self, filename):
 
-        filename_pp = str(filename) + "_pp"
+        filename_pp = str(filename) + "_pp.png"
         self.myGraph.plot_pp.fig.savefig(filename_pp,
                                          bbox_inches='tight')
 
-        filename_x = str(filename) + "_x"
+        filename_x = str(filename) + "_x.png"
         self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y"
+        filename_y = str(filename) + "_y.png"
         self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
 
         myLogger.message(
-            "plot exported as\n\t" + filename_pp + ".png,\n\t" + filename_x + ".png,\n\t" + filename_y + ".png")
+            "plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def export_as_svg(self, filename):
         filename_pp = str(filename) + "_pp.svg"
@@ -520,7 +544,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def export_as_eps(self, filename):
         filename_pp = str(filename) + "_pp.eps"
-        #filename_pp = "/home/klim/asd.eps"
+
         self.myGraph.plot_pp.fig.savefig(filename_pp, bbox_inches='tight')
 
         filename_x = str(filename) + "_x.eps"
@@ -542,9 +566,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
 
         myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
-
-        #self.export_as_png()
-        #self.export = Pdf(self.myGraph)
 
     def add_function_to_plot(self):
         """ will plot additional functions and put it on a stack
