@@ -48,7 +48,7 @@ FunctionEnd
 RequestExecutionLevel user
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "windows\build\PyPlane_Setup.exe"
+OutFile "windows\build\PyPlane_${PRODUCT_VERSION}_Setup.exe"
 InstallDir "$DESKTOP\PyPlane"
 ShowInstDetails show
 

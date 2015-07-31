@@ -49,7 +49,7 @@ class MainApp(PyplaneMainWindow):
     """
     
     __PYPLANE_VERSION = "1.0"
-    __PYPLANE_DATE = "29.07.2015"
+    __PYPLANE_DATE = "31.07.2015"
 
     def __init__(self):
         # superclass constructor
