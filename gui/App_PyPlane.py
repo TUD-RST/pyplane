@@ -360,6 +360,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             cond2 = str(self.yDotLineEdit.text()) != ""
 
             if cond1 and cond2:
+                self.tabWidget.setCurrentIndex(0) 
                 # set right hand side, print rhs to logfield, solve,
                 # then plot vector field
 
