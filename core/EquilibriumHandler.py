@@ -160,6 +160,7 @@ class EquilibriumHandler(object):
                 if len(self.eqp_stack.keys()) == 0:
                     self.plot_equilibrium(z_next, jacobian)
                     self.jacobians[str(z_next)] = jacobian
+                    return z_next
 
                 else:
                     # there are equilibria already
@@ -172,6 +173,7 @@ class EquilibriumHandler(object):
                         self.plot_equilibrium(z_next, jacobian)
                         # add to jacobians
                         self.jacobians[str(z_next)] = jacobian
+                        return z_next
 
                         # d_norm = []  # list with distance to equ. pts
                         #

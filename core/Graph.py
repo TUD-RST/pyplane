@@ -331,7 +331,9 @@ class Graph(object):
                     else:
                         # equilibrium point
                         if event1 and event2 and button:
-                            myEquilibria.find_equilibrium([event.xdata, event.ydata])
+                            equilibrium_point = myEquilibria.find_equilibrium([event.xdata, event.ydata])
+                            if equilibrium_point is not None:
+                                self.parent.add_linearization_tab(equilibrium_point)
                 else:
                     # only capture mouse click if system exists
                     myLogger.error_message("Please enter system.")

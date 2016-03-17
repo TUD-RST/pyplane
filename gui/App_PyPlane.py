@@ -306,7 +306,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             if myConfig.get_boolean(section, token + "showTitle"):
                 eq_x_rounded = str(round(equilibrium[0],lin_round))
                 eq_y_rounded = str(round(equilibrium[1],lin_round))
-                title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
+                title1 = ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
+                #~ title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
                 #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
                 self.plotCanvas_Lin.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
             else:
