@@ -62,10 +62,6 @@ def handle_exception(error):
     myLogger.append_to_file(tb_msg)
 
 
-
-
-
-
 class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
         super(PyplaneMainWindow, self).__init__()
@@ -236,10 +232,15 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
 
             # set title
+            lin_round = int(myConfig.read("Linearization", "lin_round_decimals")) # display rounded floats
+            A00 = str(round(jac[0,0],lin_round))
+            A01 = str(round(jac[0,1],lin_round))
+            A11 = str(round(jac[1,1],lin_round))
+            A10 = str(round(jac[1,0],lin_round))
             if self.latex_installed == True:
-                title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + str(jac[0,0]) + r' & ' + str(jac[0,1]) + r'\\ ' + str(jac[1,0]) + r' & ' + str(jac[1,1]) + r' \end{array} \right)$'
+                title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + A00 + r' & ' + A01 + r'\\ ' + A10 + r' & ' + A11 + r' \end{array} \right)$'
             else:
-                title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + str(jac[0,0]) + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[0,1]) + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,0]) +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,1]) + r'$'
+                title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
 
             # characterize EP:
             # stable focus:     SFOC
@@ -262,7 +263,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             determinant = jac[0,0]*jac[1,1] - jac[1,0]*jac[0,1]
             trace = jac[0,0] + jac[1,1]
 
-            ep_character = "hm"
+            ep_character = ""
 
             if trace==0 and determinant==0:
                 ep_character = "Unclassified"
@@ -303,7 +304,10 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
 
             if myConfig.get_boolean(section, token + "showTitle"):
-                title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + str(ep_character) + r': $(' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')$'
+                eq_x_rounded = str(round(equilibrium[0],lin_round))
+                eq_y_rounded = str(round(equilibrium[1],lin_round))
+                title1 = ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
+                #~ title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
                 #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
                 self.plotCanvas_Lin.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
             else:

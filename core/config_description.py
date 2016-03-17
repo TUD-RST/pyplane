@@ -1,6 +1,6 @@
 {
     "sectionlist": ["Logging", "Plotting", "Phaseplane", "x-t-plot", "y-t-plot", "System", "Vectorfield", "Streamlines",
-                    "Nullclines", "Trajectories", "Functions", "Export", "Test"],
+                    "Nullclines", "Trajectories", "Functions", "Linearization", "Export", "Test"],
 
     "Logging": "Logging Behaviour",
     "log_showDbg": ["Enable debug mode", False],
@@ -111,6 +111,9 @@
     "fct_linewidth": ["Linewidth", 1.],
     "fct_color": ["Color", "#ff0000"],
 
+    "Linearization": "Linearization Tabs",
+    "lin_round_decimals": ["Number of decimals to show in title", 2],
+    
     "Export": "Export Settings",
     "pdf_exportInSeparateFiles": ["Export graphs in separate pdfs", False],
 

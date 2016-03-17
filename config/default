@@ -101,6 +101,9 @@ traj_checkBackwardByDefault = True
 traj_integrationtime = 10.
 traj_integrationstep = 0.0005
 
+[Linearization]
+lin_round_decimals = 3 
+
 [Functions]
 fct_gridPointsInX = 500
 fct_gridPointsInY = 500
