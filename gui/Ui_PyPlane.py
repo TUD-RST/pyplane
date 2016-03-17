@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/Ui_PyPlane.ui'
 #
-# Created: Wed Jun 24 11:46:39 2015
+# Created: Tue Jul 28 16:46:33 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,6 +33,9 @@ class Ui_pyplane(object):
         sizePolicy.setHeightForWidth(pyplane.sizePolicy().hasHeightForWidth())
         pyplane.setSizePolicy(sizePolicy)
         pyplane.setMinimumSize(QtCore.QSize(770, 757))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/icons/pyplane_logo.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        pyplane.setWindowIcon(icon)
         self.centralwidget = QtGui.QWidget(pyplane)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -742,3 +745,4 @@ class Ui_pyplane(object):
         self.actionPyPlane_Help.setText(_translate("pyplane", "PyPlane Help", None))
         self.actionAbout.setText(_translate("pyplane", "About", None))
 
+import icons_rc
