@@ -47,6 +47,9 @@ class MainApp(PyplaneMainWindow):
         initializing,
         settings GUI logic (listview elements, variable description, etc)
     """
+    
+    __PYPLANE_VERSION = "1.0"
+    __PYPLANE_DATE = "31.07.2015"
 
     def __init__(self):
         # superclass constructor
@@ -56,7 +59,7 @@ class MainApp(PyplaneMainWindow):
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")
         self.update_terminal()
-
+        
         # connect buttons ------------------------------------------------------
         # connect buttons: system
         self.clearButton.clicked.connect(myTrajectories.remove_all)
@@ -439,7 +442,7 @@ class MainApp(PyplaneMainWindow):
         self.close()
 
     def about(self):
-        AboutDialog()
+        AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
         
 #        QtGui.QMessageBox.about(self, "About", (
 #                                "\n"

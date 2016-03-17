@@ -32,7 +32,7 @@ from core.Logging import myLogger
 class Canvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
-    def __init__(self, parent=None):
+    def __init__(self, latex_installed, parent=None):
         plot_background = myConfig.read("Plotting", "plot_background")
         plot_CanvasBackground = str(myConfig.read("Plotting", "plot_CanvasBackground"))
         plot_fontSize = int(myConfig.read("Plotting", "plot_fontSize"))
@@ -45,8 +45,10 @@ class Canvas(FigureCanvas):
 
         pl.matplotlib.rc('font', size=plot_fontSize)
 
-        # use latex
-        rc('text', usetex=True)
+        # Check if LaTeX and dvipng are installed on this system since this
+        # is required by matplotlib for fine rendering. If it is not installed
+        # only basic rendering will be done in the following
+        rc('text', usetex=latex_installed)
 
         # ALIASING
         # TODO: read aliasing variables:

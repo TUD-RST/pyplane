@@ -12,7 +12,7 @@ exe = EXE(pyz,
           debug=False,
           strip=None,
           upx=True,
-          console=True )
+          console=True , icon='resources\\pyplane_icon_32px.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

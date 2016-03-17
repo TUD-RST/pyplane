@@ -27,6 +27,7 @@ from PyQt4 import QtGui
 from PyQt4 import QtCore
 import traceback
 import sys
+import os
 
 import sympy as sp
 from IPython import embed
@@ -45,6 +46,7 @@ from core.StreamlineHandler import myStreamlines
 from core.VectorfieldHandler import myVectorfield, VectorfieldHandler
 from core.EquilibriumHandler import myEquilibria
 from core.TrajectoryHandler import myTrajectories
+import core.PyPlaneHelpers as myHelpers
 
 
 def handle_exception(error):
@@ -73,16 +75,21 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         myLogger.register_output(self.logField)
 
+        # Check if LaTeX and dvipng is installed on the system. This
+        # is required in order to ensure that advanced formatting in
+        # matplotlib works correctly (\left, \begin{array} etc.)
+        self.latex_installed = myHelpers.check_if_latex()
+
         self.myLayout1 = QtGui.QVBoxLayout(self.frame1)
-        self.plotCanvas1 = Canvas(self.frame1)
+        self.plotCanvas1 = Canvas(self.latex_installed, self.frame1)
         self.myLayout1.addWidget(self.plotCanvas1)
 
         self.myLayout2 = QtGui.QVBoxLayout(self.frame2)
-        self.plotCanvas2 = Canvas(self.frame2)
+        self.plotCanvas2 = Canvas(self.latex_installed, self.frame2)
         self.myLayout2.addWidget(self.plotCanvas2)
 
         self.myLayout3 = QtGui.QVBoxLayout(self.frame3)
-        self.plotCanvas3 = Canvas(self.frame3)
+        self.plotCanvas3 = Canvas(self.latex_installed, self.frame3)
         self.myLayout3.addWidget(self.plotCanvas3)
 
         self.myGraph = Graph(parent=self, plot_pp=self.plotCanvas1,
@@ -113,7 +120,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             self.forwardCheckbox.setChecked(True)
         if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
             self.backwardCheckbox.setChecked(True)
-
+            
         self.initializing()
 
     def initializing(self):
@@ -156,7 +163,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
             # add content to linearization tab!
             self.myLayout_Lin = QtGui.QVBoxLayout(myWidget.frame_lin)
-            self.plotCanvas_Lin = Canvas(myWidget.frame_lin)
+            self.plotCanvas_Lin = Canvas(self.latex_installed, myWidget.frame_lin)
             self.myLayout_Lin.addWidget(self.plotCanvas_Lin)
 
             # window range should be equal to window range of phase plane
@@ -229,7 +236,10 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
 
             # set title
-            title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + str(jac[0,0]) + r' & ' + str(jac[0,1]) + r'\\ ' + str(jac[1,0]) + r' & ' + str(jac[1,1]) + r' \end{array} \right)$'
+            if self.latex_installed == True:
+                title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + str(jac[0,0]) + r' & ' + str(jac[0,1]) + r'\\ ' + str(jac[1,0]) + r' & ' + str(jac[1,1]) + r' \end{array} \right)$'
+            else:
+                title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + str(jac[0,0]) + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[0,1]) + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,0]) +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + str(jac[1,1]) + r'$'
 
             # characterize EP:
             # stable focus:     SFOC
@@ -293,9 +303,9 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
 
             if myConfig.get_boolean(section, token + "showTitle"):
-                title1 = str(ep_character) + r': (' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')'
+                title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + str(ep_character) + r': $(' + str(equilibrium[0]) + r', ' + str(equilibrium[1]) + r')$'
                 #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
-                self.plotCanvas_Lin.axes.set_title(r'$' + str(title1)+"$\n"+title_matrix, fontsize=11)
+                self.plotCanvas_Lin.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
             else:
                 self.plotCanvas_Lin.fig.subplots_adjust(top=0.99)
 
@@ -433,19 +443,49 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """ export dialog for pyplane plot
         """
 
-        files_types = "png;;svg;;pdf;;eps"
-        file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                       'Export PyPlane Plot', '',
-                                                                       files_types)
+        q_files_types = QtCore.QString(".png;;.svg;;.pdf;;.eps")
+        q_file_name, q_file_type = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
+                                                                       "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
+                                                                       q_files_types)
+        # Ensure we are out of the QString world in the following                                                               
+        file_name = str(q_file_name)
+        file_type = str(q_file_type)
+            
+        if file_name:
+            # Fix: Under some KDE's the file_type is returned empty because
+            # of a "DBUS-error". Hence, in such cases, we try to take the 
+            # file_type from the extension specified by the user . If no valid extension 
+            # is set by the user file_type is set to png. This bugfix is addressed
+            # in the first part of the "if not" structure.
+            #
+            # In the else part of the "if not" structure the case is handled
+            # where the user wants to have dots in the basename of the file
+            # (affects all operating systems)
+            #
+            file_name2, file_type2 = os.path.splitext(file_name)
+            if not file_type:
+                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:                    
+                    file_type = ".png"
+                else:
+                    # Allow things like figure.case21.pdf
+                    file_name = file_name2
+                    file_type = file_type2
+            else:
+                # This part runs on non KDE-systems or KDE-systems without
+                # the DBUS error:                
+                # drop accidently added duplicate file extensions
+                # (avoid figure.png.png but allow figure.case1.png)
+                if file_type2 == file_type:
+                    file_name = file_name2
+            # ------
 
-        if len(file_name) > 0:
-            if filter == "png":
+            if file_type == ".png":
                 self.export_as_png(file_name)
-            elif filter == "svg":
+            elif file_type == ".svg":
                 self.export_as_svg(file_name)
-            elif filter == "pdf":
+            elif file_type == ".pdf":
                 self.export_as_pdf(file_name)
-            elif filter == "eps":
+            elif file_type == ".eps":
                 self.export_as_eps(file_name)
             else:
                 myLogger.error_message("Filetype-Error")
@@ -477,18 +517,18 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def export_as_png(self, filename):
 
-        filename_pp = str(filename) + "_pp"
+        filename_pp = str(filename) + "_pp.png"
         self.myGraph.plot_pp.fig.savefig(filename_pp,
                                          bbox_inches='tight')
 
-        filename_x = str(filename) + "_x"
+        filename_x = str(filename) + "_x.png"
         self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y"
+        filename_y = str(filename) + "_y.png"
         self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
 
         myLogger.message(
-            "plot exported as\n\t" + filename_pp + ".png,\n\t" + filename_x + ".png,\n\t" + filename_y + ".png")
+            "plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def export_as_svg(self, filename):
         filename_pp = str(filename) + "_pp.svg"
@@ -504,7 +544,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def export_as_eps(self, filename):
         filename_pp = str(filename) + "_pp.eps"
-        #filename_pp = "/home/klim/asd.eps"
+
         self.myGraph.plot_pp.fig.savefig(filename_pp, bbox_inches='tight')
 
         filename_x = str(filename) + "_x.eps"
@@ -526,9 +566,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
 
         myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
-
-        #self.export_as_png()
-        #self.export = Pdf(self.myGraph)
 
     def add_function_to_plot(self):
         """ will plot additional functions and put it on a stack
