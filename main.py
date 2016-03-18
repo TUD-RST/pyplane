@@ -20,6 +20,10 @@ __author__ = 'Klemens Fritzsche'
 
 import sys
 import ast
+
+import sip
+sip.setapi('QVariant', 2)
+
 from PyQt4 import QtGui
 from PyQt4 import QtCore
 
