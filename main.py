@@ -397,7 +397,7 @@ class MainApp(PyplaneMainWindow):
         if input_widget.metaObject().className() == "QLineEdit":
             new_value = str(input_widget.text())
         elif input_widget.metaObject().className() == "QComboBox":
-            new_value = input_widget.itemData(input_widget.currentIndex()).toString()
+            new_value = str(input_widget.itemData(input_widget.currentIndex()))
         else:
             myLogger.debug_message("Unsupported widget type passed!")
             return
