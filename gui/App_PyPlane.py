@@ -251,17 +251,32 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
 
             # scaling
+            d1 = (xmax-xmin)/10
+            d2 = (ymax-ymin)/10
+            
             EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
             EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
-            EV0_scaled = (1/EV0_norm)*EV0
+            EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d2*(1/EV0_norm)*EV0[1]])
 
             EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
             EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
-            EV1_scaled = (1/EV1_norm)*EV1
+            EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d2*(1/EV1_norm)*EV1[1]])
             
             # plot eigenvectors:
-            self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0.2, head_length=0.3, color='k')
-            self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0.2, head_length=0.3, color='k')
+            color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
+            color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
+
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (xmax-xmin)*EV0_scaled[0], (ymax-ymin)*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (-xmax+xmin)*EV0_scaled[0], (-ymax+ymin)*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+            
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (xmax-xmin)*EV1_scaled[0], (ymax-ymin)*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (-xmax+xmin)*EV1_scaled[0], (-ymax+ymin)*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
 
 
             # characterize EP:
