@@ -77,10 +77,6 @@ Open issues in version 1.0
   LaTeX-environment in which the package type1cm.sty is
   missing. Please place this style package in your LaTeX-installation.
 
-* When having detected an equilibrium point the linearization tab is
-  only shown if you double-click again on the detected equilibrium
-  point.
-
 
 
 Important files in the base directory
