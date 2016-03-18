@@ -102,7 +102,11 @@ traj_integrationtime = 10.
 traj_integrationstep = 0.0005
 
 [Linearization]
-lin_round_decimals = 3 
+lin_round_decimals = 3
+lin_show_eigenvector = True
+lin_show_eigenline = True
+lin_eigenvector_color = #000000
+lin_eigenvector_linecolor = #7dffce
 
 [Functions]
 fct_gridPointsInX = 500

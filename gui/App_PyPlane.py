@@ -152,6 +152,9 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         # if linearization has not been shown do so, otherwise ignore:
         if equilibrium not in self.linearization_stack:
+            # TODO: This should actually be the same widget as
+            #       phaseplane allowing the same behavior (click
+            #       generates trajectories, etc.)
             # Set up the user interface from Designer.
             myWidget = Ui_Form()
             contents = QtGui.QWidget(self.tabWidget)
@@ -242,6 +245,40 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             else:
                 title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
 
+
+            # calculating eigenvalues and eigenvectors:
+            eigenvalues, eigenvectors = myEquilibria.get_eigenval_eigenvec(equilibrium)
+            myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
+
+            # scaling
+            d1 = (xmax-xmin)/10
+            d2 = (ymax-ymin)/10
+            
+            EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
+            EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
+            EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d2*(1/EV0_norm)*EV0[1]])
+
+            EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
+            EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
+            EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d2*(1/EV1_norm)*EV1[1]])
+            
+            # plot eigenvectors:
+            color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
+            color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
+
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (xmax-xmin)*EV0_scaled[0], (ymax-ymin)*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (-xmax+xmin)*EV0_scaled[0], (-ymax+ymin)*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+            
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (xmax-xmin)*EV1_scaled[0], (ymax-ymin)*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], (-xmax+xmin)*EV1_scaled[0], (-ymax+ymin)*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+
+
             # characterize EP:
             # stable focus:     SFOC
             # unstable focus:   UFOC
@@ -249,16 +286,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             # stable node:      SNOD
             # unstable node:    UNOD
             # saddle:           SAD
-
-            # calculating eigenvalues and eigenvectors:
-            eigenvalues, eigenvectors = myEquilibria.get_eigenval_eigenvec(equilibrium)
-
-            # len(eigenvalues) should be 2!
-            # real_part_1 = np.real(eigenvalues[0])
-            # imag_part_1 = np.imag(eigenvalues[0])
-            #
-            # real_part_2 = np.real(eigenvalues[1])
-            # imag_part_2 = np.real(eigenvalues[1])
 
             determinant = jac[0,0]*jac[1,1] - jac[1,0]*jac[0,1]
             trace = jac[0,0] + jac[1,1]
@@ -289,19 +316,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
                     ep_character = "Sink"
                 elif trace > 0:
                     ep_character = "Source"
-
-            # plot eigenvectors:
-            # eigenvalues = eigenvalues.tolist()
-            # eigenvectors = eigenvectors.tolist()
-            #
-            # for i in xrange(0, len(eigenvectors)):
-            #     x, y = equilibrium[0], equilibrium[1]
-            #     dx, dy = eigenvectors[i][0], eigenvectors[i][1]
-            #
-            #     vector = [x, y, dx, dy]
-            #
-            #     self.myGraph.plot_vector(self.plotCanvas_Lin, vector)
-
 
             if myConfig.get_boolean(section, token + "showTitle"):
                 eq_x_rounded = str(round(equilibrium[0],lin_round))
@@ -360,6 +374,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             cond2 = str(self.yDotLineEdit.text()) != ""
 
             if cond1 and cond2:
+                self.tabWidget.setCurrentIndex(0) 
                 # set right hand side, print rhs to logfield, solve,
                 # then plot vector field
 

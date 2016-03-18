@@ -113,6 +113,10 @@
 
     "Linearization": "Linearization Tabs",
     "lin_round_decimals": ["Number of decimals to show in title", 2],
+    "lin_show_eigenvector": ["Show eigenvectors", True],
+    "lin_show_eigenline": ["Show line containing eigenvector", True],
+    "lin_eigenvector_color": ["Color of eigenvectors", "#000000"],
+    "lin_eigenvector_linecolor": ["Color of line containing eigenvector", "#7dffce"],
     
     "Export": "Export Settings",
     "pdf_exportInSeparateFiles": ["Export graphs in separate pdfs", False],
