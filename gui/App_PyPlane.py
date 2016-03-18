@@ -253,7 +253,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             # scaling
             d1 = (xmax-xmin)/10
             d2 = (ymax-ymin)/10
-            
             d_large = (xmax-xmin)*(ymax-ymin)
             
             EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
