@@ -221,7 +221,7 @@ class MainApp(PyplaneMainWindow):
         self.remove_visible_items()
 
         # set section title
-        self.section = str(index.data().toString())
+        self.section = str(index.data())
 
         # what was sec_elab supposed to mean?
         section_description = self.descr[self.section]
@@ -348,7 +348,7 @@ class MainApp(PyplaneMainWindow):
         ccbox.addItem("light grey", "#b3b3b3")
         ccbox.addItem("white", "#ffffff")
         ccbox.addItem("custom...", "#d1193b")
-        ind = ccbox.findData(QtCore.QVariant(value.lower()))
+        ind = ccbox.findData(value.lower())
         if ind == -1:
             ccbox.setCurrentIndex(ccbox.count()-1)
         else:
