@@ -64,40 +64,40 @@ class MainApp(PyplaneMainWindow):
         self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")
         self.update_terminal()
         
-        # connect buttons ------------------------------------------------------
-        # connect buttons: system
-        self.clearButton.clicked.connect(myTrajectories.remove_all)
+        #~ # connect buttons ------------------------------------------------------
+        #~ # connect buttons: system
+        #~ self.clearButton.clicked.connect(myTrajectories.remove_all)
         self.submitButton.clicked.connect(self.submit)
 
-        # connect buttons: phase plane
-        self.PP_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_pp))
-        self.PP_ZoomButton.clicked.connect(self.myGraph.plot_pp.toggle_zoom_mode)
-        self.PP_ZoomButton.setCheckable(True)
-        self.PP_RefreshButton.clicked.connect(self.myGraph.refresh)
-        self.PP_CreateTrajectoryButton.clicked.connect(myTrajectories.create_trajectory)
+        #~ # connect buttons: phase plane
+        #~ self.PP_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_pp))
+        #~ self.PP_ZoomButton.clicked.connect(self.myGraph.plot_pp.toggle_zoom_mode)
+        #~ self.PP_ZoomButton.setCheckable(True)
+        #~ self.PP_RefreshButton.clicked.connect(self.myGraph.refresh)
+        #~ self.PP_CreateTrajectoryButton.clicked.connect(myTrajectories.create_trajectory)
 
-        # connect buttons: x(t)
-        self.X_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_x))
-        self.X_ZoomButton.clicked.connect(self.myGraph.plot_x.toggle_zoom_mode)
-        self.X_ZoomButton.setCheckable(True)
-        # self.X_ZoomButton.clicked.connect(self.plotCanvas2.zoomMode)
+        #~ # connect buttons: x(t)
+        #~ self.X_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_x))
+        #~ self.X_ZoomButton.clicked.connect(self.myGraph.plot_x.toggle_zoom_mode)
+        #~ self.X_ZoomButton.setCheckable(True)
+        #~ # self.X_ZoomButton.clicked.connect(self.plotCanvas2.zoomMode)
 
-        # connect buttons: y(t)
-        self.Y_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_y))
-        self.Y_ZoomButton.clicked.connect(self.myGraph.plot_y.toggle_zoom_mode)
-        self.Y_ZoomButton.setCheckable(True)
+        #~ # connect buttons: y(t)
+        #~ self.Y_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_y))
+        #~ self.Y_ZoomButton.clicked.connect(self.myGraph.plot_y.toggle_zoom_mode)
+        #~ self.Y_ZoomButton.setCheckable(True)
 
-        # connect buttons: additional function
-        self.FctPlotButton.clicked.connect(self.add_function_to_plot)
-        self.FctClearButton.clicked.connect(self.remove_function_from_plot)
+        #~ # connect buttons: additional function
+        #~ self.FctPlotButton.clicked.connect(self.add_function_to_plot)
+        #~ self.FctClearButton.clicked.connect(self.remove_function_from_plot)
 
-        # connect mouse events (left mouse button click) in phase plane
-        self.myGraph.plot_pp.mpl_connect('button_press_event', self.myGraph.onclick)
-        self.myGraph.plot_pp.mpl_connect('pick_event', self.myGraph.onpick)
+        #~ # connect mouse events (left mouse button click) in phase plane
+        #~ self.myGraph.plot_pp.mpl_connect('button_press_event', self.myGraph.onclick)
+        #~ self.myGraph.plot_pp.mpl_connect('pick_event', self.myGraph.onpick)
 
         # file menu ------------------------------------------------------
         # file
-        self.file_menu = QtGui.QMenu('&File', self)
+        self.file_menu = QtGui.QMenu('&System', self)
 
         self.load = QtGui.QMenu('&Open', self)
         self.file_menu.addMenu(self.load)
@@ -105,9 +105,11 @@ class MainApp(PyplaneMainWindow):
         self.load.addAction('&From File', self.load_system_from_file,
                             QtCore.Qt.CTRL + QtCore.Qt.Key_O)
 
-        self.file_menu.addAction('&Save System As...', self.save_file,
+        self.file_menu.addAction('&Save As...', self.save_file,
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_S)
         self.file_menu.addAction('&Export As...', self.export_as, QtCore.Qt.CTRL + QtCore.Qt.Key_E)
+        self.file_menu.addAction('&Close', self.close_current_tab, QtCore.Qt.CTRL + QtCore.Qt.Key_W)
+        #~ self.file_menu.addAction('&Close All', self.close_all_tabs, QtCore.Qt.CTRL + QtCore.Qt.ShiftModifier + QtCore.Qt.Key_W)
         self.file_menu.addAction('&Quit', self.file_quit, QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
 
@@ -117,6 +119,11 @@ class MainApp(PyplaneMainWindow):
 
         # terminal checkbox
         self.toggle_terminal_action = QtGui.QAction('Terminal', self.show_menu)
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        self.toggle_terminal_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_T)
         self.toggle_terminal_action.setCheckable(True)
         #self.toggle_nullclines_action.setShortcuts(
         if myConfig.get_boolean("Logging", "showTerminal"):
@@ -167,7 +174,7 @@ class MainApp(PyplaneMainWindow):
 
         # initializing with default values ------------------------------------------------------
         self.init()
-        self.build_settings_tab()
+        #~ self.build_settings_tab()
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger

@@ -35,6 +35,10 @@ import numpy as np
 import ast
 
 from Ui_PyPlane import Ui_pyplane
+from Ui_SettingsWidget import Ui_SettingsWidget
+from Ui_ZoomWidget import Ui_ZoomWidget
+from Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
+from Ui_SystemTabWidget import Ui_SystemTabWidget
 from Ui_Pyplane_linearization import Ui_Form
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
@@ -61,6 +65,41 @@ def handle_exception(error):
     tb_msg = "".join(lines)
     myLogger.append_to_file(tb_msg)
 
+# TODO: It may be better to move these classes to separate files.
+class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+
+class PpWidget(QtGui.QWidget, Ui_ZoomWidget):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+        
+        self.latex_installed = True # where was this checked?
+        self.myLayout = QtGui.QVBoxLayout(self.frame)
+        self.plotCanvas = Canvas(True, self.frame)
+        self.myLayout.addWidget(self.plotCanvas)
+
+class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
+    # TODO: Is this class really necessary?
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+
+        self.latex_installed = True # where was this checked?
+        self.myLayout = QtGui.QVBoxLayout(self.frame)
+        self.plotCanvas = Canvas(True, self.frame)
+        self.myLayout.addWidget(self.plotCanvas)
+
+class SystemTabWidget(QtGui.QWidget, Ui_SystemTabWidget):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+        
+        # Embed widgets: not working, but why?!
+        #~ self.ppWidget = ZoomWidget()
+        #~ self.ppLayout.addWidget(self.ppWidget)
 
 class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
@@ -76,20 +115,12 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         # matplotlib works correctly (\left, \begin{array} etc.)
         self.latex_installed = myHelpers.check_if_latex()
 
-        self.myLayout1 = QtGui.QVBoxLayout(self.frame1)
-        self.plotCanvas1 = Canvas(self.latex_installed, self.frame1)
-        self.myLayout1.addWidget(self.plotCanvas1)
+        # Embed SettingsWidget:
+        self.mySettings = SettingsWidget()
+        self.SettingsLayout.addWidget(self.mySettings)
 
-        self.myLayout2 = QtGui.QVBoxLayout(self.frame2)
-        self.plotCanvas2 = Canvas(self.latex_installed, self.frame2)
-        self.myLayout2.addWidget(self.plotCanvas2)
-
-        self.myLayout3 = QtGui.QVBoxLayout(self.frame3)
-        self.plotCanvas3 = Canvas(self.latex_installed, self.frame3)
-        self.myLayout3.addWidget(self.plotCanvas3)
-
-        self.myGraph = Graph(parent=self, plot_pp=self.plotCanvas1,
-                             plot_x=self.plotCanvas2, plot_y=self.plotCanvas3)
+        #~ self.myGraph = Graph(parent=self, plot_pp=self.plotCanvas1,
+                             #~ plot_x=self.plotCanvas2, plot_y=self.plotCanvas3)
 
         self.fct_stack = []
         self.linearization_stack = []
@@ -111,40 +142,40 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         # load tmp file
         self.load_tmp_system()
 
-        # set forward and backward integration true
-        if myConfig.get_boolean("Trajectories", "traj_checkForwardByDefault"):
-            self.forwardCheckbox.setChecked(True)
-        if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
-            self.backwardCheckbox.setChecked(True)
+        #~ # set forward and backward integration true
+        #~ if myConfig.get_boolean("Trajectories", "traj_checkForwardByDefault"):
+            #~ self.forwardCheckbox.setChecked(True)
+        #~ if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
+            #~ self.backwardCheckbox.setChecked(True)
             
-        self.initializing()
+        #~ self.initializing()
 
     def initializing(self):
         """ gets called after every submit call
         """
+        
+        #~ self.PP_xminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmin")))
+        #~ self.PP_xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
+        #~ self.PP_yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
+        #~ self.PP_ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
+        #~ self.myGraph.set_window_range(self.myGraph.plot_pp)
 
-        self.PP_xminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmin")))
-        self.PP_xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
-        self.PP_yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
-        self.PP_ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
-        self.myGraph.set_window_range(self.myGraph.plot_pp)
+        #~ self.X_tminLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmin")))
+        #~ self.X_tmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmax")))
+        #~ self.X_xminLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmin")))
+        #~ self.X_xmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmax")))
+        #~ self.myGraph.set_window_range(self.myGraph.plot_x)
 
-        self.X_tminLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmin")))
-        self.X_tmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmax")))
-        self.X_xminLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmin")))
-        self.X_xmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmax")))
-        self.myGraph.set_window_range(self.myGraph.plot_x)
+        #~ self.Y_tminLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmin")))
+        #~ self.Y_tmaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmax")))
+        #~ self.Y_yminLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymin")))
+        #~ self.Y_ymaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymax")))
+        #~ self.myGraph.set_window_range(self.myGraph.plot_y)
 
-        self.Y_tminLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmin")))
-        self.Y_tmaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmax")))
-        self.Y_yminLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymin")))
-        self.Y_ymaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymax")))
-        self.myGraph.set_window_range(self.myGraph.plot_y)
-
-        #self.myGraph.update()
-        myNullclines.update()
-        myVectorfield.update()
-        myStreamlines.update()
+        #~ #self.myGraph.update()
+        #~ myNullclines.update()
+        #~ myVectorfield.update()
+        #~ myStreamlines.update()
 
     def add_linearization_tab(self, equilibrium):
         # TODO: REFACTOR THIS FUNCTION!!!
@@ -351,6 +382,48 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             #QtCore.pyqtRemoveInputHook()
             #embed()
 
+    def close_current_tab(self):
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        index = self.tabWidget.currentIndex()
+        if index != self.tabWidget.count()-1:
+            self.tabWidget.removeTab(index)
+        # TODO: Delete Container with Data
+
+    def close_all_tabs(self):
+        # TODO: something is wrong here: settings tab gets removed
+        #       sometimes!
+        for i in xrange(self.tabWidget.count()-1):
+            self.tabWidget.removeTab(i)
+            # TODO: Delete Data
+
+    def initialize_new_system_tab(self):
+        # Create new system tab
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        self.mySystemTab = SystemTabWidget()
+        contents = QtGui.QWidget(self.tabWidget)
+        self.mySystemTab.setupUi(contents)
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        number = self.tabWidget.count()
+        self.tabWidget.insertTab(0, contents, "System %s" % (str(number)))
+        self.tabWidget.setCurrentIndex(0)
+
+        # TODO: check why this can't be done within the SystemTabWidget
+        #       class!
+        self.ppWidget = PpWidget()
+        self.mySystemTab.ppLayout.addWidget(self.ppWidget)
+        self.xWidget = ZoomWidgetSimple()
+        self.mySystemTab.xLayout.addWidget(self.xWidget)
+        self.yWidget = ZoomWidgetSimple()
+        self.mySystemTab.yLayout.addWidget(self.yWidget)
 
     def testfunction(self, equilibrium):
         print("equilibrium: "+str(equilibrium))
@@ -362,6 +435,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def submit(self):
         """ This function gets called after clicking on the submit button
         """
+        self.initialize_new_system_tab()
         try:
             xtxt = str(self.xDotLineEdit.text())
             ytxt = str(self.yDotLineEdit.text())
@@ -375,7 +449,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             cond2 = str(self.yDotLineEdit.text()) != ""
 
             if cond1 and cond2:
-                self.tabWidget.setCurrentIndex(0) 
+                #~ self.initialize_new_system_tab()
                 # set right hand side, print rhs to logfield, solve,
                 # then plot vector field
 
