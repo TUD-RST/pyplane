@@ -158,6 +158,8 @@ class Ui_ZoomWidget(object):
         self.CreateTrajectoryButton.setObjectName(_fromUtf8("CreateTrajectoryButton"))
         self.verticalLayout.addWidget(self.CreateTrajectoryButton)
         self.horizontalLayout.addLayout(self.verticalLayout)
+        self.mpl_layout = QtGui.QVBoxLayout()
+        self.mpl_layout.setObjectName(_fromUtf8("mpl_layout"))
         self.frame = QtGui.QWidget(ZoomWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
@@ -166,7 +168,8 @@ class Ui_ZoomWidget(object):
         self.frame.setSizePolicy(sizePolicy)
         self.frame.setMinimumSize(QtCore.QSize(444, 0))
         self.frame.setObjectName(_fromUtf8("frame"))
-        self.horizontalLayout.addWidget(self.frame)
+        self.mpl_layout.addWidget(self.frame)
+        self.horizontalLayout.addLayout(self.mpl_layout)
 
         self.retranslateUi(ZoomWidget)
         QtCore.QMetaObject.connectSlotsByName(ZoomWidget)

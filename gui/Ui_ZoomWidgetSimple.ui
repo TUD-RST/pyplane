@@ -30,7 +30,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="param_minLabel">
        <property name="font">
         <font>
          <pointsize>7</pointsize>
@@ -58,7 +58,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QLabel" name="param_maxLabel">
        <property name="font">
         <font>
          <pointsize>7</pointsize>
@@ -93,7 +93,7 @@
         </font>
        </property>
        <property name="text">
-        <string>ymin</string>
+        <string>tmin</string>
        </property>
       </widget>
      </item>
@@ -121,7 +121,7 @@
         </font>
        </property>
        <property name="text">
-        <string>ymax</string>
+        <string>tmax</string>
        </property>
       </widget>
      </item>
@@ -156,13 +156,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="RefreshButton">
-       <property name="text">
-        <string>Refresh</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -178,20 +171,24 @@
     </layout>
    </item>
    <item>
-    <widget class="QWidget" name="frame" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>444</width>
-       <height>0</height>
-      </size>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="mpl_layout">
+     <item>
+      <widget class="QWidget" name="frame" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>444</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

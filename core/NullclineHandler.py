@@ -26,26 +26,18 @@ import matplotlib.pyplot as pyplot
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 from core.Canvas import Canvas
-from core.System import mySystem
 
 
 class NullclineHandler(object):
-    def __init__(self):
+    def __init__(self, parent):
+        self.myWidget = parent
         self.nc_stack = []
-        self.nc_toggle = False
-
-        #TODO: config; logging!
-        # myConfig.get_boolean("Nullclines", "nc_onByDefault")
-        # myLogger.debug_message("Nullclines class initialized")
-
-    def register_graph(self, plot_pp):
-        assert isinstance(plot_pp, Canvas)
-        self.plot_pp = plot_pp
+        self.tgl = False
 
     def toggle(self):
         """ This function behaves like a toggle and turns nullclines on and off.
         """
-        self.nc_toggle = not self.nc_toggle
+        self.tgl = not self.tgl
         self.update()
 
     def clear_stack(self):
@@ -57,9 +49,9 @@ class NullclineHandler(object):
 
         self.remove()
 
-        if self.nc_toggle:
+        if self.tgl:
             # get axis limits
-            xmin, xmax, ymin, ymax = self.plot_pp.axes.axis()
+            xmin, xmax, ymin, ymax = self.myWidget.Plot.canvas.axes.axis()
 
             pts_in_x = int(myConfig.read("Nullclines", "nc_gridPointsInX"))
             pts_in_y = int(myConfig.read("Nullclines", "nc_gridPointsInY"))
@@ -72,13 +64,13 @@ class NullclineHandler(object):
             X1, Y1 = np.meshgrid(a, b)
 
             try:
-                DX1, DY1 = mySystem.rhs([X1, Y1])
+                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1])
 
-                nullclines_xdot = self.plot_pp.axes.contour(X1, Y1, DX1,
+                nullclines_xdot = self.myWidget.Plot.canvas.axes.contour(X1, Y1, DX1,
                                                             levels=[0],
                                                             linewidths=nc_linewidth,
                                                             colors=nc_color_xdot)
-                nullclines_ydot = self.plot_pp.axes.contour(X1, Y1, DY1,
+                nullclines_ydot = self.myWidget.Plot.canvas.axes.contour(X1, Y1, DY1,
                                                             levels=[0],
                                                             linewidths=nc_linewidth,
                                                             colors=nc_color_ydot)
@@ -86,7 +78,7 @@ class NullclineHandler(object):
                 # proxy artist for legend
                 proxy_x_nc = pyplot.Rectangle((0, 0), 1, 1, fc=nc_color_xdot)
                 proxy_y_nc = pyplot.Rectangle((0, 0), 1, 1, fc=nc_color_ydot)
-                self.plot_pp.axes.legend([proxy_x_nc, proxy_y_nc],
+                self.myWidget.Plot.canvas.axes.legend([proxy_x_nc, proxy_y_nc],
                                          ["x-Nullclines", "y-Nullclines"],
                                          bbox_to_anchor=(0., 1.02, 1., .102),
                                          loc=2,
@@ -98,7 +90,7 @@ class NullclineHandler(object):
             except:
                 myLogger.debug_message("Please submit system.")
         # refresh graph
-        self.plot_pp.draw()
+        self.myWidget.Plot.canvas.draw()
 
     def remove(self):
         if len(self.nc_stack) != 0:
@@ -112,7 +104,7 @@ class NullclineHandler(object):
                         myLogger.debug_message(str(type(error)))
                         myLogger.debug_message(str(error))
             # remove nullclines legend
-            self.plot_pp.axes.legend_ = None
+            self.myWidget.Plot.canvas.axes.legend_ = None
 
             myLogger.message("Nullclines removed.")
         else:
@@ -151,21 +143,21 @@ class NullclineHandler(object):
 
         # 1:    isoclines parallel to x
         # 1.1:  check if y_dot is function of y (sloppy, should work though)
-        if str(mySystem.y_dot_expr).count('y') != 0:
+        if str(self.myWidget.mySystem.equation.y_dot_expr).count('y') != 0:
             # if yes: solve(self.y_dot_expr,y)
-            self.isoclines_y.append(solve(mySystem.y_dot_expr, y))
+            self.isoclines_y.append(solve(self.myWidget.mySystem.equation.y_dot_expr, y))
             # print "isoclines parallel to x: y="+str(solve(self.y_dot_expr,y))
 
             # add "x=.." solutions that do not depend on y
-            y_dot_solved_x = solve(mySystem.y_dot_expr, x)
+            y_dot_solved_x = solve(self.myWidget.mySystem.equation.y_dot_expr, x)
             for i in range(len(y_dot_solved_x)):
                 if str(y_dot_solved_x[i]).count('y') == 0:
                     self.isoclines_x.append(y_dot_solved_x[i])
 
         # if not: check if y_dot is function of x
-        elif str(mySystem.y_dot_expr).count('x') != 0:
+        elif str(self.myWidget.mySystem.equation.y_dot_expr).count('x') != 0:
             # if yes: solve(self.y_dot_expr,x)
-            self.isoclines_x.append(solve(mySystem.y_dot_expr, x))
+            self.isoclines_x.append(solve(self.myWidget.mySystem.equation.y_dot_expr, x))
             # print "and also: x="+str(solve(self.y_dot_expr,x))
         else:
             #               if not: skip (expression must be scalar)
@@ -173,21 +165,21 @@ class NullclineHandler(object):
 
         # 2:    isoclines parallel to y
         # 2.1:  check if x_dot is function of y:
-        if str(mySystem.x_dot_expr).count('y') != 0:
+        if str(self.myWidget.mySystem.equation.x_dot_expr).count('y') != 0:
             # if yes: solve(self.x_dot_expr,y)
-            self.isoclines_y.append(solve(mySystem.x_dot_expr, y))
+            self.isoclines_y.append(solve(self.myWidget.mySystem.equation.x_dot_expr, y))
             # print "isoclines parallel to y: y="+str(solve(self.x_dot_expr,y))
 
             # add "x=.." solutions that do not depend on y
-            x_dot_solved_x = solve(mySystem.x_dot_expr, x)
+            x_dot_solved_x = solve(self.myWidget.mySystem.equation.x_dot_expr, x)
             for i in range(len(x_dot_solved_x)):
                 if str(x_dot_solved_x[i]).count('y') == 0:
                     self.isoclines_x.append(x_dot_solved_x[i])
 
         #           if not: check if x_dot is function of x
-        elif str(mySystem.x_dot_expr).count('x') != 0:
+        elif str(self.myWidget.mySystem.equation.x_dot_expr).count('x') != 0:
             #               if yes: solve(self.x_dot_expr,x)
-            self.isoclines_x.append(solve(mySystem.x_dot_expr, x))
+            self.isoclines_x.append(solve(self.myWidget.mySystem.equation.x_dot_expr, x))
         #            print "and also: x="+str(solve(self.x_dot_expr,x))
         else:
             #               if not: skip (expression must be scalar)
@@ -195,5 +187,3 @@ class NullclineHandler(object):
 
         # return list of solutions
         return [self.isoclines_x, self.isoclines_y]
-
-myNullclines = NullclineHandler()

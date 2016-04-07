@@ -22,23 +22,20 @@ import numpy as np
 
 from core.ConfigHandler import myConfig
 from core.Logging import myLogger
-from core.System import mySystem
 
 
 class StreamlineHandler(object):
-    def __init__(self):
+    def __init__(self, parent):
+        self.myWidget = parent
         self.sl_stack = []
         self.tgl = False
 
-        # TODO: logging
-        #myLogger.debug_message("Streamlines class initialized")
-
-    def register_graph(self, parent,plot_pp):
-        self.plot_pp = plot_pp
-        self.parent = parent
-
     def clear_stack(self):
         self.sl_stack = []
+
+    def toggle(self):
+        self.tgl = not self.tgl
+        self.update()
 
     def update(self):
         """ This function plots streamlines.
@@ -46,7 +43,8 @@ class StreamlineHandler(object):
         self.remove()
 
         if self.tgl:
-            xmin, xmax, ymin, ymax = self.plot_pp.axes.axis()
+            xmin, xmax, ymin, ymax = self.myWidget.Plot.canvas.axes.axis()
+
             N = int(myConfig.read("Streamlines", "stream_gridPointsInX"))
             M = int(myConfig.read("Streamlines", "stream_gridPointsInY"))
             stream_linewidth = float(myConfig.read("Streamlines", "stream_linewidth"))
@@ -58,8 +56,8 @@ class StreamlineHandler(object):
             X1, Y1 = np.meshgrid(a, b)
 
             try:
-                DX1, DY1 = mySystem.rhs([X1, Y1])
-                streamplot = self.plot_pp.axes.streamplot(X1, Y1, DX1, DY1,
+                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1])
+                streamplot = self.myWidget.Plot.canvas.axes.streamplot(X1, Y1, DX1, DY1,
                                                           density=stream_density,
                                                           linewidth=stream_linewidth,
                                                           color=stream_color)
@@ -70,7 +68,7 @@ class StreamlineHandler(object):
             except:
                 myLogger.debug_message("No system yet")
 
-        self.plot_pp.draw()
+        self.myWidget.Plot.canvas.draw()
 
     def remove(self):
         """
@@ -88,10 +86,8 @@ class StreamlineHandler(object):
                 #sl_arrows.remove() doesn't work
                 # doesn't work either: del sl.arrows
                 # as long as no other patches are used:
-                self.plot_pp.axes.patches = []
+                self.myWidget.Plot.canvas.axes.patches = []
 
             myLogger.message("Streamlines removed")
         else:
             myLogger.debug_message("No streamlines to delete")
-
-myStreamlines = StreamlineHandler()

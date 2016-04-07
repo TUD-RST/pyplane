@@ -152,7 +152,7 @@
          <item>
           <widget class="QLabel" name="txtCopyright">
            <property name="text">
-            <string>Copyright (C) 2013-2015
+            <string>Copyright (C) 2013-2016
 by Klemens Fritzsche, Carsten Knoll, 
 Jan Winkler
 Technische Universität Dresden

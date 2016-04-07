@@ -18,27 +18,178 @@
 
 __author__ = 'Klemens Fritzsche'
 
-# sys.path.append("/home/klim/software/python/iphelp_ips")#location of iphelp
-# from ipHelp import IPS
-
-#import pylab as pl
-#import numpy as np
 import matplotlib.pyplot as plt
 import sympy as sp
 
 from core.Canvas import Canvas
-#from scipy import integrate
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
-from core.System import mySystem
-from core.EquilibriumHandler import myEquilibria
-from core.NullclineHandler import myNullclines
-from core.TrajectoryHandler import myTrajectories
-from core.StreamlineHandler import myStreamlines
-from core.VectorfieldHandler import myVectorfield
 
 from PyQt4.QtGui import QMessageBox
 
+class Plot(object):
+    def __init__(self, parent, canvas):
+        assert isinstance(canvas, Canvas)
+        self.myWidget = parent
+        self.canvas = canvas
+
+        if not isinstance(self, PhasePlot):
+            self._section = "%s-t-plot" % self.myWidget.param
+            self._token = "%s_" % self.myWidget.param
+        else:
+            self._section = "Phaseplane"
+            self._token = "pp_"
+
+        self.clear()
+
+    def clear(self):
+        self.canvas.axes.clear()
+
+        if myConfig.get_boolean(self._section, self._token + "showGrid"):
+            self.canvas.axes.grid()
+
+        if myConfig.get_boolean(self._section, self._token + "showMinorTicks"):
+            self.canvas.axes.minorticks_on()
+        else:
+            self.canvas.axes.minorticks_off()
+
+        if not myConfig.get_boolean(self._section, self._token + "showXTicks"):
+            self.canvas.axes.xaxis.set_ticks([])
+
+        if not myConfig.get_boolean(self._section, self._token + "showYTicks"):
+            self.canvas.axes.yaxis.set_ticks([])
+
+        if myConfig.get_boolean(self._section, self._token + "showXLabel"):
+            xlabel = "$t$"
+            self.canvas.axes.set_xlabel(xlabel, fontsize=pp_label_fontsize)
+
+        if myConfig.get_boolean(self._section, self._token + "showTitle"):
+            title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
+            title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
+            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$")
+        else:
+            self.canvas.fig.subplots_adjust(top=0.99)
+
+        if myConfig.get_boolean(self._section, self._token + "showYLabel"):
+            pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
+            ylabel = "$%s$" % self.myWidget.param
+            Graph.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
+
+        if not myConfig.get_boolean(self._section, self._token + "showSpines"):
+            for spine in Graph.axes.spines.itervalues():
+                spine.set_visible(False)
+
+        self.update()
+        myLogger.debug_message("Graph cleared") 
+
+    def update(self):
+        try:
+            self.canvas.draw()
+        except Exception as e: 
+            if 'latex' in e.message.lower():
+                QMessageBox.critical(None, 'Error', 'LaTeX not properly installed! Please check the following message:\n\n' + e.message)
+            else:
+                QMessageBox.critical(None, 'Error', 'Something seems to be wrong with matplotlib. Please check the following message:\n\n' + e.message)
+            exit()        
+
+    def set_window_range(self):
+        _min = float(self.myWidget.xminLineEdit.text())
+        _max = float(self.myWidget.xmaxLineEdit.text())
+        _tmin = float(self.myWidget.yminLineEdit.text())
+        _tmax = float(self.myWidget.ymaxLineEdit.text())
+
+        if _min < _max and _tmin < _tmax:
+            self.canvas.axes.set_xlim(_min, _max)
+            self.canvas.axes.set_ylim(_tmin, _tmax)
+        else:
+            myLogger.error_message("Please check window size input!")
+
+        self.update()
+
+    def get_limits(self):
+        """ This function returns the limits of a graph. """
+        return self.canvas.axes.axis()
+
+class PhasePlot(Plot):
+    def __init__(self, parent, canvas):
+        self.myWidget = parent
+        Plot.__init__(self, self.myWidget, canvas)
+
+        # read initial values: vector field, streamlines, nullclines
+        self.vf_toggle = myConfig.get_boolean("Vectorfield", "vf_onByDefault")
+        self.nc_toggle = myConfig.get_boolean("Nullclines", "nc_onByDefault")
+        self.sl_toggle = myConfig.get_boolean("Streamlines", "stream_onByDefault")
+
+
+    def toggle_vectorfield(self):
+        myVectorfield.tgl = not myVectorfield.tgl
+
+        # turn off streamlines if vf and sl are True in config
+        if myVectorfield.tgl and myStreamlines.tgl:
+            self.toggle_streamlines()
+
+        myVectorfield.update()
+
+    def toggle_streamlines(self):
+        myStreamlines.tgl = not myStreamlines.tgl
+
+        if (myVectorfield.tgl and myStreamlines.tgl):
+            self.toggle_vectorfield()
+
+        myStreamlines.update()
+
+    def refresh(self):
+        self.myWidget.VF.update()
+        self.myWidget.SL.update()
+        self.myWidget.Nullclines.update()
+
+    def onclick(self, event):
+        """
+            This function is in charge of the mouse-click behaviour.
+            A left mouse button click is recognized, the mouse location serves
+            as an initial condition for trajectories.
+        """
+
+        # TODO: check if try/except is the best thing to do here!
+        if not self.canvas.zoomMode:
+            event1 = event.xdata is not None
+            event2 = event.ydata is not None
+            button = event.button == 1
+
+            if not self.myWidget.Equilibria.tgl:
+                # event.xdata and event.ydata are initial conditions for integration
+                # mouse click will also be recognized if clicked outside of the graph area, so filter that:
+                if event1 and event2 and button:
+                    forward, backward = self.myWidget.trajectory_direction()
+                    if self.myWidget.mySystem.Trajectories.plot_trajectory([event.xdata, event.ydata], forward, backward):
+                        myLogger.message("New initial condition: " + str(event.xdata) + ", " + str(event.ydata))
+                else:
+                    pass
+            else:
+                # equilibrium point
+                if event1 and event2 and button:
+                    equilibrium_point = self.myWidget.Equilibria.find_equilibrium([event.xdata, event.ydata])
+                    if equilibrium_point is not None:
+                        jacobian = self.myWidget.Equilibria.approx_ep_jacobian(equilibrium_point)
+                        self.myWidget.mySystem.myPyplane.new_linearized_system(self.myWidget.mySystem, jacobian, equilibrium_point)
+        else:
+            myLogger.debug_message("in zoom mode")
+
+    def onpick(self, event):
+        thisline = event.artist
+        xdata = thisline.get_xdata()
+        ydata = thisline.get_ydata()
+        ind = event.ind
+
+        myLogger.message("Equilibrium Point chosen: "+str(xdata)+", "+str(ydata))
+
+        equilibrium = [map(float,xdata)[0], map(float,ydata)[0]]
+
+        # obsolete:
+        #~ self.myWidget.add_linearization_tab(equilibrium)
+        #xdata[ind], ydata[ind])
+        #print
+        #'onpick points:', zip(xdata[ind], ydata[ind])
 
 class Graph(object):
     """
@@ -277,11 +428,6 @@ class Graph(object):
 
         #self.update()
 
-    def trajectory_direction(self):
-        forward = self.parent.forwardCheckbox.isChecked()
-        backward = self.parent.backwardCheckbox.isChecked()
-
-        return [forward, backward]
 
     def plot_vector(self, Graph, vector):
         # TODO: is this supposed to be here?

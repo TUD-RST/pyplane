@@ -32,7 +32,9 @@ from core.Logging import myLogger
 class Canvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
-    def __init__(self, latex_installed, parent=None):
+    def __init__(self, parent, latex_installed):
+        self.myWidget = parent
+
         plot_background = myConfig.read("Plotting", "plot_background")
         plot_CanvasBackground = str(myConfig.read("Plotting", "plot_CanvasBackground"))
         plot_fontSize = int(myConfig.read("Plotting", "plot_fontSize"))
@@ -74,6 +76,10 @@ class Canvas(FigureCanvas):
 
         self.navigationToolbar = Toolbar(self)
 
+        # TODO: rather as a real toolbar:
+        #~ self.toolbar = NavigationToolbar(self, self.myWidget.mpl_layout, coordinates=True)
+        #~ self.myWidget.mplvl.addWidget(self.toolbar)
+
         FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
@@ -85,3 +91,10 @@ class Canvas(FigureCanvas):
     def toggle_zoom_mode(self):
         self.zoomMode = not self.zoomMode
         self.navigationToolbar.zoom()
+
+        # update line edits
+        xmin, xmax, ymin, ymax = self.axes.axis()
+        self.myWidget.xminLineEdit.setText(str(round(xmin,2)))
+        self.myWidget.xmaxLineEdit.setText(str(round(xmax,2)))
+        self.myWidget.yminLineEdit.setText(str(round(ymin,2)))
+        self.myWidget.ymaxLineEdit.setText(str(round(ymax,2)))

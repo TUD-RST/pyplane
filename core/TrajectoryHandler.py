@@ -22,24 +22,17 @@ import numpy as np
 import pylab as pl
 from scipy import integrate
 
-#from core.canvas import MyMplCanvas
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
-from core.System import mySystem
 
 
 class TrajectoryHandler(object):
-    def __init__(self):
+    def __init__(self, parent):
+        self.mySystem = parent
         # dictionary for trajectories: first value is the initial condition,
         # the second value contains the matplotlib-data (y(x),x(t) and y(t)) as a stack list)
 
         self.traj_dict = {}
-
-    def register_graph(self, parent, plot_pp, plot_x, plot_y):
-        self.parent = parent
-        self.plot_pp = plot_pp
-        self.plot_x = plot_x
-        self.plot_y = plot_y
 
     def clear_stack(self):
         self.traj_dict = {}
@@ -77,7 +70,7 @@ class TrajectoryHandler(object):
                 # self.mySystem.jacobian(initialCondition)
 
                 assert isinstance(initial_condition, list)
-                self.x = integrate.odeint(mySystem.rhs, initial_condition, time)
+                self.x = integrate.odeint(self.mySystem.equation.rhs, initial_condition, time)
                                           #, full_output=1, printmessg=1,       mxstep=20000)
 
                 xvalue = self.x[:, 0]  # extract the x vector
@@ -104,7 +97,7 @@ class TrajectoryHandler(object):
                 #                 embed()
                 # plot solution in phase plane:
                 traj_ppForwardColor = myConfig.read("Trajectories", "traj_ppForwardColor")
-                plot1 = self.plot_pp.axes.plot(xvalue, yvalue, traj_ppForwardColor)
+                plot1 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue, yvalue, traj_ppForwardColor)
 
                 # numpy array with both x and y values in pairs
                 # TODO: might be faster if xvalues or yvalues greater than self.mySystem.max_norm
@@ -130,11 +123,11 @@ class TrajectoryHandler(object):
 
                 # plot solution in x(t):
                 traj_x_tColor = myConfig.read("Trajectories", "traj_x_tColor")
-                plot2 = self.plot_x.axes.plot(time, xvalue, color=traj_x_tColor)
+                plot2 = self.mySystem.Xt.Plot.canvas.axes.plot(time, xvalue, color=traj_x_tColor)
 
                 # plot solution in y(t):
                 traj_y_tColor = myConfig.read("Trajectories", "traj_y_tColor")
-                plot3 = self.plot_y.axes.plot(time, yvalue, color=traj_y_tColor)
+                plot3 = self.mySystem.Yt.Plot.canvas.axes.plot(time, yvalue, color=traj_y_tColor)
 
                 # self.myLogger.message("forward trajectory done for initial condition "+str(initialCondition))
                 traj_stack.append(plot1)
@@ -143,7 +136,7 @@ class TrajectoryHandler(object):
 
             # backward in time --------------------------------------------
             if backward:
-                self.x_bw = integrate.odeint(mySystem.n_rhs, initial_condition, time)
+                self.x_bw = integrate.odeint(self.mySystem.equation.n_rhs, initial_condition, time)
                 #, full_output=1, printmessg=1)#, mxstep=5000)
                 # self.x_bw, infodict2 = integrate.odeint(self.mySystem.n_rhs,
                 # initialCondition, self.t)#, full_output=1, printmessg=1)#, mxstep=5000)
@@ -167,7 +160,7 @@ class TrajectoryHandler(object):
 
                 # plot in phase plane:
                 traj_ppBackwardColor = myConfig.read("Trajectories", "traj_ppBackwardColor")
-                plot4 = self.plot_pp.axes.plot(xvalue_bw, yvalue_bw, color=traj_ppBackwardColor)
+                plot4 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, color=traj_ppBackwardColor)
 
                 traj_stack.append(plot4)
 
@@ -177,7 +170,7 @@ class TrajectoryHandler(object):
             # mark init:
             if myConfig.get_boolean("Trajectories", "traj_plotInitPoint"):
                 traj_initPointColor = myConfig.read("Trajectories", "traj_initPointColor")
-                plot5 = self.plot_pp.axes.plot(initial_condition[0],
+                plot5 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(initial_condition[0],
                                                initial_condition[1],
                                                '.',
                                                color=traj_initPointColor)
@@ -187,9 +180,7 @@ class TrajectoryHandler(object):
                 # mark init:
                 self.traj_dict[str(initial_condition)] = traj_stack
 
-            # update_all
-            self.parent.update_all()
-            # return True
+            self.mySystem.update()
 
     def filter_values(self, xvalue, yvalue):
         z = np.column_stack((xvalue, yvalue))
@@ -198,7 +189,7 @@ class TrajectoryHandler(object):
         normed_z = np.array([np.linalg.norm(v) for v in z])
 
         # masking
-        max_norm = mySystem.max_norm
+        max_norm = self.mySystem.equation.max_norm
         masked_normed_z = np.ma.masked_greater(normed_z, max_norm)
         myMask = masked_normed_z.mask
 
@@ -209,19 +200,23 @@ class TrajectoryHandler(object):
         return xvalue, yvalue
 
     def create_trajectory(self):
-        initial_condition = self.parent.read_init()
-        forward, backward = self.parent.trajectory_direction()
+        try:
+            initial_condition = self.mySystem.Phaseplane.read_init()
+            forward, backward = self.mySystem.Phaseplane.trajectory_direction()
 
-        cond1 = initial_condition[0] is not None
-        cond2 = initial_condition[1] is not None
-        # check if trajectory with initial_condition exists already
-        cond3 = not str(initial_condition) in self.traj_dict
+            cond1 = initial_condition[0] is not None
+            cond2 = initial_condition[1] is not None
+            # check if trajectory with initial_condition exists already
+            cond3 = not str(initial_condition) in self.traj_dict
 
-        if cond1 and cond2 and cond3:
-            self.plot_trajectory(initial_condition, forward, backward)
-            myLogger.message("New initial condition: " + str(initial_condition[0]) + ", " + str(initial_condition[1]))
-        #except:
-        #    myLogger.error_message("Please check intial condition!")
+            if cond1 and cond2 and cond3:
+                self.plot_trajectory(initial_condition, forward, backward)
+                myLogger.message("New initial condition: " + str(initial_condition[0]) + ", " + str(initial_condition[1]))
+
+        except Exception as error:
+            myLogger.error_message("Could not create trajectory")
+            myLogger.debug_message(str(type(error)))
+            myLogger.debug_message(str(error))
 
     def remove(self, init):
         """ this function removes a single trajectory specified by its initial value. not implemented right now
@@ -238,9 +233,9 @@ class TrajectoryHandler(object):
                 try:
                     self.traj_dict[i].pop()[0].remove()
                 except Exception as error:
-                    myLogger.debug_message("Could not delete trajectory")
+                    myLogger.error_message("Could not delete trajectory")
                     myLogger.debug_message(str(type(error)))
                     myLogger.debug_message(str(error))
-        self.parent.update_all()
+        self.mySystem.update()
 
-myTrajectories = TrajectoryHandler()
+#~ myTrajectories = TrajectoryHandler()

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'gui/Ui_PyPlane_about.ui'
+# Form implementation generated from reading ui file 'Ui_PyPlane_about.ui'
 #
-# Created: Tue Jul 28 16:46:33 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -39,7 +38,6 @@ class Ui_DlgAbout(object):
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 431, 361))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
@@ -163,7 +161,7 @@ class Ui_DlgAbout(object):
         self.pyplane_date.setText(_translate("DlgAbout", "TextLabel", None))
         self.label_platform.setText(_translate("DlgAbout", "Platform:", None))
         self.pyplane_platform.setText(_translate("DlgAbout", "TextLabel", None))
-        self.txtCopyright.setText(_translate("DlgAbout", "Copyright (C) 2013-2015\n"
+        self.txtCopyright.setText(_translate("DlgAbout", "Copyright (C) 2013-2016\n"
 "by Klemens Fritzsche, Carsten Knoll, \n"
 "Jan Winkler\n"
 "Technische Universität Dresden\n"

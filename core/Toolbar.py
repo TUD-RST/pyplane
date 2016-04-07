@@ -28,12 +28,10 @@ class Toolbar(NavigationToolbar):
         This class hides the functionality of NavigationToolbar, and only
         provides the necessary functions (only zooming at the moment)
     """
-
     def _init_toolbar(self):
         pass
 
     def draw_rubberband(self, event, x0, y0, x1, y1):
-        #TODO: add source
         height = self.canvas.figure.bbox.height
         y1 = height - y1
         y0 = height - y0

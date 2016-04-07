@@ -20,104 +20,87 @@ from __future__ import division
 
 __author__ = 'Klemens Fritzsche'
 
+from PyQt4 import QtGui
+
 import sympy as sp
 import pylab as pl
 import numpy as np
 
 from core.Logging import myLogger
+from core.Equation import Equation
 from core.ConfigHandler import myConfig
-#from IPython import embed
+from gui.Widgets import SystemTabWidget, PhaseplaneWidget, ZoomWidgetSimple
+from core.TrajectoryHandler import TrajectoryHandler
+from core.FunctionHandler import FunctionHandler
 
+counter = 0
+
+class Container(object):
+    """ For exporting and importing pyplane systems (.pps) files
+    """
+    def __init__(self):
+        pass
 
 class System(object):
-    """ this class defines the differential equation system and contains methods to use it """
+    """ Class that bundles everything after submitting a new system
+    """
+    def __init__(self, parent, equation=None, name=None, linear=False):
+        #~ assert isinstance(parent, PyplaneMainWindow)
+        self.myPyplane = parent
+        self.equation = Equation(equation)
 
-    def __init__(self):
-        # naming variables
-        self.x = sp.symbols('x')
-        self.y = sp.symbols('y')
+        self.linear = linear
+        self._tab_index = self.myPyplane.tabWidget.currentIndex()
 
-        self.x_dot = None
-        self.y_dot = None
-
-        self.x_dot_expr = None
-        self.y_dot_expr = None
-
-        try:
-            self.max_norm = float(myConfig.read("System", "max_norm"))
-        except:
-            pass
+        # TODO: possiblity to choose a name
+        global counter
+        counter = counter + 1
+        if name == None:
+            self.name = "System %s" % counter
         else:
-            self.max_norm = 1e5
+            self.name = name
 
-    def set_rhs(self, x_dot_string, y_dot_string):
-        """ this function sets the differential equations
-        """
-        self.x_dot_expr = sp.sympify(x_dot_string)
-        self.y_dot_expr = sp.sympify(y_dot_string)
+        # content of new systems tab:
+        self._tab = SystemTabWidget(self)
+        contents = QtGui.QWidget(self.myPyplane.tabWidget)
+        self._tab.setupUi(contents)
 
-        self.x_dot = sp.lambdify((self.x, self.y), self.x_dot_expr, 'numpy')
-        self.y_dot = sp.lambdify((self.x, self.y), self.y_dot_expr, 'numpy')
+        self.myPyplane.tabWidget.insertTab(0, contents, self.name)
+        self.myPyplane.tabWidget.setCurrentIndex(0)
 
-    def what_is_my_system(self):
-        """ this function returns the current system
-        """
-        return [self.x_dot_expr, self.y_dot_expr]
+        self.Trajectories = TrajectoryHandler(self)
+        self.Functions = FunctionHandler(self)
 
-    def rhs(self, z, t=0.):
-        """ this function represents the system
-        """
+        self.Phaseplane = PhaseplaneWidget(self)
+        self.Xt = ZoomWidgetSimple(self, "x")
+        self.Yt = ZoomWidgetSimple(self, "y")
 
-        # falls endliche fluchtzeit:
-        # abfrage ob norm(x)>10**5
+        # create tab content (phaseplane, x-t and y-t widgets)
+        self._tab.ppLayout.addWidget(self.Phaseplane)
+        self._tab.xLayout.addWidget(self.Xt)
+        self._tab.yLayout.addWidget(self.Yt)
 
-        norm_z = pl.norm(z)
+        # connect mouse events (left mouse button click) in phase plane
+        self.Phaseplane.Plot.canvas.mpl_connect('button_press_event', self.Phaseplane.Plot.onclick)
+        self.Phaseplane.Plot.canvas.mpl_connect('pick_event', self.Phaseplane.Plot.onpick)
 
-        if norm_z > self.max_norm:
-            myLogger.debug_message("norm(z) exceeds " + str(self.max_norm) + ": norm(z) = " + str(norm_z))
-            z2 = (z / norm_z) * self.max_norm
-            self.x, self.y = z2
-        else:
-            self.x, self.y = z
+        self.myPyplane.initialize_ui()
 
-        xx_dot = self.x_dot(self.x, self.y)
-        yy_dot = self.y_dot(self.x, self.y)
+        if self.linear:
+            self.plot_eigenvectors()
 
-        zDot = xx_dot, yy_dot
+    #~ def pickle(self, path):
+        #~ pcl.dump(self.data, file(str(path), 'w'))
+        #~ return pps_file
 
-        #         norm_zDot = norm(zDot)
-        #
-        #         if norm_zDot>self.max_norm*1e3:
-        #             myLogger.debug_message("norm(z dot) exceeds 1e10: norm(z')="+str(norm_zDot))
+    #~ def unpickle(self, pps_file):
+        #~ self.data = pcl.load(pps_file)
+        #~ assert isinstance(self.data, Container), myLogger.error_message("Could not open pps file!")
 
-        return np.array([xx_dot, yy_dot])
+    def plot_eigenvectors(self):
+        pass
 
-    def n_rhs(self, z, t=0):
-        """ this function is used for backward integration
-        """
-        solution = self.rhs(z, t)
-        n_solution = [x * (-1) for x in solution]
-
-        return n_solution
-
-#     def jacobian(self, X, t=0):
-#         """ return the jacobian matrix evaluated in X. """
-#
-#         Jfun = ndt.Jacobian(self.rhs)
-#         return Jfun
-
-
-#     def solve(self, initialCondition, time):
-#         """ solves the system of differential equations """
-#
-#         self.solution = integrate.odeint(self.rhs, initialCondition, time, full_output=True, mxstep=20000)
-#         self.x_t = self.solution[:,0] # extract the x vector
-#         self.y_t = self.solution[:,1] # extract the dx/dt vector
-#         return [self.x_t, self.y_t]
-
-
-#if __package__ is None:
-#    __package__ = "core.system"
-
-# prepare system for importing
-mySystem = System()
+    def update(self):
+        self.Phaseplane.Plot.update()
+        self.Xt.Plot.update()
+        self.Yt.Plot.update()

@@ -35,23 +35,11 @@ import numpy as np
 import ast
 
 from Ui_PyPlane import Ui_pyplane
-from Ui_SettingsWidget import Ui_SettingsWidget
-from Ui_ZoomWidget import Ui_ZoomWidget
-from Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
-from Ui_SystemTabWidget import Ui_SystemTabWidget
-from Ui_Pyplane_linearization import Ui_Form
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
-from core.Graph import Graph
-from core.Graph import Canvas
-from core.System import mySystem, System
-from core.NullclineHandler import myNullclines
-from core.StreamlineHandler import myStreamlines
-from core.VectorfieldHandler import myVectorfield, VectorfieldHandler
-from core.EquilibriumHandler import myEquilibria
-from core.TrajectoryHandler import myTrajectories
+from core.System import System
 import core.PyPlaneHelpers as myHelpers
-
+from gui.Widgets import SettingsWidget
 
 def handle_exception(error):
 
@@ -64,301 +52,6 @@ def handle_exception(error):
     lines = traceback.format_exception(exc_type, exc_value, exc_tb)
     tb_msg = "".join(lines)
     myLogger.append_to_file(tb_msg)
-
-# TODO: It may be better to move these classes to separate files.
-class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        self.setupUi(self)
-
-        self.SetupApplyButton.clicked.connect(self.apply_config_changes)
-
-        # read config-descriptions from dictionary
-        self.descr = {}
-        with open('core/config_description.py', 'r') as dict:
-            data = dict.read()
-            self.descr = ast.literal_eval(data)
-
-        # qlistview
-        sectionlist = self.descr["sectionlist"]
-        # sectionlist = myConfig.config.sections()
-
-        # create model for the section
-        self.model = QtGui.QStandardItemModel(self.SectionListView)
-
-        for section in sectionlist:
-            item = QtGui.QStandardItem(section)
-            # add item to the model
-            self.model.appendRow(item)
-
-        # apply model to listview
-        self.SectionListView.setModel(self.model)
-
-        # add action
-        self.SectionListView.clicked.connect(self.settings_item_clicked)
-
-        self.stack_visible = []
-
-    def apply_config_changes(self):
-        myConfig.apply_changes()
-        myLogger.debug_message("Config changes stored.")
-        myLogger.initialize()
-
-        # init
-        # self.init()
-
-        # VALIDATE EXPRESSIONS HERE!
-
-    #         if len(self.stack_changed.keys())!=0:
-    #             for i in xrange(0,len(self.stack_changed.keys())):
-    #
-    #                 item = str(self.stack_changed.keys()[i])
-    #                 print(item)
-    #                 value = str(self.stack_changed[item].text())
-    #                 print(value)
-    #                 if type(item)==QtGui.QLineEdit:
-    #                     myConfig.write(self.section,item,value)
-    #                     #print(str(item.text()))
-
-    def settings_item_clicked(self, index):
-        # TODO: May be we should change this mechanism to a clear model-view
-        #       process. Maybe a tree view is appropriate?
-        self.remove_visible_items()
-
-        # set section title
-        self.section = str(index.data())
-
-        # what was sec_elab supposed to mean?
-        section_description = self.descr[self.section]
-
-        self.SetupSectionTitle.setText(section_description)
-
-        # iterate over items in section
-        items = myConfig.config.items(self.section)
-
-        self.remove_visible_items()
-
-        for i in items:
-            # add qlabel and a qlineedit to gui
-            label = QtGui.QLabel()
-            label.setObjectName(i[0])
-            label.setFixedWidth(300)
-
-            # this does not seem to work, but why?:
-            label.setAlignment(QtCore.Qt.AlignRight)
-            #QtCore.pyqtRemoveInputHook()
-            #embed()
-
-            item_description = str(self.descr[i[0]][0])
-
-            label.setText(str(item_description) + ":")
-            label.setAlignment(QtCore.Qt.AlignRight)
-
-            #lineedit = QtGui.QLineEdit()
-            #lineedit.setObjectName(i[0])
-            #lineedit.setFixedWidth(100)
-            #lineedit.setAlignment(QtCore.Qt.AlignRight)
-            value = myConfig.read(self.section, i[0])
-            #lineedit.setText(value)
-            
-            if (value.lower() == "true") | (value.lower() == "false"):
-                input_widget = self.create_boolean_combo_box(i[0], value)
-            elif "color" in item_description.lower():
-                input_widget = self.create_color_chooser(i[0], value)
-            else:
-                input_widget = self.create_line_edit(i[0], value)
-                
-            
-            # add to stack_visible:
-            # what was the 0 for?
-            self.stack_visible.append([label, 0])
-            #self.stack_visible.append([lineedit, self.section, str(i[0])])
-            #self.add_to_layout(label, lineedit)
-            self.stack_visible.append([input_widget, self.section, str(i[0])])
-            self.add_to_layout(label, input_widget)
-
-            # detect if entered new value
-            # google "python lambda loop parameter" or see
-            # http://stackoverflow.com/questions/938429/
-            #                                       scope-of-python-lambda-functions-and-their-parameters/938493#938493
-            # noinspection PyUnresolvedReferences
-            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
-            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
-            #lineedit.textEdited.connect(lambda lineedit=lineedit: self.new_value(lineedit,self.section,i[0]))
-
-            #print(self.stack_visible)
-
-    def create_boolean_combo_box(self, name, value):
-        """ 
-        Creates a combo-box with the two entries "true" and "false" and
-        connects its signal "currentIndexChanged" with the method "new_value"
-        via the "callback_factory"
-        
-        Parameter:
-        name  -- the name of the parameter represented by the value of the box
-        value -- the current value of the parmeter
-        """
-        cbox = QtGui.QComboBox(self)
-        cbox.setObjectName(name)
-        cbox.setFixedWidth(100)
-        cbox.addItem("true", "true")
-        cbox.addItem("false", "false")
-        if value.lower() == "true":
-            cbox.setCurrentIndex(0)
-        else:
-            cbox.setCurrentIndex(1)
-        cbox.currentIndexChanged.connect(self.callback_factory(cbox, self.section, name))            
-        return cbox
-        
-    def create_line_edit(self, name, value):
-        """ 
-        Creates a lineedit box and connects its signal "textEdited" 
-        with the method "new_value" via the "callback_factory"
-        
-        Parameter:
-        name  -- the name of the parameter represented by the value of the box
-        value -- the current value of the parmeter
-        """
-        lineedit = QtGui.QLineEdit(self)
-        lineedit.setObjectName(name)
-        lineedit.setFixedWidth(100)
-        lineedit.setAlignment(QtCore.Qt.AlignRight)           
-        lineedit.setText(value)
-        lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, name))
-        return lineedit
-        
-    def create_color_chooser(self, name, value):
-        """ 
-        Creates a combo-box with some basic colors and connects its signal 
-        "currentIndexChanged" with the method "new_value" via the 
-        "callback_factory". The colors are presented in human readable names,
-        but are represented by RGB-hex-strings in the background
-        
-        Parameter:
-        name  -- the name of the parameter represented by the value of the box
-        value -- the current value of the parmeter
-        """
-        ccbox = QtGui.QComboBox(self)
-        ccbox.setObjectName(name)
-        ccbox.setFixedWidth(100)
-        ccbox.addItem("red", "#ff0000")
-        ccbox.addItem("blue", "#0000ff")
-        ccbox.addItem("green", "#008000")
-        ccbox.addItem("orange", "#ff6600")
-        ccbox.addItem("cyan", "#00ffff")
-        ccbox.addItem("magenta", "#ff00ff")
-        ccbox.addItem("purple", "#800080")
-        ccbox.addItem("black", "#000000")
-        ccbox.addItem("dark grey", "#666666")
-        ccbox.addItem("light grey", "#b3b3b3")
-        ccbox.addItem("white", "#ffffff")
-        ccbox.addItem("custom...", "#d1193b")
-        ind = ccbox.findData(value.lower())
-        if ind == -1:
-            ccbox.setCurrentIndex(ccbox.count()-1)
-        else:
-            ccbox.setCurrentIndex(ind)
-        ccbox.currentIndexChanged.connect(self.callback_factory(ccbox, self.section, name))
-        return ccbox
-
-    def callback_factory(self, input_widget, section, value):
-        return lambda: self.new_value(input_widget, section, value)
-
-    def add_to_layout(self, Label, LineEdit):
-        count = self.SectionLayout.rowCount()
-
-        self.SectionLayout.setWidget(count, QtGui.QFormLayout.LabelRole, Label)
-        self.SectionLayout.setWidget(count, QtGui.QFormLayout.FieldRole, LineEdit)
-
-    def remove_visible_items(self):
-        if len(self.stack_visible) != 0:
-            for i in xrange(0, len(self.stack_visible)):
-                # get element from stack which is a list
-                # with [QLineEdit,section,variable]
-                element = self.stack_visible.pop()
-                try:
-                    if len(element) != 0:
-                        item = element[0]
-                        item.deleteLater()
-                except Exception as error:
-                    print("Could not remove element")
-
-    def new_value(self, input_widget, section, variable):
-        """ 
-        Ensures that a changed parameter in the ui is written into the
-        configuration data. 
-        
-        Parameter:
-        input_widget -- the widget the value of which has been changed by the
-                        user
-        section      -- the configuration section the variable refers to
-        variable     -- the name of the parameter
-        """
-        
-        # read lineedit
-        #QtCore.pyqtRemoveInputHook()
-        #embed()
-    
-        if input_widget.metaObject().className() == "QLineEdit":
-            new_value = str(input_widget.text())
-        elif input_widget.metaObject().className() == "QComboBox":
-            new_value = str(input_widget.itemData(input_widget.currentIndex()))
-        else:
-            myLogger.debug_message("Unsupported widget type passed!")
-            return
-            
-        # write config file
-        myConfig.write(section, variable, new_value)
-        myLogger.debug_message("New value for " + str(variable) + ":" + new_value)
-
-
-class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        self.setupUi(self)
-        
-        self.latex_installed = True # where was this checked?
-        self.Layout = QtGui.QVBoxLayout(self.frame)
-        self.Canvas = Canvas(True, self.frame)
-        self.Layout.addWidget(self.Canvas)
-
-        # set forward and backward integration true
-        if myConfig.get_boolean("Trajectories", "traj_checkForwardByDefault"):
-            self.forwardCheckbox.setChecked(True)
-        if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
-            self.backwardCheckbox.setChecked(True)
-
-        self.xminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmin")))
-        self.xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
-        self.yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
-        self.ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
-        #~ self.myGraph.set_window_range(self.myGraph.plot_pp)
-
-class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
-    # TODO: Is this class really necessary?
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        self.setupUi(self)
-
-        self.latex_installed = True # where was this checked?
-        self.Layout = QtGui.QVBoxLayout(self.frame)
-        self.Canvas = Canvas(True, self.frame)
-        self.Layout.addWidget(self.Canvas)
-
-class SystemTabWidget(QtGui.QWidget, Ui_SystemTabWidget):
-    def __init__(self):
-        QtGui.QWidget.__init__(self)
-        self.setupUi(self)
-        
-        # Embed widgets: not working, but why?!
-        #~ self.ppWidget = ZoomWidget()
-        #~ self.ppLayout.addWidget(self.ppWidget)
-
-        #~ self.tminLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmin")))
-        #~ self.tmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmax")))
-        #~ self.xminLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmin")))
-        #~ self.xmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmax")))
-        #~ self.myGraph.set_window_range(self.myGraph.plot_x)
 
 class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
@@ -378,11 +71,10 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.mySettings = SettingsWidget()
         self.SettingsLayout.addWidget(self.mySettings)
 
-        #~ self.myGraph = Graph(parent=self, plot_pp=self.plotCanvas1,
-                             #~ plot_x=self.plotCanvas2, plot_y=self.plotCanvas3)
-
         self.fct_stack = []
         self.linearization_stack = []
+
+        self.systems = []
 
         self.xDotLabel.setText(u"\u1E8B(x,y) = ")
         self.yDotLabel.setText(u"\u1E8F(x,y) = ")
@@ -397,253 +89,204 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def init(self):
         """ This function gets called only after program start.
         """
-
         # load tmp file
-        self.load_tmp_system()
-            
-        #~ self.initializing()
+        try:
+            self.load_tmp_system()
+            self.disable_menu_items()
+        except:
+            pass
 
-    def initializing(self):
-        """ gets called after every submit call
-        """
+    def disable_menu_items(self):
+        # uncheck items
+        self.toggle_vectorfield_action.setChecked(False)
+        self.toggle_streamlines_action.setChecked(False)
+        self.toggle_equilibrium_action.setChecked(False)
+        self.toggle_nullclines_action.setChecked(False)
+        # shade out items:
+        self.toggle_vectorfield_action.setEnabled(False)
+        self.toggle_streamlines_action.setEnabled(False)
+        self.toggle_equilibrium_action.setEnabled(False)
+        self.toggle_nullclines_action.setEnabled(False)
+
+    def update_ui(self):
+        # unshade items
+        self.toggle_vectorfield_action.setEnabled(True)
+        self.toggle_streamlines_action.setEnabled(True)
+        self.toggle_equilibrium_action.setEnabled(True)
+        self.toggle_nullclines_action.setEnabled(True)
+
+        # check items
+        system = self.get_current_system()
+        if hasattr(system, "Phaseplane"):
+            if hasattr(system.Phaseplane, "VF"):
+                self.toggle_vectorfield_action.setChecked(system.Phaseplane.VF.tgl)
+            if hasattr(system.Phaseplane, "SL"):
+                self.toggle_streamlines_action.setChecked(system.Phaseplane.SL.tgl)
+            if hasattr(system.Phaseplane, "Equilibria"):
+                self.toggle_equilibrium_action.setChecked(system.Phaseplane.Equilibria.tgl)
+            if hasattr(system.Phaseplane, "Nullclines"):
+                self.toggle_nullclines_action.setChecked(system.Phaseplane.Nullclines.tgl)
+            # equation:
+            self.xDotLineEdit.setText(system.equation.x_dot_string)
+            self.yDotLineEdit.setText(system.equation.y_dot_string)
+
+    def initialize_ui(self):
+        # gets called after submitting a system (updae_ui() cannot be
+        # used since the new system tab is not visible yet
+        # values are taken from config file
         
-        #~ self.PP_xminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmin")))
-        #~ self.PP_xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
-        #~ self.PP_yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
-        #~ self.PP_ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
-        #~ self.myGraph.set_window_range(self.myGraph.plot_pp)
+        self.toggle_vectorfield_action.setChecked(myConfig.get_boolean("Vectorfield", "vf_onByDefault"))
+        self.toggle_streamlines_action.setChecked(myConfig.get_boolean("Streamlines", "stream_onByDefault"))
+        self.toggle_equilibrium_action.setChecked(False)
+        self.toggle_nullclines_action.setChecked(myConfig.get_boolean("Nullclines", "nc_onByDefault"))
+        
 
-        #~ self.X_tminLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmin")))
-        #~ self.X_tmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_tmax")))
-        #~ self.X_xminLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmin")))
-        #~ self.X_xmaxLineEdit.setText(str(myConfig.read("x-t-plot", "x_xmax")))
-        #~ self.myGraph.set_window_range(self.myGraph.plot_x)
-
-        #~ self.Y_tminLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmin")))
-        #~ self.Y_tmaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_tmax")))
-        #~ self.Y_yminLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymin")))
-        #~ self.Y_ymaxLineEdit.setText(str(myConfig.read("y-t-plot", "y_ymax")))
-        #~ self.myGraph.set_window_range(self.myGraph.plot_y)
-
-        #~ #self.myGraph.update()
-        #~ myNullclines.update()
-        #~ myVectorfield.update()
-        #~ myStreamlines.update()
-
-    def add_linearization_tab(self, equilibrium):
+    def new_linearized_system(self, nonlinear_system, jacobian, equilibrium):
+        pass
+    def new_linearized_system1(self, nonlinear_system, jacobian, equilibrium):
         # TODO: REFACTOR THIS FUNCTION!!!
+        self.nonlinear_system = nonlinear_system
+        eq0 = str(jacobian[0,0])+"*x + "+str(jacobian[0,1])+"*y"
+        eq1 = str(jacobian[1,0])+"*x + "+str(jacobian[1,1])+"*y"
+        equation = (eq0, eq1)
+        system = System(self, equation, linear=True)
+        self.systems.insert(0, system)
+
+        # TODO: window range should be equal to window range of phase plane
+
+        # TODO: make set_window_range-funtion reusable for this case
+        #~ xmin = float(self.PP_xminLineEdit.text())
+        #~ xmax = float(self.PP_xmaxLineEdit.text())
+        #~ ymin = float(self.PP_yminLineEdit.text())
+        #~ ymax = float(self.PP_ymaxLineEdit.text())
 
 
-        # if linearization has not been shown do so, otherwise ignore:
-        if equilibrium not in self.linearization_stack:
-            # TODO: This should actually be the same widget as
-            #       phaseplane allowing the same behavior (click
-            #       generates trajectories, etc.)
-            # Set up the user interface from Designer.
-            myWidget = Ui_Form()
-            contents = QtGui.QWidget(self.tabWidget)
-            myWidget.setupUi(contents)
+        xe = equilibrium[0]
+        ye = equilibrium[1]
+        x_dot_string = str(jacobian[0,0]) + "*(x-(" + str(xe) + ")) + (" + str(jacobian[0,1]) + ")*(y-(" + str(ye) + "))"
+        y_dot_string = str(jacobian[1,0]) + "*(x-(" + str(xe) + ")) + (" + str(jacobian[1,1]) + ")*(y-(" + str(ye) + "))"
 
-            # add content to linearization tab!
-            self.myLayout_Lin = QtGui.QVBoxLayout(myWidget.frame_lin)
-            self.plotCanvas_Lin = Canvas(self.latex_installed, myWidget.frame_lin)
-            self.myLayout_Lin.addWidget(self.plotCanvas_Lin)
+        #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
 
-            # window range should be equal to window range of phase plane
-            #limits = self.myGraph.get_limits(self.myGraph.plot_pp)
-            #print(limits)
-            #self.myGraph.set_window_range(self.plotCanvas_Lin)
-
-            # TODO make set_window_range-funtion reusable for this case
-            xmin = float(self.PP_xminLineEdit.text())
-            xmax = float(self.PP_xmaxLineEdit.text())
-            ymin = float(self.PP_yminLineEdit.text())
-            ymax = float(self.PP_ymaxLineEdit.text())
-
-            self.plotCanvas_Lin.axes.set_xlim(xmin, xmax)
-            self.plotCanvas_Lin.axes.set_ylim(ymin, ymax)
-
-            # window range init
-            section = "Phaseplane"
-            token = "pp_"
-            if myConfig.get_boolean(section, token + "showGrid"):
-                self.plotCanvas_Lin.axes.grid()
-
-            if myConfig.get_boolean(section, token + "showMinorTicks"):
-                self.plotCanvas_Lin.axes.minorticks_on()
-            else:
-                self.plotCanvas_Lin.axes.minorticks_off()
-
-            if not myConfig.get_boolean(section, token + "showXTicks"):
-                self.plotCanvas_Lin.axes.xaxis.set_ticks([])
-
-            if not myConfig.get_boolean(section, token + "showYTicks"):
-                self.plotCanvas_Lin.axes.yaxis.set_ticks([])
-
-            if myConfig.get_boolean(section, token + "showXLabel"):
-                pp_label_fontsize = 9 #myConfig.read(section, token + "labelFontSize")
-                xlabel = "$x$"
-                self.plotCanvas_Lin.axes.set_xlabel(xlabel, fontsize=pp_label_fontsize)
-
-            if myConfig.get_boolean(section, token + "showYLabel"):
-                pp_label_fontsize = 9 #myConfig.read(section, token + "labelFontSize")
-                ylabel = "$\\dot{x}$"
-                self.plotCanvas_Lin.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
-
-            if not myConfig.get_boolean(section, token + "showSpines"):
-                for spine in self.plotCanvas_Lin.axes.spines.itervalues():
-                    spine.set_visible(False)
-
-            #self.myGraph.plot_pp.mpl_connect('button_press_event', self.myGraph.onclick)
-
-            # plot linearized vectorfield
-            linearized_vectorfield = VectorfieldHandler()
-            linearized_vectorfield.register_graph(None, self.plotCanvas_Lin)
-
-            # create linearized system
-            linearized_system = System()
-
-            # set system properties
-            jac = myEquilibria.approx_ep_jacobian(equilibrium)
-
-            xe = equilibrium[0]
-            ye = equilibrium[1]
-            x_dot_string = str(jac[0,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[0,1]) + ")*(y-(" + str(ye) + "))"
-            y_dot_string = str(jac[1,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[1,1]) + ")*(y-(" + str(ye) + "))"
-
-            linearized_system.set_rhs(x_dot_string, y_dot_string)
-
-            # set system for vectorfield
-            linearized_vectorfield.set_system(linearized_system)
-
-            #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
-
-            # set title
-            lin_round = int(myConfig.read("Linearization", "lin_round_decimals")) # display rounded floats
-            A00 = str(round(jac[0,0],lin_round))
-            A01 = str(round(jac[0,1],lin_round))
-            A11 = str(round(jac[1,1],lin_round))
-            A10 = str(round(jac[1,0],lin_round))
-            if self.latex_installed == True:
-                title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + A00 + r' & ' + A01 + r'\\ ' + A10 + r' & ' + A11 + r' \end{array} \right)$'
-            else:
-                title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
+        # set title
+        lin_round = int(myConfig.read("Linearization", "lin_round_decimals")) # display rounded floats
+        A00 = str(round(jacobian[0,0],lin_round))
+        A01 = str(round(jacobian[0,1],lin_round))
+        A11 = str(round(jacobian[1,1],lin_round))
+        A10 = str(round(jacobian[1,0],lin_round))
+        if self.latex_installed == True:
+            title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + A00 + r' & ' + A01 + r'\\ ' + A10 + r' & ' + A11 + r' \end{array} \right)$'
+        else:
+            title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
 
 
-            # calculating eigenvalues and eigenvectors:
-            eigenvalues, eigenvectors = myEquilibria.get_eigenval_eigenvec(equilibrium)
-            myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
+        # calculating eigenvalues and eigenvectors:
+        eigenvalues, eigenvectors = system.Phaseplane.Equilibria.get_eigenval_eigenvec(equilibrium)
+        myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
 
-            # scaling
-            d1 = (xmax-xmin)/10
-            d2 = (ymax-ymin)/10
-            d_large = (xmax-xmin)*(ymax-ymin)
-            
-            EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
-            EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
-            EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
+        # scaling
+        d1 = (xmax-xmin)/10
+        d2 = (ymax-ymin)/10
+        d_large = (xmax-xmin)*(ymax-ymin)
+        
+        EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
+        EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
+        EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
 
-            EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
-            EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
-            EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
-            
-            # plot eigenvectors:
-            color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
-            color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
+        EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
+        EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
+        EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
+        
+        # plot eigenvectors:
+        color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
+        color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
 
-            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV0_scaled[0], d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-            
-            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-                self.plotCanvas_Lin.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+        if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV0_scaled[0], d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+        if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+        
+        if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            system.Phaseplane.Plot.canvasn.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+        if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
 
+        # characterize EP:
+        # stable focus:     SFOC
+        # unstable focus:   UFOC
+        # focus:            FOC
+        # stable node:      SNOD
+        # unstable node:    UNOD
+        # saddle:           SAD
 
-            # characterize EP:
-            # stable focus:     SFOC
-            # unstable focus:   UFOC
-            # focus:            FOC
-            # stable node:      SNOD
-            # unstable node:    UNOD
-            # saddle:           SAD
+        determinant = jacobian[0,0]*jacobian[1,1] - jacobian[1,0]*jacobian[0,1]
+        trace = jacobian[0,0] + jacobian[1,1]
 
-            determinant = jac[0,0]*jac[1,1] - jac[1,0]*jac[0,1]
-            trace = jac[0,0] + jac[1,1]
+        ep_character = ""
 
-            ep_character = ""
+        if trace==0 and determinant==0:
+            ep_character = "Unclassified"
 
-            if trace==0 and determinant==0:
-                ep_character = "Unclassified"
+        elif determinant < 0:
+            ep_character = "Saddle"
 
-            elif determinant < 0:
-                ep_character = "Saddle"
+        elif (determinant > 0) and (determinant < ((trace**2)/4)):
+            if trace < 0:
+                ep_character = "Nodal Sink"
+            elif trace > 0:
+                ep_character = "Nodal Source"
 
-            elif (determinant > 0) and (determinant < ((trace**2)/4)):
-                if trace < 0:
-                    ep_character = "Nodal Sink"
-                elif trace > 0:
-                    ep_character = "Nodal Source"
+        elif determinant > ((trace**2)/4):
+            if trace == 0:
+                ep_character = "Center"
+            elif trace < 0:
+                ep_character = "Spiral Sink"
+            elif trace > 0:
+                ep_character = "Spiral Source"
+        elif determinant == ((trace**2)/4):
+            if trace < 0:
+                ep_character = "Sink"
+            elif trace > 0:
+                ep_character = "Source"
 
-            elif determinant > ((trace**2)/4):
-                if trace == 0:
-                    ep_character = "Center"
-                elif trace < 0:
-                    ep_character = "Spiral Sink"
-                elif trace > 0:
-                    ep_character = "Spiral Source"
-            elif determinant == ((trace**2)/4):
-                if trace < 0:
-                    ep_character = "Sink"
-                elif trace > 0:
-                    ep_character = "Source"
+        if myConfig.get_boolean(section, token + "showTitle"):
+            eq_x_rounded = str(round(equilibrium[0],lin_round))
+            eq_y_rounded = str(round(equilibrium[1],lin_round))
+            title1 = ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
+            #~ title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
+            #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
+            system.Phaseplane.Plot.canvas.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
+        else:
+            system.Phaseplane.Plot.canvas.fig.subplots_adjust(top=0.99)
 
-            if myConfig.get_boolean(section, token + "showTitle"):
-                eq_x_rounded = str(round(equilibrium[0],lin_round))
-                eq_y_rounded = str(round(equilibrium[1],lin_round))
-                title1 = ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
-                #~ title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
-                #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
-                self.plotCanvas_Lin.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
-            else:
-                self.plotCanvas_Lin.fig.subplots_adjust(top=0.99)
+        # mark EP in linearized tab
+        system.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1],'ro')
 
-            # mark EP in linearized tab
-            self.plotCanvas_Lin.axes.plot(equilibrium[0], equilibrium[1],'ro')
+        # add annotation in phaseplane
+        label = str(ep_character)
 
-            # add annotation in phaseplane
-            label = str(ep_character)
+        system.Phaseplane.Plot.canvas.text(equilibrium[0], equilibrium[1], label, fontsize=10)
 
-            self.plotCanvas1.axes.text(equilibrium[0], equilibrium[1], label, fontsize=10)
+        system.Phaseplane.Plot.canvas.draw()
 
-            self.plotCanvas1.draw()
+        # plot vectorfield
+        linearized_vectorfield.update()
 
-            # plot vectorfield
-            linearized_vectorfield.update()
+        #~ title = str(ep_character)
+        #~ self.index = self.tabWidget.addTab(contents, title)
 
-            self.plotCanvas_Lin.draw()
+        #~ self.linearization_stack.append(equilibrium)
 
-            title = str(ep_character)
-            self.index = self.tabWidget.addTab(contents, title)
-
-            self.linearization_stack.append(equilibrium)
-
-            #QtCore.pyqtRemoveInputHook()
-            #embed()
+        #QtCore.pyqtRemoveInputHook()
+        #embed()
 
     def close_current_tab(self):
-        #~ from PyQt4 import QtCore
-        #~ from IPython import embed
-        #~ QtCore.pyqtRemoveInputHook()
-        #~ embed()
         index = self.tabWidget.currentIndex()
         if index != self.tabWidget.count()-1:
             self.tabWidget.removeTab(index)
-        # TODO: Delete Container with Data
+            self.systems.pop(index)
 
     def close_all_tabs(self):
         # TODO: something is wrong here: settings tab gets removed
@@ -654,126 +297,104 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def initialize_new_system_tab(self):
         # Create new system tab
-        #~ from PyQt4 import QtCore
-        #~ from IPython import embed
-        #~ QtCore.pyqtRemoveInputHook()
-        #~ embed()
         self.mySystemTab = SystemTabWidget()
         contents = QtGui.QWidget(self.tabWidget)
         self.mySystemTab.setupUi(contents)
-        #~ from PyQt4 import QtCore
-        #~ from IPython import embed
-        #~ QtCore.pyqtRemoveInputHook()
-        #~ embed()
+
         number = self.tabWidget.count()
         self.tabWidget.insertTab(0, contents, "System %s" % (str(number)))
         self.tabWidget.setCurrentIndex(0)
 
         # TODO: check why this can't be done within the SystemTabWidget
         #       class!
-        self.ppWidget = PhaseplaneWidget()
+        self.ppWidget = PhaseplaneWidget(self)
         self.mySystemTab.ppLayout.addWidget(self.ppWidget)
         self.xWidget = ZoomWidgetSimple()
         self.mySystemTab.xLayout.addWidget(self.xWidget)
         self.yWidget = ZoomWidgetSimple()
         self.mySystemTab.yLayout.addWidget(self.yWidget)
 
-    def testfunction(self, equilibrium):
-        print("equilibrium: "+str(equilibrium))
-
-    def validate_expression(self, expression):
-        # TODO: validation test expression
-        pass
+    def new_system(self, equation):
+        system = System(self, equation)
+        self.systems.insert(0, system)
 
     def submit(self):
         """ This function gets called after clicking on the submit button
         """
-        self.initialize_new_system_tab()
         try:
             xtxt = str(self.xDotLineEdit.text())
             ytxt = str(self.yDotLineEdit.text())
-
         except UnicodeEncodeError as exc:
             myLogger.warn_message("UnicodeEncodeError! Please check input.")
             myLogger.debug_message(str(exc))
-
         else:
             cond1 = str(self.xDotLineEdit.text()) != ""
             cond2 = str(self.yDotLineEdit.text()) != ""
 
             if cond1 and cond2:
-                #~ self.initialize_new_system_tab()
-                # set right hand side, print rhs to logfield, solve,
-                # then plot vector field
-
-                # initialize system
-                mySystem.__init__()
-
-                # set rhs
                 x_string = str(self.xDotLineEdit.text())
                 y_string = str(self.yDotLineEdit.text())
-                mySystem.set_rhs(x_string, y_string)
 
-                try:
-                    # write to tmp file:
-                    self.save_system('library/tmp.ppf')
+                equation = (x_string, y_string)
+                system = System(self, equation)
+                self.systems.insert(0, system)
 
-                    # clear figure, if there is any
-                    self.myGraph.clear()
+                myLogger.message("------ new system created ------")
+                myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
+                myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
 
-                    # delete linearization tabs (index 3 to n)
-                    if len(self.linearization_stack) > 0:
-                        for i in xrange(0, len(self.linearization_stack)):
-                            index = 3 + len(self.linearization_stack) - i
-                            self.tabWidget.removeTab(index)
-                        #reset stack
-                        self.linearization_stack = []
-                        myLogger.debug_message("All linearization tabs removed.")
-
-
-                    self.initializing()
-
-                    myLogger.message("------ new system created ------")
-                    myLogger.message("    x' = " + str(mySystem.what_is_my_system()[0]))
-                    myLogger.message("    y' = " + str(mySystem.what_is_my_system()[1]) + "\n", )
-
-                except Exception as error:
-                    handle_exception(error)
             else:
-                myLogger.error_message("No system entered")
+                myLogger.error_message("Please check system!")
+
 
     def load_system(self, file_name):
         """ load previous system (from tmp file) """
 
         with open(file_name, 'r') as sysfile:
-            self.xDotLineEdit.setText(sysfile.readline().strip())
-            self.yDotLineEdit.setText(sysfile.readline().strip())
+    # TODO: This does not work, but how would i find a way to store a
+    #       system?
+            #~ pps_file = pcl.loads(sysfile.read())
+            #~ system = System(self)
+            #~ system.unpickle(pps_file)
+            #~ self.systems.insert(0, system)
+            #~ self.xDotLineEdit.setText(sysfile.readline().strip())
+            #~ self.yDotLineEdit.setText(sysfile.readline().strip())
+            xdot_string = str(sysfile.readline())
+            ydot_string = str(sysfile.readline())
+            self.xDotLineEdit.setText(xdot_string.strip())
+            self.yDotLineEdit.setText(ydot_string.strip())
             myLogger.message(file_name + " loaded")
 
     def load_tmp_system(self):
         self.load_system('library/tmp.ppf')
 
     def load_system_from_file(self):
-        """ this function will load a system from a file """
-
         file_name = QtGui.QFileDialog.getOpenFileName(self,
-                                                      'Open PyPlane File', '',
-                                                      'PyPlane File (*.ppf)')
+                                                      'Open pyplane file', '',
+                                                      'pyplane file (*.ppf)')
         if len(file_name) > 0:
             self.load_system(file_name)
 
+        self.submit()
+        self.update_ui()
+
     def save_file(self):
+        if len(self.systems) > 0:
+            index = self.tabWidget.currentIndex()
+            system = self.systems[index]
+            file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
+                                                                           'Save pyplane file', '',
+                                                                           'pyplane file (*.ppf)')
+            #~ sys_pickleds = system.pickle(file_name)
+            #~ system.equation.what_is_my_system()
+            self.save_system(file_name, system.equation.what_is_my_system())
+        else:
+            myLogger.error_message("There is no system to save!")
 
-        file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                       'Save PyPlane File', '',
-                                                                       'PyPlane File (*.ppf)')
-        self.save_system(file_name)
 
-    def save_system(self, file_name):
-
-        x_dot_string = str(self.xDotLineEdit.text())
-        y_dot_string = str(self.yDotLineEdit.text())
-
+    def save_system(self, file_name, system):
+        x_dot_string = str(system[0])
+        y_dot_string = str(system[1])
         f_ending = '.ppf'
         f_len = len(file_name)
 
@@ -784,7 +405,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             with open(file_name + f_ending, 'w') as sysfile:
                 sysfile.write(x_dot_string + "\n" + y_dot_string)
 
-        myLogger.message("system saved as " + file_name)
+        myLogger.message("System saved as " + file_name)
 
     def export_as(self):
         """ export dialog for pyplane plot

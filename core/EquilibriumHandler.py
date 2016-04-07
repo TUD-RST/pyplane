@@ -22,34 +22,27 @@ import ast
 import numpy as np
 from scipy import linalg as LA
 from core.Logging import myLogger
-#from core.configdata import myConfig
-from core.System import mySystem
 from core.Canvas import Canvas
 
 
 class EquilibriumHandler(object):
-    def __init__(self):
-        self.eqp_stack = {}
-        self.eqp_toggle = False
+    def __init__(self, parent):
+        self.myWidget = parent
+        self.stack = {}
+        self.tgl = False
         self.jacobians = {}
 
-    def register_graph(self, plot_pp):
-        assert isinstance(plot_pp, Canvas)
-        self.plot_pp = plot_pp
-
     def toggle(self):
-        """ enables equilibrium point search mode
-        """
-        self.eqp_toggle = not self.eqp_toggle
+        self.tgl = not self.tgl
 
     def update_equilibria(self):
-        self.plot_pp.draw()
+        self.myWidget.Plot.canvas.draw()
 
     def clear_stack(self):
-        self.eqp_stack = {}
+        self.stack = {}
 
     def list_equilibria(self):
-        return self.eqp_stack.keys()
+        return self.stack.keys()
 
     def approx_ep_jacobian(self, equilibrium):
         """ this function returns the jacobian for an equilibrium with a slight numerical error.
@@ -61,6 +54,9 @@ class EquilibriumHandler(object):
             return jac
         else:
             return False
+
+    def get_linearized_equation(self, equilibrium):
+        pass
 
     def characterize_equilibrium(self, equilibrium):
         self.get_eigenval_eigenvec(equilibrium)
@@ -74,12 +70,12 @@ class EquilibriumHandler(object):
     def plot_equilibrium(self, z_equilibrium, jacobian):
         """ this function plots an equilibrium point
         """
-        self.eq_plot = self.plot_pp.axes.plot(z_equilibrium[0],
+        self.eq_plot = self.myWidget.Plot.canvas.axes.plot(z_equilibrium[0],
                                               z_equilibrium[1],
                                               'ro',
                                               picker=5)
 
-        self.eqp_stack[str(z_equilibrium)] = self.eq_plot
+        self.stack[str(z_equilibrium)] = self.eq_plot
         # TODO: actually this function was implemented in graph class
         self.update_equilibria()
 
@@ -97,7 +93,7 @@ class EquilibriumHandler(object):
         """
         # TODO: this try-loop is too long!
         try:
-            if self.eqp_toggle:
+            if self.tgl:
                 # newton's method to find equilibrium points
                 iterlimit = 50
                 iter = 0
@@ -105,7 +101,7 @@ class EquilibriumHandler(object):
 
                 z_next = z_init
 
-                functionf = mySystem.rhs(z_init)
+                functionf = self.myWidget.mySystem.equation.rhs(z_init)
 
                 # allow for large/small solutions
                 errorlim = np.linalg.norm(functionf, np.inf) * 0.000001
@@ -119,7 +115,7 @@ class EquilibriumHandler(object):
                     for i in range(0, 2):
                         sav = z_next[i]
                         z_next[i] = z_next[i] + h
-                        functionfhj = mySystem.rhs(z_next)
+                        functionfhj = self.myWidget.mySystem.equation.rhs(z_next)
                         jac = (functionfhj - functionf) / h
 
                         jacobian[0, i] = jac[0]
@@ -127,7 +123,7 @@ class EquilibriumHandler(object):
 
                         z_next[i] = sav
                     z_next = z_next - np.linalg.solve(jacobian, functionf)
-                    functionf = mySystem.rhs(z_next)
+                    functionf = self.myWidget.mySystem.equation.rhs(z_next)
 
                 if iter > (iterlimit - 1):
                     fLag = [0, 0]
@@ -138,7 +134,7 @@ class EquilibriumHandler(object):
                     for i in range(0, 2):
                         sav = z_next[i]
                         z_next[i] = z_next[i] + h
-                        functionfhj = mySystem.rhs(z_next)
+                        functionfhj = self.myWidget.mySystem.equation.rhs(z_next)
                         jac = (functionfhj - functionf) / h
 
                         jacobian[0, i] = jac[0]
@@ -157,7 +153,7 @@ class EquilibriumHandler(object):
                 # assumed that this equilibrium point is already calculated
                 epsilon = 1e-4
 
-                if len(self.eqp_stack.keys()) == 0:
+                if len(self.stack.keys()) == 0:
                     self.plot_equilibrium(z_next, jacobian)
                     self.jacobians[str(z_next)] = jacobian
                     return z_next
@@ -204,7 +200,7 @@ class EquilibriumHandler(object):
         epsilon = 1e-4
 
         # for ep in true_eq_values:
-        for ep in self.eqp_stack.keys():
+        for ep in self.stack.keys():
             ep = ast.literal_eval(ep)
             x_val = equilibrium[0] - ep[0]
             y_val = equilibrium[1] - ep[1]
@@ -227,7 +223,7 @@ class EquilibriumHandler(object):
         # check every single key if its distance is less than epsilon, if yes return true value
         epsilon = 1e-4
 
-        for ep in self.eqp_stack.keys():
+        for ep in self.stack.keys():
             ep_num = ast.literal_eval(ep)
             x_val = equilibrium[0] - ep_num[0]
             y_val = equilibrium[1] - ep_num[1]
@@ -249,6 +245,3 @@ class EquilibriumHandler(object):
             return False
         else:
             return True
-
-# prepare for import
-myEquilibria = EquilibriumHandler()

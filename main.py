@@ -31,11 +31,6 @@ from core.ConfigHandler import myConfig
 from gui.App_PyPlane import PyplaneMainWindow
 from gui.Dlg_PyPlane_about import AboutDialog
 from core.Logging import myLogger
-from core.EquilibriumHandler import myEquilibria
-from core.NullclineHandler import myNullclines
-from core.TrajectoryHandler import myTrajectories
-from core.StreamlineHandler import myStreamlines
-from core.VectorfieldHandler import myVectorfield
 
 # This import is required by PyInstaller in order to produce a
 # correctly working executable
@@ -52,8 +47,8 @@ class MainApp(PyplaneMainWindow):
         settings GUI logic (listview elements, variable description, etc)
     """
     
-    __PYPLANE_VERSION = "1.0"
-    __PYPLANE_DATE = "31.07.2015"
+    __PYPLANE_VERSION = "1.1"
+    __PYPLANE_DATE = "07.04.2016"
 
     def __init__(self):
         # superclass constructor
@@ -66,34 +61,12 @@ class MainApp(PyplaneMainWindow):
         
         #~ # connect buttons ------------------------------------------------------
         #~ # connect buttons: system
-        #~ self.clearButton.clicked.connect(myTrajectories.remove_all)
+        self.clearButton.clicked.connect(self.clear_trajectories)
         self.submitButton.clicked.connect(self.submit)
 
-        #~ # connect buttons: phase plane
-        #~ self.PP_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_pp))
-        #~ self.PP_ZoomButton.clicked.connect(self.myGraph.plot_pp.toggle_zoom_mode)
-        #~ self.PP_ZoomButton.setCheckable(True)
-        #~ self.PP_RefreshButton.clicked.connect(self.myGraph.refresh)
-        #~ self.PP_CreateTrajectoryButton.clicked.connect(myTrajectories.create_trajectory)
-
-        #~ # connect buttons: x(t)
-        #~ self.X_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_x))
-        #~ self.X_ZoomButton.clicked.connect(self.myGraph.plot_x.toggle_zoom_mode)
-        #~ self.X_ZoomButton.setCheckable(True)
-        #~ # self.X_ZoomButton.clicked.connect(self.plotCanvas2.zoomMode)
-
-        #~ # connect buttons: y(t)
-        #~ self.Y_SetButton.clicked.connect(lambda: self.myGraph.set_window_range(self.myGraph.plot_y))
-        #~ self.Y_ZoomButton.clicked.connect(self.myGraph.plot_y.toggle_zoom_mode)
-        #~ self.Y_ZoomButton.setCheckable(True)
-
         #~ # connect buttons: additional function
-        #~ self.FctPlotButton.clicked.connect(self.add_function_to_plot)
-        #~ self.FctClearButton.clicked.connect(self.remove_function_from_plot)
-
-        #~ # connect mouse events (left mouse button click) in phase plane
-        #~ self.myGraph.plot_pp.mpl_connect('button_press_event', self.myGraph.onclick)
-        #~ self.myGraph.plot_pp.mpl_connect('pick_event', self.myGraph.onpick)
+        self.FctPlotButton.clicked.connect(self.add_function)
+        self.FctClearButton.clicked.connect(self.remove_functions)
 
         # file menu ------------------------------------------------------
         # file
@@ -119,53 +92,54 @@ class MainApp(PyplaneMainWindow):
 
         # terminal checkbox
         self.toggle_terminal_action = QtGui.QAction('Terminal', self.show_menu)
-        #~ from PyQt4 import QtCore
-        #~ from IPython import embed
-        #~ QtCore.pyqtRemoveInputHook()
-        #~ embed()
         self.toggle_terminal_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_T)
         self.toggle_terminal_action.setCheckable(True)
-        #self.toggle_nullclines_action.setShortcuts(
         if myConfig.get_boolean("Logging", "showTerminal"):
             self.toggle_terminal_action.setChecked(True)
-        # noinspection PyUnresolvedReferences
         self.toggle_terminal_action.triggered.connect(self.toggle_terminal)
         self.show_menu.addAction(self.toggle_terminal_action)
 
         # vector field checkbox
         self.toggle_vectorfield_action = QtGui.QAction('&Plot Vector Field', self.show_menu)
+        self.toggle_vectorfield_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_V)
         self.toggle_vectorfield_action.setCheckable(True)
-        if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
-            self.toggle_vectorfield_action.setChecked(True)
-        # noinspection PyUnresolvedReferences
+        #~ if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
+            #~ self.toggle_vectorfield_action.setChecked(True)
         self.toggle_vectorfield_action.triggered.connect(self.vf_helper_function)
         self.show_menu.addAction(self.toggle_vectorfield_action)
 
         # streamlines checkbox
         self.toggle_streamlines_action = QtGui.QAction('&Plot Streamlines', self.show_menu)
         self.toggle_streamlines_action.setCheckable(True)
-        if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
-            self.toggle_streamlines_action.setChecked(True)
+        #~ if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
+            #~ self.toggle_streamlines_action.setChecked(True)
         self.toggle_streamlines_action.triggered.connect(self.sl_helper_function)
         self.show_menu.addAction(self.toggle_streamlines_action)
 
         # equilibrium checkbox
         self.toggle_equilibrium_action = QtGui.QAction('&Find an Equilibrium Point / Linearize', self.show_menu)
         self.toggle_equilibrium_action.setCheckable(True)
-        self.toggle_equilibrium_action.setChecked(False)
-        self.toggle_equilibrium_action.triggered.connect(myEquilibria.toggle)
+        #~ self.toggle_equilibrium_action.setChecked(False)
+        self.toggle_equilibrium_action.triggered.connect(self.eq_helper_function)
         self.show_menu.addAction(self.toggle_equilibrium_action)
         #self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
 
+
         # nullclines checkbox
         self.toggle_nullclines_action = QtGui.QAction('Nullclines', self.show_menu)
+        self.toggle_nullclines_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_N)
         self.toggle_nullclines_action.setCheckable(True)
-        if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
-            self.toggle_nullclines_action.setChecked(True)
-        self.toggle_nullclines_action.triggered.connect(myNullclines.toggle)
+        # if system exists: read toggle-value
+        # if not: read from config
+        # TODO: new systems tab chosen -> check/uncheck toggle!
+        #~ if self.systems == []:
+            # read current systems tab:        
+        #~ if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
+            #~ self.toggle_nullclines_action.setChecked(True)
+        self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
         self.show_menu.addAction(self.toggle_nullclines_action)
 
-        self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
+        #~ self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
 
         # help
         self.help_menu = QtGui.QMenu('&Help', self)
@@ -178,22 +152,59 @@ class MainApp(PyplaneMainWindow):
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
-        myLogger.initialize()
+        myLogger.initialize()      
 
-    # this helper function untoggles the vector field checkbox
+    def clear_trajectories(self):
+        system = self.get_current_system()
+        if system != None:
+            system.Trajectories.remove_all()
+
+    def add_function(self):
+        system = self.get_current_system()
+        if system != None:
+            system.Functions.add()
+
+    def remove_functions(self):
+        system = self.get_current_system()
+        if system != None:
+            system.Functions.remove_all()
+
     def vf_helper_function(self):
-        self.myGraph.toggle_vectorfield()
-        self.helper_function()
-
-        # this helper function untoggles the streamline checkbox
+        system = self.get_current_system()
+        if system != None:
+            if system.Phaseplane.SL.tgl and not system.Phaseplane.VF.tgl:
+                system.Phaseplane.SL.toggle()
+            system.Phaseplane.VF.toggle()
+            self.update_ui()
 
     def sl_helper_function(self):
-        self.myGraph.toggle_streamlines()
-        self.helper_function()
+        system = self.get_current_system()
+        if system != None:
+            if system.Phaseplane.VF.tgl and not system.Phaseplane.SL.tgl:
+                system.Phaseplane.VF.toggle()
+            system.Phaseplane.SL.toggle()
+            self.update_ui()
 
-    def helper_function(self):
-        self.toggle_vectorfield_action.setChecked(myVectorfield.tgl)
-        self.toggle_streamlines_action.setChecked(myStreamlines.tgl)
+    def eq_helper_function(self):
+        system = self.get_current_system()
+        if system != None:
+            system.Phaseplane.Equilibria.toggle()
+            self.update_ui()
+
+    def toggle_nullclines(self):
+        system = self.get_current_system()
+        if system != None:
+            system.Phaseplane.Nullclines.toggle()
+        self.update_ui()
+
+    def get_current_system(self):
+        index = self.tabWidget.currentIndex()
+        if (len(self.systems) > 0) and (index != len(self.systems)):
+            system = self.systems[index]
+            return system
+        else:
+            myLogger.debug_message("No system chosen.")
+            return None
 
     def toggle_terminal(self):
         self.terminal_toggle = not self.terminal_toggle
@@ -206,27 +217,10 @@ class MainApp(PyplaneMainWindow):
             self.logField.setFixedHeight(100)
 
     def file_quit(self):
-        # quit pyplane
         self.close()
 
     def about(self):
         AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
-        
-#        QtGui.QMessageBox.about(self, "About", (
-#                                "\n"
-#                                "    PyPlane 0.1.7\n"
-#                                "\n"
-#                                "    Copyright (C) 2013-2014\n"
-#                                "    by Klemens Fritzsche, Carsten Knoll\n"
-#                                "\n"
-#                                "    Dresden University of Technology\n"
-#                                "    Institute of Control Theory\n"
-#                                "\n"
-#                                "    This code is free software, licensed under the terms of the\n"
-#                                "    GNU General Public License, version 3\n"
-#                                "    <http://www.gnu.org/license/>.\n"
-#                                "\n")
-#        )
 
 app = QtGui.QApplication(sys.argv)
 main = MainApp()
