@@ -170,8 +170,10 @@ class PhasePlot(Plot):
                 if event1 and event2 and button:
                     equilibrium_point = self.myWidget.Equilibria.find_equilibrium([event.xdata, event.ydata])
                     if equilibrium_point is not None:
-                        jacobian = self.myWidget.Equilibria.approx_ep_jacobian(equilibrium_point)
-                        self.myWidget.mySystem.myPyplane.new_linearized_system(self.myWidget.mySystem, jacobian, equilibrium_point)
+                        # is this supposed to be here?
+                        pass
+                        #~ jacobian = self.myWidget.Equilibria.approx_ep_jacobian(equilibrium_point)
+                        #~ self.myWidget.mySystem.myPyplane.new_linearized_system(self.myWidget.mySystem, jacobian, equilibrium_point)
         else:
             myLogger.debug_message("in zoom mode")
 

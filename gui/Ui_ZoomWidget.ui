@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>477</height>
+    <width>795</width>
+    <height>587</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -277,6 +277,52 @@
       <widget class="QPushButton" name="CreateTrajectoryButton">
        <property name="text">
         <string>Create</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="linSpace">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="linLabel">
+       <property name="text">
+        <string>Linearization</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="linBox">
+       <property name="maximumSize">
+        <size>
+         <width>110</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="linButton">
+       <property name="maximumSize">
+        <size>
+         <width>110</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Linearize</string>
        </property>
       </widget>
      </item>

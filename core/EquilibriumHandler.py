@@ -23,14 +23,27 @@ import numpy as np
 from scipy import linalg as LA
 from core.Logging import myLogger
 from core.Canvas import Canvas
+from core.Container import Container
 
 
 class EquilibriumHandler(object):
     def __init__(self, parent):
         self.myWidget = parent
-        self.stack = {}
         self.tgl = False
+        # this should be an attribute of the elements in self.stack
         self.jacobians = {}
+        self.stack = []
+
+        # counter for unique identifiers
+        self.cnt_unclassified = 0
+        self.cnt_saddle = 0
+        self.cnt_nodalsink = 0
+        self.cnt_nodalsource = 0
+        self.cnt_center = 0
+        self.cnt_spiralsink = 0
+        self.cnt_spiralsource = 0
+        self.cnt_sink = 0
+        self.cnt_source = 0
 
     def toggle(self):
         self.tgl = not self.tgl
@@ -39,10 +52,25 @@ class EquilibriumHandler(object):
         self.myWidget.Plot.canvas.draw()
 
     def clear_stack(self):
-        self.stack = {}
+        self.stack = []
 
     def list_equilibria(self):
-        return self.stack.keys()
+        eq_list = []
+        for i in xrange(len(self.stack)):
+            eq_list.append(self.stack[i].coordinates)
+        return eq_list
+
+    def list_characterized_equilibria(self):
+        character_list = []
+        for i in xrange(len(self.stack)):
+            character_list.append(self.stack[i].character)
+        return character_list
+
+    def get_equilibrium_by_character_identifier(self, character_identifier):
+        for i in xrange(len(self.stack)):
+            if self.stack[i].character == character_identifier:
+                return self.stack[i]
+        return None
 
     def approx_ep_jacobian(self, equilibrium):
         """ this function returns the jacobian for an equilibrium with a slight numerical error.
@@ -53,13 +81,53 @@ class EquilibriumHandler(object):
             jac = self.jacobian(true_equilibrium)
             return jac
         else:
-            return False
+            return None
 
     def get_linearized_equation(self, equilibrium):
         pass
 
-    def characterize_equilibrium(self, equilibrium):
-        self.get_eigenval_eigenvec(equilibrium)
+    def characterize_equilibrium(self, jacobian):
+        # NOTE: jacobian is evaluated at a specific equilibrium point
+        determinant = jacobian[0,0]*jacobian[1,1] - jacobian[1,0]*jacobian[0,1]
+        trace = jacobian[0,0] + jacobian[1,1]
+
+        ep_character = ""
+
+        if trace==0 and determinant==0:
+            ep_character = "Unclassified " + str(self.cnt_unclassified) # should not happen
+            self.cnt_unclassified = self.cnt_unclassified + 1
+
+        elif determinant < 0:
+            ep_character = "Saddle " + str(self.cnt_saddle) 
+            self.cnt_saddle = self.cnt_saddle + 1
+
+        elif (determinant > 0) and (determinant < ((trace**2)/4)):
+            if trace < 0:
+                ep_character = "Nodal Sink " + str(self.cnt_nodalsink) 
+                self.cnt_nodalsink = self.cnt_nodalsink + 1
+            elif trace > 0:
+                ep_character = "Nodal Source " + str(self.cnt_nodalsource) 
+                self.cnt_nodalsource = self.cnt_nodalsource + 1
+
+        elif determinant > ((trace**2)/4):
+            if trace == 0:
+                ep_character = "Center " + str(self.cnt_center) 
+                self.cnt_center = self.cnt_center + 1
+            elif trace < 0:
+                ep_character = "Spiral Sink " + str(self.cnt_spiralsink) 
+                self.cnt_spiralsink = self.cnt_spiralsink + 1
+            elif trace > 0:
+                ep_character = "Spiral Source " + str(self.cnt_spiralsource) 
+                self.cnt_spiralsource = self.cnt_spiralsource + 1
+        elif determinant == ((trace**2)/4):
+            if trace < 0:
+                ep_character = "Sink " + str(self.cnt_sink) 
+                self.cnt_sink = self.cnt_sink + 1
+            elif trace > 0:
+                ep_character = "Source " + str(self.cnt_source) 
+                self.cnt_source = self.cnt_source + 1
+
+        return ep_character
 
     def get_eigenval_eigenvec(self, equilibrium):
         # eigenvalues, eigenvectors
@@ -75,18 +143,33 @@ class EquilibriumHandler(object):
                                               'ro',
                                               picker=5)
 
-        self.stack[str(z_equilibrium)] = self.eq_plot
-        # TODO: actually this function was implemented in graph class
+        #~ self.stack[str(z_equilibrium)] = self.eq_plot
+        equilibrium_point = Container()
+        equilibrium_point.coordinates = z_equilibrium
+        equilibrium_point.plot = self.eq_plot
+        equilibrium_point.character = self.characterize_equilibrium(jacobian)
+        self.stack.append(equilibrium_point)
+
+        # label equilibrium point
+        self.myWidget.Plot.canvas.axes.text(z_equilibrium[0], z_equilibrium[1], equilibrium_point.character, fontsize=10)
+
         self.update_equilibria()
+
+        # TODO: this call probably move somewhere else:
+        if len(self.stack) > 0: self.myWidget.show_linearization_objects()
 
         myLogger.message("Equilibrium Point found at: " + str(z_equilibrium))
         myLogger.message("jacobian:\n" + str(jacobian))
 
     def jacobian(self, equilibrium):
-        if equilibrium in self.jacobians.keys():
-            return self.jacobians[equilibrium]
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        if str(equilibrium) in self.jacobians.keys():
+            return self.jacobians[str(equilibrium)]
         else:
-            return False
+            return None
 
     def find_equilibrium(self, z_init):
         """ hopf2.ppf has problems with this algorithms -> TODO: debug!!!
@@ -153,7 +236,7 @@ class EquilibriumHandler(object):
                 # assumed that this equilibrium point is already calculated
                 epsilon = 1e-4
 
-                if len(self.stack.keys()) == 0:
+                if len(self.stack) == 0:
                     self.plot_equilibrium(z_next, jacobian)
                     self.jacobians[str(z_next)] = jacobian
                     return z_next
@@ -187,7 +270,6 @@ class EquilibriumHandler(object):
                         #     self.plot_equilibrium(z_next, jacobian)
                         #     # add to jacobians
                         #     self.jacobians[str(z_next)] = jacobian
-
         except:
             myLogger.error_message("Something strange happened while calculating the equilibrium")
 
@@ -196,12 +278,13 @@ class EquilibriumHandler(object):
             and False if it wasn't calculated. due to numerical errors two equilibrium points are
             understood as identical if the distance between these points is less than epsilon
         """
+        # equilibrium is of type list [xval, yval]
         d_norm = []  # list with distance to equ. pts
         epsilon = 1e-4
 
         # for ep in true_eq_values:
-        for ep in self.stack.keys():
-            ep = ast.literal_eval(ep)
+        for ep in self.list_equilibria():
+            #~ ep = ast.literal_eval(ep)
             x_val = equilibrium[0] - ep[0]
             y_val = equilibrium[1] - ep[1]
 
@@ -220,11 +303,13 @@ class EquilibriumHandler(object):
             function returns the already calculated equilibrium. that is especially helpful when asking
             for its jacobian.
         """
+        # equilibrium is of type list [xval, yval]
         # check every single key if its distance is less than epsilon, if yes return true value
         epsilon = 1e-4
 
-        for ep in self.stack.keys():
-            ep_num = ast.literal_eval(ep)
+        for ep in self.list_equilibria():
+            ep_num = ep
+            #~ ep_num = ast.literal_eval(ep)
             x_val = equilibrium[0] - ep_num[0]
             y_val = equilibrium[1] - ep_num[1]
 

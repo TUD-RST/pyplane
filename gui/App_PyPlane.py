@@ -106,6 +106,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.toggle_vectorfield_action.setEnabled(False)
         self.toggle_streamlines_action.setEnabled(False)
         self.toggle_equilibrium_action.setEnabled(False)
+        if hasattr(self, "linearize_action"):
+            self.linearize_action.setEnabled(False)
         self.toggle_nullclines_action.setEnabled(False)
 
     def update_ui(self):
@@ -141,11 +143,27 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.toggle_nullclines_action.setChecked(myConfig.get_boolean("Nullclines", "nc_onByDefault"))
         
 
-    def new_linearized_system(self, nonlinear_system, jacobian, equilibrium):
-        pass
-    def new_linearized_system1(self, nonlinear_system, jacobian, equilibrium):
+    def new_linearized_system(self, equation, name):
+        x_string, y_string = equation
+        system = System(self, equation, name=name, linear=True)
+        self.systems.insert(0, system)
+
+        myLogger.message("------ new linearized system created ------")
+        myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
+        myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
+
+        #~ # set system properties
+        #~ jac = myEquilibria.approx_ep_jacobian(equilibrium)
+
+        #~ xe = equilibrium[0]
+        #~ ye = equilibrium[1]
+        #~ x_dot_string = str(jac[0,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[0,1]) + ")*(y-(" + str(ye) + "))"
+        #~ y_dot_string = str(jac[1,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[1,1]) + ")*(y-(" + str(ye) + "))"
+
+
+    def new_linearized_system1(self, equation, name):
         # TODO: REFACTOR THIS FUNCTION!!!
-        self.nonlinear_system = nonlinear_system
+        self.system = nonlinear_system
         eq0 = str(jacobian[0,0])+"*x + "+str(jacobian[0,1])+"*y"
         eq1 = str(jacobian[1,0])+"*x + "+str(jacobian[1,1])+"*y"
         equation = (eq0, eq1)
@@ -153,7 +171,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.systems.insert(0, system)
 
         # TODO: window range should be equal to window range of phase plane
-
         # TODO: make set_window_range-funtion reusable for this case
         #~ xmin = float(self.PP_xminLineEdit.text())
         #~ xmax = float(self.PP_xmaxLineEdit.text())
@@ -180,77 +197,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
 
 
-        # calculating eigenvalues and eigenvectors:
-        eigenvalues, eigenvectors = system.Phaseplane.Equilibria.get_eigenval_eigenvec(equilibrium)
-        myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
-
-        # scaling
-        d1 = (xmax-xmin)/10
-        d2 = (ymax-ymin)/10
-        d_large = (xmax-xmin)*(ymax-ymin)
-        
-        EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
-        EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
-        EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
-
-        EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
-        EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
-        EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
-        
-        # plot eigenvectors:
-        color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
-        color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
-
-        if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV0_scaled[0], d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-        if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-        
-        if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            system.Phaseplane.Plot.canvasn.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-        if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-            system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-
-        # characterize EP:
-        # stable focus:     SFOC
-        # unstable focus:   UFOC
-        # focus:            FOC
-        # stable node:      SNOD
-        # unstable node:    UNOD
-        # saddle:           SAD
-
-        determinant = jacobian[0,0]*jacobian[1,1] - jacobian[1,0]*jacobian[0,1]
-        trace = jacobian[0,0] + jacobian[1,1]
-
-        ep_character = ""
-
-        if trace==0 and determinant==0:
-            ep_character = "Unclassified"
-
-        elif determinant < 0:
-            ep_character = "Saddle"
-
-        elif (determinant > 0) and (determinant < ((trace**2)/4)):
-            if trace < 0:
-                ep_character = "Nodal Sink"
-            elif trace > 0:
-                ep_character = "Nodal Source"
-
-        elif determinant > ((trace**2)/4):
-            if trace == 0:
-                ep_character = "Center"
-            elif trace < 0:
-                ep_character = "Spiral Sink"
-            elif trace > 0:
-                ep_character = "Spiral Source"
-        elif determinant == ((trace**2)/4):
-            if trace < 0:
-                ep_character = "Sink"
-            elif trace > 0:
-                ep_character = "Source"
-
         if myConfig.get_boolean(section, token + "showTitle"):
             eq_x_rounded = str(round(equilibrium[0],lin_round))
             eq_y_rounded = str(round(equilibrium[1],lin_round))
@@ -264,11 +210,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         # mark EP in linearized tab
         system.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1],'ro')
 
-        # add annotation in phaseplane
-        label = str(ep_character)
-
-        system.Phaseplane.Plot.canvas.text(equilibrium[0], equilibrium[1], label, fontsize=10)
-
         system.Phaseplane.Plot.canvas.draw()
 
         # plot vectorfield
@@ -277,11 +218,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         #~ title = str(ep_character)
         #~ self.index = self.tabWidget.addTab(contents, title)
 
-        #~ self.linearization_stack.append(equilibrium)
-
-        #QtCore.pyqtRemoveInputHook()
-        #embed()
-
     def close_current_tab(self):
         index = self.tabWidget.currentIndex()
         if index != self.tabWidget.count()-1:
@@ -289,8 +225,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             self.systems.pop(index)
 
     def close_all_tabs(self):
-        # TODO: something is wrong here: settings tab gets removed
-        #       sometimes!
         for i in xrange(self.tabWidget.count()-1):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
@@ -346,7 +280,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
             else:
                 myLogger.error_message("Please check system!")
-
 
     def load_system(self, file_name):
         """ load previous system (from tmp file) """

@@ -48,7 +48,7 @@ class MainApp(PyplaneMainWindow):
     """
     
     __PYPLANE_VERSION = "1.1"
-    __PYPLANE_DATE = "07.04.2016"
+    __PYPLANE_DATE = "2016-04-08"
 
     def __init__(self):
         # superclass constructor
@@ -124,6 +124,10 @@ class MainApp(PyplaneMainWindow):
         self.show_menu.addAction(self.toggle_equilibrium_action)
         #self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
 
+        # linearize checkbox
+        #~ self.linearize_action = QtGui.QAction('&Linearize', self.show_menu)
+        #~ self.linearize_action.triggered.connect(self.linearize_helper_function)
+        #~ self.show_menu.addAction(self.linearize_action)
 
         # nullclines checkbox
         self.toggle_nullclines_action = QtGui.QAction('Nullclines', self.show_menu)
@@ -190,6 +194,11 @@ class MainApp(PyplaneMainWindow):
         if system != None:
             system.Phaseplane.Equilibria.toggle()
             self.update_ui()
+
+    #~ def linearize_helper_function(self):
+        #~ system = self.get_current_system()
+        #~ if system != None:
+            #~ system.Phaseplane.toggle_linearization_objects()
 
     def toggle_nullclines(self):
         system = self.get_current_system()

@@ -374,7 +374,52 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         self.ZoomButton.setCheckable(True)
         self.RefreshButton.clicked.connect(self.Plot.refresh)
         self.CreateTrajectoryButton.clicked.connect(self.mySystem.Trajectories.create_trajectory)
+        # linearize button and combo box
+        self.connect(self.linBox, QtCore.SIGNAL('activated(QString)'), self.eq_chosen)
+        self.linButton.clicked.connect(self.linearize_system)
 
+        self.hide_linearization_objects()
+
+    def hide_linearization_objects(self):
+        self.linLabel.hide()
+        self.linBox.hide()
+        self.linButton.hide()
+
+    def show_linearization_objects(self):
+        self.linLabel.show()
+        self.linButton.show()
+        # clear combo box
+        self.linBox.clear()
+        # put equilibria in combo box
+        eq_list = self.Equilibria.list_characterized_equilibria()
+        self.linBox.addItems(eq_list)
+        self.linBox.show()
+
+    def eq_chosen(self, text):
+        # TODO: highlight selected point
+        pass
+
+    def linearize_system(self):
+        eq_identifier = str(self.linBox.currentText())
+        equilibrium = self.Equilibria.get_equilibrium_by_character_identifier(eq_identifier)
+        jac = self.Equilibria.approx_ep_jacobian(equilibrium.coordinates)
+        #~ from PyQt4 import QtCore
+        #~ from IPython import embed
+        #~ QtCore.pyqtRemoveInputHook()
+        #~ embed()
+        
+        # set system properties
+        xe = round(equilibrium.coordinates[0], 3)
+        ye = round(equilibrium.coordinates[1], 3)
+        A00 = str(round(jac[0,0], 3))
+        A01 = str(round(jac[0,1], 3))
+        A11 = str(round(jac[1,1], 3))
+        A10 = str(round(jac[1,0], 3))
+        x_dot_string = A00 + "*(x-(" + str(xe) + ")) + (" + A01 + ")*(y-(" + str(ye) + "))"
+        y_dot_string = A10 + "*(x-(" + str(xe) + ")) + (" + A11 + ")*(y-(" + str(ye) + "))"
+        equation_string = (x_dot_string, y_dot_string)
+
+        self.mySystem.myPyplane.new_linearized_system(equation_string, name=eq_identifier)
 
     def trajectory_direction(self):
         forward = self.forwardCheckbox.isChecked()
