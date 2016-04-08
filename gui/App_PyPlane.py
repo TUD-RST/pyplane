@@ -338,6 +338,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
                 equation = (x_string, y_string)
                 system = System(self, equation)
                 self.systems.insert(0, system)
+                self.save_tmp_system()
 
                 myLogger.message("------ new system created ------")
                 myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
@@ -377,6 +378,15 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         self.submit()
         self.update_ui()
+
+    def save_tmp_system(self):
+        if len(self.systems) > 0:
+            index = self.tabWidget.currentIndex()
+            system = self.systems[index]
+            file_name = 'library/tmp.ppf'
+            self.save_system(file_name, system.equation.what_is_my_system())
+        else:
+            myLogger.error_message("There is no system to save!")
 
     def save_file(self):
         if len(self.systems) > 0:
