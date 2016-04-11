@@ -98,6 +98,19 @@ class TrajectoryHandler(object):
                 # plot solution in phase plane:
                 traj_ppForwardColor = myConfig.read("Trajectories", "traj_ppForwardColor")
                 plot1 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue, yvalue, traj_ppForwardColor)
+                plot3d_forward = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue,  time, traj_ppForwardColor)
+
+                zero_arrayx = np.array([10]*len(time))
+                zero_arrayy = np.array([-10]*len(time))
+                if myConfig.get_boolean("3d-plot", "3d_showXProjection"):
+                    plot3d_forward_projx = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, zero_arrayx, time, "0.75")
+                    traj_stack.append(plot3d_forward_projx)
+                if myConfig.get_boolean("3d-plot", "3d_showYProjection"):
+                    plot3d_forward_projy = self.mySystem.Txy.Plot.canvas.axes.plot(zero_arrayy, yvalue, time, "0.75")
+                    traj_stack.append(plot3d_forward_projy)
+                if myConfig.get_boolean("3d-plot", "3d_showYXProjection"):
+                    plot3d_forward_projxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue, 0, "0.75")
+                    traj_stack.append(plot3d_forward_projxy)
 
                 # numpy array with both x and y values in pairs
                 # TODO: might be faster if xvalues or yvalues greater than self.mySystem.max_norm
@@ -133,6 +146,7 @@ class TrajectoryHandler(object):
                 traj_stack.append(plot1)
                 traj_stack.append(plot2)
                 traj_stack.append(plot3)
+                traj_stack.append(plot3d_forward)
 
             # backward in time --------------------------------------------
             if backward:
@@ -161,8 +175,22 @@ class TrajectoryHandler(object):
                 # plot in phase plane:
                 traj_ppBackwardColor = myConfig.read("Trajectories", "traj_ppBackwardColor")
                 plot4 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, color=traj_ppBackwardColor)
+                plot3d_backward = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw,  -time, traj_ppForwardColor)
+
+                zero_arrayx = np.array([10]*len(time))
+                zero_arrayy = np.array([-10]*len(time))
+                if myConfig.get_boolean("3d-plot", "3d_showXProjection"):
+                    plot3d_backward_projx = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, zero_arrayx, -time, "0.75")
+                    traj_stack.append(plot3d_backward_projx)
+                if myConfig.get_boolean("3d-plot", "3d_showYProjection"):
+                    plot3d_backwardprojy = self.mySystem.Txy.Plot.canvas.axes.plot(zero_arrayy, yvalue_bw, -time, "0.75")
+                    traj_stack.append(plot3d_backwardprojy)
+                if myConfig.get_boolean("3d-plot", "3d_showYXProjection"):
+                    plot3d_backward_projxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, 0, "0.75")
+                    traj_stack.append(plot3d_backward_projxy)
 
                 traj_stack.append(plot4)
+                traj_stack.append(plot3d_backward)
 
             #                self.myLogger.message("backward trajectory
             #                                       done for initial condition "+str(initialCondition))
@@ -174,7 +202,14 @@ class TrajectoryHandler(object):
                                                initial_condition[1],
                                                '.',
                                                color=traj_initPointColor)
+                                    
+                plot3d_initpoint = self.mySystem.Txy.Plot.canvas.axes.plot([initial_condition[0]],
+                                                                           [initial_condition[1]],
+                                                                           [0],
+                                                                           '.',
+                                                                           color=traj_initPointColor)
                 traj_stack.append(plot5)
+                traj_stack.append(plot3d_initpoint)
 
             if len(traj_stack) != 0:
                 # mark init:

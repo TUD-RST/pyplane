@@ -66,6 +66,17 @@ class Ui_SystemTabWidget(object):
         self.yLayout.addWidget(self.yPlaceholder)
         self.verticalLayout_3.addLayout(self.yLayout)
         self.tabWidget.addTab(self.yTab, _fromUtf8(""))
+        self.tTab = QtGui.QWidget()
+        self.tTab.setObjectName(_fromUtf8("tTab"))
+        self.verticalLayout_5 = QtGui.QVBoxLayout(self.tTab)
+        self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
+        self.tLayout = QtGui.QVBoxLayout()
+        self.tLayout.setObjectName(_fromUtf8("tLayout"))
+        self.tPlaceholder = QtGui.QWidget(self.tTab)
+        self.tPlaceholder.setObjectName(_fromUtf8("tPlaceholder"))
+        self.tLayout.addWidget(self.tPlaceholder)
+        self.verticalLayout_5.addLayout(self.tLayout)
+        self.tabWidget.addTab(self.tTab, _fromUtf8(""))
         self.horizontalLayout.addWidget(self.tabWidget)
 
         self.retranslateUi(SystemTabWidget)
@@ -77,4 +88,5 @@ class Ui_SystemTabWidget(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.ppTab), _translate("SystemTabWidget", "Phase Plane", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.xTab), _translate("SystemTabWidget", "x(t)", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.yTab), _translate("SystemTabWidget", "y(t)", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tTab), _translate("SystemTabWidget", "t(x,y)", None))
 

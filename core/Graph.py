@@ -41,6 +41,7 @@ class Plot(object):
             self._token = "pp_"
 
         self.clear()
+        self.set_window_range()
 
     def clear(self):
         self.canvas.axes.clear()
@@ -101,6 +102,101 @@ class Plot(object):
         if _min < _max and _tmin < _tmax:
             self.canvas.axes.set_xlim(_min, _max)
             self.canvas.axes.set_ylim(_tmin, _tmax)
+        else:
+            myLogger.error_message("Please check window size input!")
+
+        self.update()
+
+    def get_limits(self):
+        """ This function returns the limits of a graph. """
+        return self.canvas.axes.axis()
+
+class ThreeDPlot(object):
+    def __init__(self, parent, canvas):
+        assert isinstance(canvas, Canvas)
+        self.myWidget = parent
+        self.canvas = canvas
+
+        self._section = "3d-plot"
+        self._token = "3d_"
+
+        self.clear()
+        self.set_window_range()
+
+    def clear(self):
+        self.canvas.axes.clear()
+
+        if myConfig.get_boolean(self._section, self._token + "showGrid"):
+            self.canvas.axes.grid()
+
+        if myConfig.get_boolean(self._section, self._token + "showMinorTicks"):
+            self.canvas.axes.minorticks_on()
+        else:
+            self.canvas.axes.minorticks_off()
+
+        if not myConfig.get_boolean(self._section, self._token + "showTTicks"):
+            self.canvas.axes.zaxis.set_ticks([])
+
+        if not myConfig.get_boolean(self._section, self._token + "showXTicks"):
+            self.canvas.axes.xaxis.set_ticks([])
+
+        if not myConfig.get_boolean(self._section, self._token + "showYTicks"):
+            self.canvas.axes.yaxis.set_ticks([])
+
+        if myConfig.get_boolean(self._section, self._token + "showTitle"):
+            title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
+            title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
+            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$")
+        else:
+            self.canvas.fig.subplots_adjust(top=0.99)
+
+        if myConfig.get_boolean(self._section, self._token + "showXLabel"):
+            xlabel = "$x$"
+            label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
+            self.canvas.axes.set_xlabel(xlabel, fontsize=label_fontsize)
+
+        if myConfig.get_boolean(self._section, self._token + "showYLabel"):
+            label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
+            ylabel = "$y$"
+            self.canvas.axes.set_ylabel(ylabel, fontsize=label_fontsize)
+
+        if myConfig.get_boolean(self._section, self._token + "showTLabel"):
+            label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
+            tlabel = "$t$"
+            self.canvas.axes.set_zlabel(tlabel, fontsize=label_fontsize)
+
+        if not myConfig.get_boolean(self._section, self._token + "showSpines"):
+            for spine in self.canvas.axes.spines.itervalues():
+                spine.set_visible(False)
+
+        self.update()
+        myLogger.debug_message("3d graph cleared")
+
+    def update(self):
+        #~ try:
+        self.canvas.draw()
+        #~ except Exception as e: 
+            #~ if 'latex' in e.message.lower():
+                #~ QMessageBox.critical(None, 'Error', 'LaTeX not properly installed! Please check the following message:\n\n' + e.message)
+            #~ else:
+                #~ QMessageBox.critical(None, 'Error', 'Something seems to be wrong with matplotlib. Please check the following message:\n\n' + e.message)
+            #~ exit()
+
+    def set_window_range(self):        
+        _tmin = float(self.myWidget.tminLineEdit.text())
+        _tmax = float(self.myWidget.tmaxLineEdit.text())
+        _xmin = float(self.myWidget.xminLineEdit.text())
+        _xmax = float(self.myWidget.xmaxLineEdit.text())
+        _ymin = float(self.myWidget.yminLineEdit.text())
+        _ymax = float(self.myWidget.ymaxLineEdit.text())
+
+        if _xmin < _xmax and _ymin < _ymax and _tmin < _tmax:
+            #~ self.canvas.axes.set_xlim3d(_xmin, _xmax)
+            #~ self.canvas.axes.set_ylim3d(_ymin, _ymax)
+            #~ self.canvas.axes.set_zlim3d(_tmin, _tmax)
+            self.canvas.axes.set_xlim(_xmin, _xmax)
+            self.canvas.axes.set_ylim(_ymin, _ymax)
+            self.canvas.axes.set_zlim(_tmin, _tmax)
         else:
             myLogger.error_message("Please check window size input!")
 

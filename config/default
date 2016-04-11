@@ -24,7 +24,7 @@ pp_showXTicks = True
 pp_showYTicks = True
 pp_showMinorTicks = True
 pp_showSpines = True
-pp_showGrid = True
+pp_showGrid = true
 pp_showTitle = True
 pp_showXLabel = False
 pp_showYLabel = False
@@ -59,6 +59,28 @@ y_showTitle = True
 y_showXLabel = False
 y_showYLabel = False
 y_labelFontSize = 12
+
+[3d-plot]
+3d_tmin = 0.
+3d_tmax = 10.
+3d_xmin = -10
+3d_xmax = 10.
+3d_ymin = -10.
+3d_ymax = 10.
+3d_showTTicks = True
+3d_showXTicks = True
+3d_showYTicks = True
+3d_showMinorTicks = True
+3d_showSpines = false
+3d_showGrid = false
+3d_showTitle = True
+3d_showTLabel = true
+3d_showXLabel = true
+3d_showYLabel = true
+3d_labelFontSize = 12
+3d_showXProjection = False
+3d_showYProjection = False
+3d_showYXProjection = True
 
 [System]
 max_norm = 1e5

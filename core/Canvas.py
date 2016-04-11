@@ -19,9 +19,10 @@
 __author__ = 'Klemens Fritzsche'
 
 import pylab as pl
-
+import matplotlib as mpl
 from PyQt4 import QtGui
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import rc
 from matplotlib import pyplot as plt
 from core.Toolbar import Toolbar
@@ -98,3 +99,15 @@ class Canvas(FigureCanvas):
         self.myWidget.xmaxLineEdit.setText(str(round(xmax,2)))
         self.myWidget.yminLineEdit.setText(str(round(ymin,2)))
         self.myWidget.ymaxLineEdit.setText(str(round(ymax,2)))
+
+
+class ThreeDCanvas(Canvas):
+    def __init__(self, parent, latex_installed):
+        super(ThreeDCanvas, self).__init__(parent, latex_installed)
+        self.myWidget = parent
+        self.axes = self.fig.gca(projection='3d')
+
+
+        self.axes.set_zlabel("t")
+        self.axes.set_ylabel("y")
+        self.axes.set_xlabel("x")

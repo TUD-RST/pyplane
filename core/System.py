@@ -29,7 +29,7 @@ import numpy as np
 from core.Logging import myLogger
 from core.Equation import Equation
 from core.ConfigHandler import myConfig
-from gui.Widgets import SystemTabWidget, PhaseplaneWidget, ZoomWidgetSimple
+from gui.Widgets import SystemTabWidget, PhaseplaneWidget, ZoomWidgetSimple, ThreeDWidget
 from core.TrajectoryHandler import TrajectoryHandler
 from core.FunctionHandler import FunctionHandler
 
@@ -74,11 +74,13 @@ class System(object):
         self.Phaseplane = PhaseplaneWidget(self)
         self.Xt = ZoomWidgetSimple(self, "x")
         self.Yt = ZoomWidgetSimple(self, "y")
+        self.Txy = ThreeDWidget(self)
 
         # create tab content (phaseplane, x-t and y-t widgets)
         self._tab.ppLayout.addWidget(self.Phaseplane)
         self._tab.xLayout.addWidget(self.Xt)
         self._tab.yLayout.addWidget(self.Yt)
+        self._tab.tLayout.addWidget(self.Txy)
 
         # connect mouse events (left mouse button click) in phase plane
         self.Phaseplane.Plot.canvas.mpl_connect('button_press_event', self.Phaseplane.Plot.onclick)
@@ -136,3 +138,4 @@ class System(object):
         self.Phaseplane.Plot.update()
         self.Xt.Plot.update()
         self.Yt.Plot.update()
+        self.Txy.Plot.update()

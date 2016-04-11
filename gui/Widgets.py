@@ -27,9 +27,10 @@ from Ui_SettingsWidget import Ui_SettingsWidget
 from Ui_SystemTabWidget import Ui_SystemTabWidget
 from Ui_ZoomWidget import Ui_ZoomWidget
 from Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
-from core.Canvas import Canvas
+from Ui_ThreeDWidget import Ui_ThreeDWidget
+from core.Canvas import Canvas, ThreeDCanvas
 from core.ConfigHandler import myConfig
-from core.Graph import Plot, PhasePlot
+from core.Graph import Plot, ThreeDPlot, PhasePlot
 from core.TrajectoryHandler import TrajectoryHandler
 from core.NullclineHandler import NullclineHandler
 from core.Vectorfield import Vectorfield
@@ -314,25 +315,50 @@ class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
         # TODO: This should probably move to the Plot-class:
         self.latex_installed = self.mySystem.myPyplane.latex_installed
         self.Layout = QtGui.QVBoxLayout(self.frame)
+
         self.Canvas = Canvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
 
         self.param_minLabel.setText("%smin" % (self.param))
         self.param_maxLabel.setText("%smax" % (self.param))
-
-        # TODO: change naming convention
         self.xminLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_tmin" % (self.param))))
         self.xmaxLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_tmax" % (self.param))))
         self.yminLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_%smin" % (self.param, self.param))))
         self.ymaxLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_%smax" % (self.param, self.param))))
 
         self.Plot = Plot(self, self.Canvas)
-        self.Plot.set_window_range()
 
         # connect buttons
         self.SetButton.clicked.connect(self.Plot.set_window_range)
         self.ZoomButton.clicked.connect(self.Canvas.toggle_zoom_mode)
         self.ZoomButton.setCheckable(True)
+
+class ThreeDWidget(QtGui.QWidget, Ui_ThreeDWidget):
+    # TODO: Is this class really necessary? -> inheritance from ZoomWidget?
+    def __init__(self, parent):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+        
+        self.mySystem = parent
+
+        # TODO: This should probably move to the Plot-class:
+        self.latex_installed = self.mySystem.myPyplane.latex_installed
+        self.Layout = QtGui.QVBoxLayout(self.frame)
+
+        self.Canvas = ThreeDCanvas(self, self.latex_installed)
+        self.Layout.addWidget(self.Canvas)
+
+        self.tminLineEdit.setText(str(myConfig.read("3d-plot", "3d_tmin")))
+        self.tmaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_tmax")))
+        self.xminLineEdit.setText(str(myConfig.read("3d-plot", "3d_xmin")))
+        self.xmaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_xmax")))
+        self.yminLineEdit.setText(str(myConfig.read("3d-plot", "3d_ymin")))
+        self.ymaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_ymax")))
+
+        self.Plot = ThreeDPlot(self, self.Canvas)
+
+        # connect buttons
+        self.SetButton.clicked.connect(self.Plot.set_window_range)
 
 class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
     def __init__(self, parent):

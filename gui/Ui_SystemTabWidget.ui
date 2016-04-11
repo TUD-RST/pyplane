@@ -70,6 +70,20 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tTab">
+      <attribute name="title">
+       <string>t(x,y)</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QVBoxLayout" name="tLayout">
+         <item>
+          <widget class="QWidget" name="tPlaceholder" native="true"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>
