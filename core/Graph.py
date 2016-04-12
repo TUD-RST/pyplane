@@ -216,6 +216,9 @@ class PhasePlot(Plot):
         self.nc_toggle = myConfig.get_boolean("Nullclines", "nc_onByDefault")
         self.sl_toggle = myConfig.get_boolean("Streamlines", "stream_onByDefault")
 
+    def get_limits(self):
+        """ This function returns the limits of a graph. """
+        return self.canvas.axes.axis()
 
     def toggle_vectorfield(self):
         myVectorfield.tgl = not myVectorfield.tgl

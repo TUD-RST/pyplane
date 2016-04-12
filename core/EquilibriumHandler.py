@@ -172,7 +172,7 @@ class EquilibriumHandler(object):
             return None
 
     def find_equilibrium(self, z_init):
-        """ hopf2.ppf has problems with this algorithms -> TODO: debug!!!
+        """ hopf2.ppf has problems with this algorithm -> TODO: debug!!!
         """
         # TODO: this try-loop is too long!
         try:

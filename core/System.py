@@ -50,7 +50,7 @@ class System(object):
         self.equation = Equation(equation)
 
         self.linear = linear
-        self._tab_index = self.myPyplane.tabWidget.currentIndex()
+        self._tab_index = self.myPyplane.tabWidget.currentIndex() # what was this for again?
 
         # TODO: possiblity to choose a name
         global counter
@@ -88,8 +88,8 @@ class System(object):
 
         self.myPyplane.initialize_ui()
 
-        if self.linear:
-            self.plot_eigenvectors()
+        #~ if self.linear:
+            #~ self.plot_eigenvectors()
 
     #~ def pickle(self, path):
         #~ pcl.dump(self.data, file(str(path), 'w'))
@@ -99,40 +99,56 @@ class System(object):
         #~ self.data = pcl.load(pps_file)
         #~ assert isinstance(self.data, Container), myLogger.error_message("Could not open pps file!")
 
-    def plot_eigenvectors(self):
-        #~ # calculating eigenvalues and eigenvectors:
-        #~ eigenvalues, eigenvectors = system.Phaseplane.Equilibria.get_eigenval_eigenvec(equilibrium)
-        #~ myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
+    def plot_eigenvectors(self, equilibrium):
+        if self.linear:
+            # system is linear -> calculate jacobian
+            x, y = sp.symbols("x, y")
+            xdot = self.equation.x_dot_expr
+            ydot = self.equation.y_dot_expr
 
-        #~ # scaling
-        #~ d1 = (xmax-xmin)/10
-        #~ d2 = (ymax-ymin)/10
-        #~ d_large = (xmax-xmin)*(ymax-ymin)
-        
-        #~ EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
-        #~ EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
-        #~ EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
+            A11 = xdot.diff(x)
+            A12 = xdot.diff(y)
+            A21 = ydot.diff(x)
+            A22 = ydot.diff(y)
+            jac = np.array([[A11,A12],[A21,A22]], dtype=float)
 
-        #~ EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
-        #~ EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
-        #~ EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
-        
-        #~ # plot eigenvectors:
-        #~ color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
-        #~ color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
+            eigenvalues, eigenvectors = np.linalg.eig(jac)
+            # calculating eigenvalues and eigenvectors:
+            #~ eigenvalues, eigenvectors = self.Phaseplane.Equilibria.get_eigenval_eigenvec(equilibrium)
+            myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
 
-        #~ if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-            #~ system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV0_scaled[0], d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            #~ system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-        #~ if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-            #~ system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-        
-        #~ if myConfig.get_boolean("Linearization","lin_show_eigenline"):
-            #~ system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-            #~ system.Phaseplane.Plot.canvasn.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
-        #~ if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
-            #~ system.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-        pass
+            # scaling
+            xmin, xmax, ymin, ymax = self.Phaseplane.Plot.get_limits()
+            d1 = (xmax-xmin)/10
+            d2 = (ymax-ymin)/10
+            d_large = (xmax-xmin)*(ymax-ymin)
+            
+            EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
+            EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
+            EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
+
+            EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
+            EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
+            EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
+
+            # plot equilibrium:
+            self.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1], 'ro', picker=2)
+
+            # plot eigenvectors:
+            color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
+            color_eigenline = myConfig.read("Linearization", "lin_eigenvector_linecolor")
+
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV0_scaled[0], d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+            
+            if myConfig.get_boolean("Linearization","lin_show_eigenline"):
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
+            if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
+                self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
 
     def update(self):
         self.Phaseplane.Plot.update()

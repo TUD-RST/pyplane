@@ -429,14 +429,11 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         eq_identifier = str(self.linBox.currentText())
         equilibrium = self.Equilibria.get_equilibrium_by_character_identifier(eq_identifier)
         jac = self.Equilibria.approx_ep_jacobian(equilibrium.coordinates)
-        #~ from PyQt4 import QtCore
-        #~ from IPython import embed
-        #~ QtCore.pyqtRemoveInputHook()
-        #~ embed()
         
         # set system properties
         xe = round(equilibrium.coordinates[0], 3)
         ye = round(equilibrium.coordinates[1], 3)
+        equilibrium = (xe, ye)
         A00 = str(round(jac[0,0], 3))
         A01 = str(round(jac[0,1], 3))
         A11 = str(round(jac[1,1], 3))
@@ -445,7 +442,7 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         y_dot_string = A10 + "*(x-(" + str(xe) + ")) + (" + A11 + ")*(y-(" + str(ye) + "))"
         equation_string = (x_dot_string, y_dot_string)
 
-        self.mySystem.myPyplane.new_linearized_system(equation_string, name=eq_identifier)
+        self.mySystem.myPyplane.new_linearized_system(equation_string, eq_identifier, equilibrium)
 
     def trajectory_direction(self):
         forward = self.forwardCheckbox.isChecked()

@@ -143,80 +143,16 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.toggle_nullclines_action.setChecked(myConfig.get_boolean("Nullclines", "nc_onByDefault"))
         
 
-    def new_linearized_system(self, equation, name):
+    def new_linearized_system(self, equation, name, equilibrium):
         x_string, y_string = equation
+        xe, ye = equilibrium
         system = System(self, equation, name=name, linear=True)
         self.systems.insert(0, system)
+        system.plot_eigenvectors(equilibrium)
 
         myLogger.message("------ new linearized system created ------")
         myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
         myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
-
-        #~ # set system properties
-        #~ jac = myEquilibria.approx_ep_jacobian(equilibrium)
-
-        #~ xe = equilibrium[0]
-        #~ ye = equilibrium[1]
-        #~ x_dot_string = str(jac[0,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[0,1]) + ")*(y-(" + str(ye) + "))"
-        #~ y_dot_string = str(jac[1,0]) + "*(x-(" + str(xe) + ")) + (" + str(jac[1,1]) + ")*(y-(" + str(ye) + "))"
-
-
-    def new_linearized_system1(self, equation, name):
-        # TODO: REFACTOR THIS FUNCTION!!!
-        self.system = nonlinear_system
-        eq0 = str(jacobian[0,0])+"*x + "+str(jacobian[0,1])+"*y"
-        eq1 = str(jacobian[1,0])+"*x + "+str(jacobian[1,1])+"*y"
-        equation = (eq0, eq1)
-        system = System(self, equation, linear=True)
-        self.systems.insert(0, system)
-
-        # TODO: window range should be equal to window range of phase plane
-        # TODO: make set_window_range-funtion reusable for this case
-        #~ xmin = float(self.PP_xminLineEdit.text())
-        #~ xmax = float(self.PP_xmaxLineEdit.text())
-        #~ ymin = float(self.PP_yminLineEdit.text())
-        #~ ymax = float(self.PP_ymaxLineEdit.text())
-
-
-        xe = equilibrium[0]
-        ye = equilibrium[1]
-        x_dot_string = str(jacobian[0,0]) + "*(x-(" + str(xe) + ")) + (" + str(jacobian[0,1]) + ")*(y-(" + str(ye) + "))"
-        y_dot_string = str(jacobian[1,0]) + "*(x-(" + str(xe) + ")) + (" + str(jacobian[1,1]) + ")*(y-(" + str(ye) + "))"
-
-        #title_matrix = r"$A=\begin{Bmatrix}"+str(jac[0,0])+r" & "+str(jac[0,1])+r" \\"+str(jac[1,0])+r" & "+str(jac[1,1])+r"\end{Bmatrix}$"
-
-        # set title
-        lin_round = int(myConfig.read("Linearization", "lin_round_decimals")) # display rounded floats
-        A00 = str(round(jacobian[0,0],lin_round))
-        A01 = str(round(jacobian[0,1],lin_round))
-        A11 = str(round(jacobian[1,1],lin_round))
-        A10 = str(round(jacobian[1,0],lin_round))
-        if self.latex_installed == True:
-            title_matrix = r'$\underline{A}_{' + str(len(self.linearization_stack)) + r'} = \left( \begin{array}{ll} ' + A00 + r' & ' + A01 + r'\\ ' + A10 + r' & ' + A11 + r' \end{array} \right)$'
-        else:
-            title_matrix = r'$a_{11}(' + str(len(self.linearization_stack)) + r') =  ' + A00 + r', a_{12}(' + str(len(self.linearization_stack)) + r') = ' + A01 + '$\n $a_{21}( ' + str(len(self.linearization_stack)) + r') = ' + A10 +  r', a_{22}(' + str(len(self.linearization_stack)) + r') = ' + A11 + r'$'
-
-
-        if myConfig.get_boolean(section, token + "showTitle"):
-            eq_x_rounded = str(round(equilibrium[0],lin_round))
-            eq_y_rounded = str(round(equilibrium[1],lin_round))
-            title1 = ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
-            #~ title1 = r'Equilibrium point ' + str(len(self.linearization_stack)) + r', ' + ep_character + r' at $(' + eq_x_rounded + r', ' + eq_y_rounded + r')$'
-            #self.plotCanvas_Lin.axes.set_title(str(title1)+"$\n$\\dot{x} = " + x_dot_string + "$\n$\\dot{y} = " + y_dot_string + "$", loc='center')
-            system.Phaseplane.Plot.canvas.axes.set_title(str(title1)+"\n"+title_matrix, fontsize=11)
-        else:
-            system.Phaseplane.Plot.canvas.fig.subplots_adjust(top=0.99)
-
-        # mark EP in linearized tab
-        system.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1],'ro')
-
-        system.Phaseplane.Plot.canvas.draw()
-
-        # plot vectorfield
-        linearized_vectorfield.update()
-
-        #~ title = str(ep_character)
-        #~ self.index = self.tabWidget.addTab(contents, title)
 
     def close_current_tab(self):
         index = self.tabWidget.currentIndex()
@@ -556,23 +492,6 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             myLogger.debug_message("no function to delete")
 
         self.myGraph.update_graph(self.myGraph.plot_pp)
-
-#     def addFctClear(self):
-#         """ will remove every additional function
-#         """
-#         if len(self.fct_stack)!=0:
-#             for i in xrange(0,len(self.fct_stack)):
-#                 try:
-#                     self.fct_stack.pop()[0].remove()
-#                 except Exception as error:
-#                     myLogger.debug_message("couldn't delete function plot")
-#                     myLogger.debug_message(str(type(error)))
-#                     myLogger.debug_message(str(error))
-#
-#             myLogger.message("function plots removed")
-#             self.myGraph.update_graph(self.myGraph.plot_pp)
-#         else:
-#             myLogger.warn_message("no additional function has been plotted")
 
 if __name__ == "__main__":
     import sys
