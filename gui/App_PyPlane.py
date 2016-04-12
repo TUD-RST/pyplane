@@ -363,56 +363,63 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.Y_ymaxLineEdit.setText(str(round(ymax3, 2)))
 
     def export_as_png(self, filename):
+        system = self.get_current_system()
+        if system != None:
+            filename_pp = str(filename) + "_pp.png"
+            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp,
+                                             bbox_inches='tight')
 
-        filename_pp = str(filename) + "_pp.png"
-        self.myGraph.plot_pp.fig.savefig(filename_pp,
-                                         bbox_inches='tight')
+            filename_x = str(filename) + "_x.png"
+            system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_x = str(filename) + "_x.png"
-        self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
+            filename_y = str(filename) + "_y.png"
+            system.Yt.Plot.canvas.fig.savefig(filename_y, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y.png"
-        self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
-
-        myLogger.message(
-            "plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
+            myLogger.message(
+                "plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def export_as_svg(self, filename):
-        filename_pp = str(filename) + "_pp.svg"
-        self.myGraph.plot_pp.fig.savefig(filename_pp, bbox_inches='tight')
+        system = self.get_current_system()
+        if system != None:
+            filename_pp = str(filename) + "_pp.svg"
+            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp, bbox_inches='tight')
 
-        filename_x = str(filename) + "_x.svg"
-        self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
+            filename_x = str(filename) + "_x.svg"
+            system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y.svg"
-        self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
+            filename_y = str(filename) + "_y.svg"
+            system.Yt.Plot.canvas.fig.savefig(filename_y, bbox_inches='tight')
 
-        myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
+            myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def export_as_eps(self, filename):
-        filename_pp = str(filename) + "_pp.eps"
+        system = self.get_current_system()
+        if system != None:
+            filename_pp = str(filename) + "_pp.eps"
 
-        self.myGraph.plot_pp.fig.savefig(filename_pp, bbox_inches='tight')
+            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp, bbox_inches='tight')
 
-        filename_x = str(filename) + "_x.eps"
-        self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
+            filename_x = str(filename) + "_x.eps"
+            system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y.eps"
-        self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
+            filename_y = str(filename) + "_y.eps"
+            system.Yt.Plot.canvas.fig.savefig(filename_y, bbox_inches='tight')
 
-        myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
+            myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def export_as_pdf(self, filename):
-        filename_pp = str(filename) + "_pp.pdf"
-        self.myGraph.plot_pp.fig.savefig(filename_pp, bbox_inches='tight')
+        system = self.get_current_system()
+        if system != None:
+            filename_pp = str(filename) + "_pp.pdf"
+            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp, bbox_inches='tight')
 
-        filename_x = str(filename) + "_x.pdf"
-        self.myGraph.plot_x.fig.savefig(filename_x, bbox_inches='tight')
+            filename_x = str(filename) + "_x.pdf"
+            system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
 
-        filename_y = str(filename) + "_y.pdf"
-        self.myGraph.plot_y.fig.savefig(filename_y, bbox_inches='tight')
+            filename_y = str(filename) + "_y.pdf"
+            system.Yt.Plot.canvas.fig.savefig(filename_y, bbox_inches='tight')
 
-        myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
+            myLogger.message("plot exported as\n\t" + filename_pp + ",\n\t" + filename_x + ",\n\t" + filename_y)
 
     def add_function_to_plot(self):
         """ will plot additional functions and put it on a stack

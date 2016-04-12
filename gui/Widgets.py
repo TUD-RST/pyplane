@@ -431,13 +431,14 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         jac = self.Equilibria.approx_ep_jacobian(equilibrium.coordinates)
         
         # set system properties
-        xe = round(equilibrium.coordinates[0], 3)
-        ye = round(equilibrium.coordinates[1], 3)
+        accuracy = int(myConfig.read("Linearization","lin_round_decimals"))
+        xe = round(equilibrium.coordinates[0], accuracy)
+        ye = round(equilibrium.coordinates[1], accuracy)
         equilibrium = (xe, ye)
-        A00 = str(round(jac[0,0], 3))
-        A01 = str(round(jac[0,1], 3))
-        A11 = str(round(jac[1,1], 3))
-        A10 = str(round(jac[1,0], 3))
+        A00 = str(round(jac[0,0], accuracy))
+        A01 = str(round(jac[0,1], accuracy))
+        A11 = str(round(jac[1,1], accuracy))
+        A10 = str(round(jac[1,0], accuracy))
         x_dot_string = A00 + "*(x-(" + str(xe) + ")) + (" + A01 + ")*(y-(" + str(ye) + "))"
         y_dot_string = A10 + "*(x-(" + str(xe) + ")) + (" + A11 + ")*(y-(" + str(ye) + "))"
         equation_string = (x_dot_string, y_dot_string)

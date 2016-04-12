@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Ui_PyPlane_objectified.ui'
+# Form implementation generated from reading ui file 'Ui_PyPlane.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
