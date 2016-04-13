@@ -105,7 +105,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="2" column="0">
             <widget class="QLabel" name="pyplane_date">
              <property name="font">
               <font>
@@ -119,7 +119,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="1" column="1">
             <widget class="QLabel" name="label_platform">
              <property name="font">
               <font>
@@ -156,10 +156,17 @@
 by Klemens Fritzsche, Carsten Knoll, 
 Jan Winkler
 Technische Universität Dresden
-Institut für Regelungs- und Steuerungstheorie</string>
+Institut für Regelungs- und Steuerungstheorie
+http://www.et.tu-dresden.de/rst/</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
+           </property>
+           <property name="openExternalLinks">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -189,26 +196,35 @@ Institut für Regelungs- und Steuerungstheorie</string>
      <item>
       <widget class="QLabel" name="txtGPL">
        <property name="text">
-        <string>This code is free software, licensed under the terms of the GNU General Public License, version 3&lt;http://www.gnu.org/license/&gt;.</string>
+        <string>This code is free software, licensed under the terms of the GNU General Public License, Version 3
+http://www.gnu.org/license/</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+       <property name="openExternalLinks">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Please consult &lt;https://github.com/TUD-RST/pyplane.git&gt; for updated versions of this program!</string>
+        <string>Please consult
+&lt;https://github.com/TUD-RST/pyplane.git&gt;
+ for updated versions of this program!</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
        <property name="wordWrap">
         <bool>true</bool>
+       </property>
+       <property name="openExternalLinks">
+        <bool>false</bool>
        </property>
       </widget>
      </item>

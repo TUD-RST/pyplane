@@ -1,7 +1,7 @@
 # -*- mode: python -*-
 a = Analysis(['main.py'],
              pathex=['core', 'D:\\Users\\winkler\\Uni\\Projekte\\Allgemein\\pyplane'],
-             hiddenimports=['scipy.special._ufuncs_cxx'],
+             hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack'],
              hookspath=None,
              runtime_hooks=None)
 pyz = PYZ(a.pure)

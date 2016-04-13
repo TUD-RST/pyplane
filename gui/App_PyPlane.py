@@ -17,7 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 __author__ = 'Klemens Fritzsche'
-__version__ = "1.0"
 
 # this file contains the central class that inherits from the base gui class (VIEW) that
 # was created using qt4-designer and pyuic4
@@ -58,7 +57,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         super(PyplaneMainWindow, self).__init__()
         QtGui.QWidget.__init__(self, parent)
         self.setupUi(self)
-        self.setWindowTitle('PyPlane %s' % __version__)
+        self.setWindowTitle('PyPlane')
 
         myLogger.register_output(self.logField)
 
