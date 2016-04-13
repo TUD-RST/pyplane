@@ -176,6 +176,7 @@ class Ui_pyplane(object):
         self.logField.setFrameShadow(QtGui.QFrame.Plain)
         self.logField.setLineWidth(0)
         self.logField.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.logField.setTextInteractionFlags(QtCore.Qt.TextSelectableByKeyboard|QtCore.Qt.TextSelectableByMouse)
         self.logField.setObjectName(_fromUtf8("logField"))
         self.full.addWidget(self.logField)
         self.gridLayout.addLayout(self.full, 0, 0, 1, 1)
