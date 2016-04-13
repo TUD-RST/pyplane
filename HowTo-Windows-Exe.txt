@@ -6,17 +6,28 @@ Note: As of April 2016 PyInstaller 3.0 does not work properly
 
 2. Open the file build_exe.py and adjust the directories if required.
 
-3. In your python installation locate the directory in which the
+3. Extremely important: Make sure that in main.py the line 
+   sip.setapi('QVariant', 2)
+   is commented out:
+   #sip.setapi('QVariant', 2)
+
+4. In your python installation locate the directory in which the
    mpl_toolkits reside. Put an empty file named __init__.py into it
    (e.g. c:\Progs32\WinPython-32bit-2.7.10.3\python-2.7.10\Lib\site-packages\mpl_toolkits\__init__.py)
    
-4. Make sure that build_dir is not opened in any application or console, i.e.,
+5. Make sure that build_dir is not opened in any application or console, i.e.,
    it can be deleted by the script.
    
-4. Run build_exe.py
+6. Run build_exe.py
 
-5. The resulting exe should be found in build_dir.
+7. The resulting exe should be found in build_dir.
 
-5. If some modules are not found after launching the exe you have to manually 
+8. If some modules are not found after launching the exe you have to manually 
    import them using the --hidden-import option in build_exe. This can be
    a time-consuming trial and error procedure.
+   
+9. Change the line 
+   #sip.setapi('QVariant', 2)
+   in main.py to
+   sip.setapi('QVariant', 2)
+   to ensure that the application runs properly under native Python.
