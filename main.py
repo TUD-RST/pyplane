@@ -21,6 +21,7 @@ __author__ = 'Klemens Fritzsche'
 import sys
 import ast
 
+# Needed since apparently different default variant types are used under Windows and Linux
 import sip
 sip.setapi('QVariant', 2)
 
@@ -54,6 +55,10 @@ class MainApp(PyplaneMainWindow):
         # superclass constructor
         PyplaneMainWindow.__init__(self)
         QtCore.pyqtRemoveInputHook()
+
+        # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
+        # further actions
+        sip.setdestroyonexit(False)
 
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")
