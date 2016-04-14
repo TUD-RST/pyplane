@@ -33,7 +33,12 @@ exe_dir    = build_dir + '\\' + exename + '\\'
 paths      = 'core'
 
 
-cmd = 'pyinstaller --clean --distpath=%s --workpath=%s --paths=%s --hidden-import=scipy.special._ufuncs_cxx --icon=resources\pyplane_icon_32px.ico --name=%s %s' % (build_dir, temp_dir, paths, exename, infile)
+cmd = 'pyinstaller --clean --distpath=%s --workpath=%s --paths=%s \
+    --hidden-import=scipy.special._ufuncs_cxx\
+    --hidden-import=mpl_toolkits\
+    --hidden-import=scipy.linalg.cython_blas\
+    --hidden-import=scipy.linalg.cython_lapack\
+    --icon=resources\pyplane_icon_32px.ico --name=%s %s' % (build_dir, temp_dir, paths, exename, infile)
 print 'Calling:', cmd
 
 if os.path.exists(build_dir):

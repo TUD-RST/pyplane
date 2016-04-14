@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Ui_PyPlane_about.ui'
+# Form implementation generated from reading ui file 'gui/Ui_PyPlane_about.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -78,7 +78,7 @@ class Ui_DlgAbout(object):
         font.setWeight(75)
         self.pyplane_date.setFont(font)
         self.pyplane_date.setObjectName(_fromUtf8("pyplane_date"))
-        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.pyplane_date)
+        self.formLayout_2.setWidget(2, QtGui.QFormLayout.LabelRole, self.pyplane_date)
         self.label_platform = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(11)
@@ -86,7 +86,7 @@ class Ui_DlgAbout(object):
         font.setWeight(75)
         self.label_platform.setFont(font)
         self.label_platform.setObjectName(_fromUtf8("label_platform"))
-        self.formLayout_2.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_platform)
+        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.label_platform)
         self.pyplane_platform = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
         font.setPointSize(11)
@@ -97,7 +97,9 @@ class Ui_DlgAbout(object):
         self.formLayout_2.setWidget(2, QtGui.QFormLayout.FieldRole, self.pyplane_platform)
         self.verticalLayout_2.addLayout(self.formLayout_2)
         self.txtCopyright = QtGui.QLabel(self.verticalLayoutWidget)
+        self.txtCopyright.setAlignment(QtCore.Qt.AlignCenter)
         self.txtCopyright.setWordWrap(True)
+        self.txtCopyright.setOpenExternalLinks(False)
         self.txtCopyright.setObjectName(_fromUtf8("txtCopyright"))
         self.verticalLayout_2.addWidget(self.txtCopyright)
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
@@ -112,11 +114,13 @@ class Ui_DlgAbout(object):
         self.txtGPL = QtGui.QLabel(self.verticalLayoutWidget)
         self.txtGPL.setAlignment(QtCore.Qt.AlignCenter)
         self.txtGPL.setWordWrap(True)
+        self.txtGPL.setOpenExternalLinks(False)
         self.txtGPL.setObjectName(_fromUtf8("txtGPL"))
         self.verticalLayout.addWidget(self.txtGPL)
         self.label_2 = QtGui.QLabel(self.verticalLayoutWidget)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setWordWrap(True)
+        self.label_2.setOpenExternalLinks(False)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.verticalLayout.addWidget(self.label_2)
         self.formLayout = QtGui.QFormLayout()
@@ -165,9 +169,13 @@ class Ui_DlgAbout(object):
 "by Klemens Fritzsche, Carsten Knoll, \n"
 "Jan Winkler\n"
 "Technische Universität Dresden\n"
-"Institut für Regelungs- und Steuerungstheorie", None))
-        self.txtGPL.setText(_translate("DlgAbout", "This code is free software, licensed under the terms of the GNU General Public License, version 3<http://www.gnu.org/license/>.", None))
-        self.label_2.setText(_translate("DlgAbout", "Please consult <https://github.com/TUD-RST/pyplane.git> for updated versions of this program!", None))
+"Institut für Regelungs- und Steuerungstheorie\n"
+"http://www.et.tu-dresden.de/rst/", None))
+        self.txtGPL.setText(_translate("DlgAbout", "This code is free software, licensed under the terms of the GNU General Public License, Version 3\n"
+"http://www.gnu.org/license/", None))
+        self.label_2.setText(_translate("DlgAbout", "Please consult\n"
+"<https://github.com/TUD-RST/pyplane.git>\n"
+" for updated versions of this program!", None))
         self.label_python_version.setText(_translate("DlgAbout", "Python-Version:", None))
         self.python_version_info.setText(_translate("DlgAbout", "TextLabel", None))
         self.label_qt_version.setText(_translate("DlgAbout", "QT-Version:", None))

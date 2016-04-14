@@ -19,9 +19,10 @@
 __author__ = 'Klemens Fritzsche'
 
 import sys
-import ast
+#import ast
 
 # Needed since apparently different default variant types are used under Windows and Linux
+# The line sip.setapi(...) has to be commented out if an MS windows exe is built using PyInstaller!
 import sip
 sip.setapi('QVariant', 2)
 
@@ -59,6 +60,9 @@ class MainApp(PyplaneMainWindow):
         # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
         # further actions
         sip.setdestroyonexit(False)
+        
+        # Set Version-number
+        self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")

@@ -49,7 +49,16 @@ def exec_command(cmd, ok_return_value=0):
         print "Successfully executed command {c}".format(c=cmd)
 
 
-exec_command(["pyuic4", "gui/Ui_PyPlane_about.ui", "-o", "gui/Ui_PyPlane_about.py"])
+# ToDo: 
+# Read in all ui-files automatically and convert them
+
 exec_command(["pyuic4", "gui/Ui_PyPlane.ui", "-o", "gui/Ui_PyPlane.py"])
-exec_command(["pyuic4", "gui/Ui_PyPlane_linearization.ui", "-o", "gui/Ui_PyPlane_linearization.py"])
-exec_command(["pyrcc", "resources/icons.qrc", "-o", "gui/icons_rc.py"])
+exec_command(["pyuic4", "gui/Ui_PyPlane_about.ui", "-o", "gui/Ui_PyPlane_about.py"])
+exec_command(["pyuic4", "gui/Ui_SettingsWidget.ui", "-o", "gui/Ui_SettingsWidget.py"])
+exec_command(["pyuic4", "gui/Ui_SystemTabWidget.ui", "-o", "gui/Ui_SystemTabWidget.py"])
+exec_command(["pyuic4", "gui/Ui_ThreeDWidget.ui", "-o", "gui/Ui_ThreeDWidget.py"])
+exec_command(["pyuic4", "gui/Ui_ZoomWidgetSimple.ui", "-o", "gui/Ui_ZoomWidgetSimple.py"])
+exec_command(["pyuic4", "gui/Ui_ZoomWidget.ui", "-o", "gui/Ui_ZoomWidget.py"])
+
+# Has to be done manually since pyrcc4 is an exe
+#exec_command(["pyrcc4", "resources/icons.qrc", "-o", "gui/icons_rc.py"])

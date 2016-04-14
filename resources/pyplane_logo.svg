@@ -858,7 +858,7 @@
          id="rect4974" />
     </g>
     <rect
-       style="fill:url(#linearGradient10254);fill-opacity:1;stroke:#000000;stroke-width:10;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:url(#linearGradient10254);fill-opacity:1;stroke:#800000;stroke-width:10;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="rect4266"
        width="610"
        height="610"
@@ -1131,17 +1131,5 @@
        id="path10264"
        d="m 256.64733,338.77343 -21.7225,5.30405 8.79026,-20.56043 z"
        style="fill:#0000ff;stroke:#0000ff;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <text
-       sodipodi:linespacing="125%"
-       id="text3166"
-       y="614.40729"
-       x="81.64061"
-       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       xml:space="preserve"><tspan
-         style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;fill:#4d4d4d;font-family:Arial;-inkscape-font-specification:Arial Bold"
-         y="614.40729"
-         x="81.64061"
-         id="tspan3168"
-         sodipodi:role="line">Version 1.0</tspan></text>
   </g>
 </svg>
