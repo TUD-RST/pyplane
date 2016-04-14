@@ -159,11 +159,13 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         if index != self.tabWidget.count()-1:
             self.tabWidget.removeTab(index)
             self.systems.pop(index)
+        self.update_ui()
 
     def close_all_tabs(self):
         for i in xrange(self.tabWidget.count()-1):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
+        self.update_ui()
 
     def initialize_new_system_tab(self):
         # Create new system tab
