@@ -1,8 +1,8 @@
 About 
 ===== 
 PyPlane is a free software for phase plane analysis of second order
-dynamical systems written in PYTHON and QT4. While having less
-features, it aims to be a (partial) replacement for MATLAB's pplane.
+dynamical systems written in PYTHON and QT4 (compare MATLAB's
+[pplane](http://math.rice.edu/~dfield/)).
 
 ![Screenshot](/resources/pyplane_screenshot.png?raw=true)
 
@@ -31,7 +31,7 @@ Notes
 =====
 
 PyPlane runs either natively in a fully functional Python environment
-under Linux/ Windows/ MAC or as a stand-alone executable under MS
+under Linux/Windows/OSX or as a stand-alone executable under MS
 Windows.
 
 Prerequisites for running natively under Python
@@ -46,7 +46,7 @@ installed:
 * SymPy (tested under verison 0.7.6)
 * PyQt4 (tested under version 4.11.3)
 
-An optionally installed and accessible LaTeX/ dvipng environment
+An optionally installed and accessible LaTeX/dvipng environment
 produces much prettier results in the linearization tabs. If no LaTeX
 is installed the program is still fully functional.
 
@@ -82,22 +82,18 @@ Open issues in version 1.0
 Important files in the base directory
 =====================================
 
-main.py
--------
-Run main.py in order to launch the application
+###### main.py
+Run `python main.py` in order to launch the application
 
-make_ui.py
-----------
-Run this script in order to convert ui-files created by QT Designer to
+###### make_ui.py
+Run this script in order to convert ui-files created by QT4 Designer to
 py-files and to generate the resource file icons_rc.py
 
-build_exe.py
-------------
+###### build_exe.py
 Run this Python script on windows machines in order to build a
 stand-alone executable for MS Windows (which does not require a
 separate Python installation)
 
-InstallerPyPlane.nsi
---------------------
+###### InstallerPyPlane.nsi
 Run this script from Nullsoft installer to build an installation
 package for the stand-alone executable created by buid_exe.py
