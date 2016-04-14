@@ -22,6 +22,7 @@ import ast
 import numpy as np
 from scipy import linalg as LA
 from core.Logging import myLogger
+from core.ConfigHandler import myConfig
 from core.Canvas import Canvas
 from core.Container import Container
 
@@ -142,6 +143,32 @@ class EquilibriumHandler(object):
                                               z_equilibrium[1],
                                               'ro',
                                               picker=5)
+
+        # equilibrium point in t(x,y):
+        # TODO: let user specify this in config!
+        # TODO: show equilibria in x(t) and y(t) as well!
+        if self.myWidget.mySystem.Phaseplane.backwardCheckbox.isChecked():
+            tmin = -float(myConfig.read("Trajectories", "traj_integrationtime"))
+        else:
+            tmin = 0
+
+        if self.myWidget.mySystem.Phaseplane.forwardCheckbox.isChecked():
+            tmax = float(myConfig.read("Trajectories", "traj_integrationtime"))
+        else:
+            tmax = 0
+
+        # equilibrium line from tmin to tmax
+        if not(tmin==0 and tmax==0):
+            self.myWidget.mySystem.Txy.Plot.canvas.axes.plot([z_equilibrium[0],z_equilibrium[0]],
+                                                            [z_equilibrium[1],z_equilibrium[1]],
+                                                            [tmin, tmax], linestyle="dashed", color="r")
+        # marker t=0:
+        self.myWidget.mySystem.Txy.Plot.canvas.axes.plot([z_equilibrium[0]],
+                                                            [z_equilibrium[1]],
+                                                            [0],
+                                                            'o',
+                                                            color="r")
+        self.myWidget.mySystem.Txy.Plot.update()
 
         #~ self.stack[str(z_equilibrium)] = self.eq_plot
         equilibrium_point = Container()
@@ -270,8 +297,10 @@ class EquilibriumHandler(object):
                         #     self.plot_equilibrium(z_next, jacobian)
                         #     # add to jacobians
                         #     self.jacobians[str(z_next)] = jacobian
-        except:
+        except Exception as error:
             myLogger.error_message("Something strange happened while calculating the equilibrium")
+            if myConfig.read("Logging", "log_showDbg"):
+                myLogger.debug_message(error)
 
     def is_equilibrium(self, equilibrium):
         """ this function returns True if delivered point was calculated as an equilibrium point before
