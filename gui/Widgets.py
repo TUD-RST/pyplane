@@ -267,10 +267,6 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
         section      -- the configuration section the variable refers to
         variable     -- the name of the parameter
         """
-        
-        # read lineedit
-        #QtCore.pyqtRemoveInputHook()
-        #embed()
     
         if input_widget.metaObject().className() == "QLineEdit":
             new_value = str(input_widget.text())
@@ -321,10 +317,10 @@ class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
 
         self.param_minLabel.setText("%smin" % (self.param))
         self.param_maxLabel.setText("%smax" % (self.param))
-        self.xminLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_tmin" % (self.param))))
-        self.xmaxLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_tmax" % (self.param))))
-        self.yminLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_%smin" % (self.param, self.param))))
-        self.ymaxLineEdit.setText(str(myConfig.read("%s-t-plot" % (self.param), "%s_%smax" % (self.param, self.param))))
+        self.xminLineEdit.setText(str(myConfig.read("Plotting", "plot_tmin")))
+        self.xmaxLineEdit.setText(str(myConfig.read("Plotting", "plot_tmax")))
+        self.yminLineEdit.setText(str(myConfig.read("Plotting", "plot_%smin" % (self.param))))
+        self.ymaxLineEdit.setText(str(myConfig.read("Plotting", "plot_%smax" % (self.param))))
 
         self.Plot = Plot(self, self.Canvas)
 
@@ -348,12 +344,12 @@ class ThreeDWidget(QtGui.QWidget, Ui_ThreeDWidget):
         self.Canvas = ThreeDCanvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
 
-        self.tminLineEdit.setText(str(myConfig.read("3d-plot", "3d_tmin")))
-        self.tmaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_tmax")))
-        self.xminLineEdit.setText(str(myConfig.read("3d-plot", "3d_xmin")))
-        self.xmaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_xmax")))
-        self.yminLineEdit.setText(str(myConfig.read("3d-plot", "3d_ymin")))
-        self.ymaxLineEdit.setText(str(myConfig.read("3d-plot", "3d_ymax")))
+        self.tminLineEdit.setText(str(myConfig.read("Plotting", "plot_tmin")))
+        self.tmaxLineEdit.setText(str(myConfig.read("Plotting", "plot_tmax")))
+        self.xminLineEdit.setText(str(myConfig.read("Plotting", "plot_xmin")))
+        self.xmaxLineEdit.setText(str(myConfig.read("Plotting", "plot_xmax")))
+        self.yminLineEdit.setText(str(myConfig.read("Plotting", "plot_ymin")))
+        self.ymaxLineEdit.setText(str(myConfig.read("Plotting", "plot_ymax")))
 
         self.Plot = ThreeDPlot(self, self.Canvas)
 
@@ -378,10 +374,10 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         if myConfig.get_boolean("Trajectories", "traj_checkBackwardByDefault"):
             self.backwardCheckbox.setChecked(True)
 
-        self.xminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmin")))
-        self.xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
-        self.yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
-        self.ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
+        self.xminLineEdit.setText(str(myConfig.read("Plotting", "plot_xmin")))
+        self.xmaxLineEdit.setText(str(myConfig.read("Plotting", "plot_xmax")))
+        self.yminLineEdit.setText(str(myConfig.read("Plotting", "plot_ymin")))
+        self.ymaxLineEdit.setText(str(myConfig.read("Plotting", "plot_ymax")))
         
         self.Plot = PhasePlot(self, self.Canvas)
         self.Plot.set_window_range()

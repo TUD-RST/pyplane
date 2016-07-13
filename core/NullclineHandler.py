@@ -64,7 +64,8 @@ class NullclineHandler(object):
             X1, Y1 = np.meshgrid(a, b)
 
             try:
-                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1])
+                t = self.myWidget.mySystem.myPyplane.slider_value()
+                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1], t)
 
                 nullclines_xdot = self.myWidget.Plot.canvas.axes.contour(X1, Y1, DX1,
                                                             levels=[0],

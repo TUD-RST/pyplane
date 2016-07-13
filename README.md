@@ -1,14 +1,14 @@
 About 
 ===== 
 PyPlane is a free software for phase plane analysis of second order
-dynamical systems written in PYTHON and QT4 (compare MATLAB's
+dynamical systems written in PYTHON and QT4 (compare e.g. MATLAB's
 [pplane](http://math.rice.edu/~dfield/)).
 
 ![Screenshot](/resources/pyplane_screenshot.png?raw=true)
 
 Features:
-* Vector fields and streamlines for second order nonlinear
-dynamical systems of the form x'=f(x,y), y'=g(x,y)
+* Vector fields and streamlines for second order nonlinear time-variant
+dynamical systems of the form x'=f(x,y,t), y'=g(x,y,t)
 * Forward and backward solution trajectories for arbitrary
 initial conditions in the phase plane
 * Time dependent solutions x(t) and y(t)

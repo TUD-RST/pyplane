@@ -77,6 +77,17 @@ class MainApp(PyplaneMainWindow):
         self.FctPlotButton.clicked.connect(self.add_function)
         self.FctClearButton.clicked.connect(self.remove_functions)
 
+        self.slider.setMinimum(-100)
+        self.slider.setMaximum(100)
+        self.slider.setValue(0)
+        self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
+        self.slider.setTickInterval(20)
+        self.slider.valueChanged.connect(self.slider_func)
+        
+        self.statusBar = QtGui.QStatusBar()
+        self.setStatusBar(self.statusBar)
+        #~ self.statusBar.showMessage("test")
+
         # file menu ------------------------------------------------------
         # file
         self.file_menu = QtGui.QMenu('&System', self)
@@ -165,7 +176,23 @@ class MainApp(PyplaneMainWindow):
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
-        myLogger.initialize()      
+        myLogger.initialize()
+        
+    def slider_func(self):
+        system = self.get_current_system()
+        if system != None:
+            time = self.slider_value()
+            self.statusBar.showMessage("t = "+str(time))
+            system.set_slider_pos(time)
+            system.Phaseplane.VF.update()
+            system.Phaseplane.Nullclines.update()
+            system.Trajectories.mark_points_in_time(time)
+            system.Txy.Plot.update()
+
+    def slider_value(self):
+        slider_pos = self.slider.value()
+        slider_max = 10 # TODO: read from config
+        return slider_pos*slider_max/100.
 
     def clear_trajectories(self):
         system = self.get_current_system()

@@ -56,9 +56,10 @@ class Vectorfield(object):
             a = np.linspace(xmin - xmin / N, xmax - xmax / N, N)
             b = np.linspace(ymin - ymin / M, ymax - ymax / M, M)
             X1, Y1 = np.meshgrid(a, b)
-
+            
             try:
-                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1])
+                t = self.myWidget.mySystem.myPyplane.slider_value()
+                DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1], t)
                 M = np.hypot(DX1, DY1)
                 M[M == 0] = 1.
                 DX1_mix, DY1_mix = DX1 / M, DY1 / M

@@ -29,191 +29,127 @@ from core.ConfigHandler import myConfig
 class TrajectoryHandler(object):
     def __init__(self, parent):
         self.mySystem = parent
-        # dictionary for trajectories: first value is the initial condition,
-        # the second value contains the matplotlib-data (y(x),x(t) and y(t)) as a stack list)
+        self.trajectories = []
 
-        self.traj_dict = {}
-
-    def clear_stack(self):
-        self.traj_dict = {}
+    #~ def clear_stack(self):
+        #~ self.traj_dict = {}
 
     def plot_trajectory(self, initial_condition, forward=None, backward=None):
         """
             This function plots the solution of the differential equation
             depending on the initial condition.
-
-            In general, the trajectory consists of three elements:
-            the forward trajectory, the backward trajectory and the marker for
-            the initial condition, while each element can be turned off in the
-            config file / settings tab.
-            The elements are stored in a list. A dictionary stores this data
-            with the initalCondition as its key, and the list as the value.
-
-            Input variables:    - initialCondition (list with x and y
-                                    coordinate)
-
-            Return variables:   - none
         """
         if not forward and not backward:
             myLogger.warn_message("Please select forward and/or backward integration!")
             return False
 
         else:
-            traj_stack = []
-
+            tzero = self.mySystem.myPyplane.slider_value()
             traj_integrationtime = float(myConfig.read("Trajectories", "traj_integrationtime"))
             traj_integrationstep = float(myConfig.read("Trajectories", "traj_integrationstep"))
-            time = pl.arange(0, traj_integrationtime, traj_integrationstep)
+            num = int(traj_integrationtime/traj_integrationstep)
+            time = pl.linspace(tzero, traj_integrationtime, num)
+            negtime = pl.linspace(tzero, -traj_integrationtime, num)
+
+            trajectory = Trajectory(self.mySystem, initial_condition, tzero)
 
             if forward:
                 # while integrate.ode.successful():
                 # self.mySystem.jacobian(initialCondition)
 
                 assert isinstance(initial_condition, list)
-                self.x = integrate.odeint(self.mySystem.equation.rhs, initial_condition, time)
+                trajectory.x_forward = integrate.odeint(self.mySystem.equation.rhs, initial_condition, time)
                                           #, full_output=1, printmessg=1,       mxstep=20000)
 
-                xvalue = self.x[:, 0]  # extract the x vector
-                yvalue = self.x[:, 1]  # extract the dx/dt vector
+                xvalue = trajectory.x_forward[:, 0]  # extract the x vector
+                yvalue = trajectory.x_forward[:, 1]  # extract the dx/dt vector
+                # restrict to visible area
+                # TODO: read from lineedits / config
+                xvalue[xvalue>10]=np.nan
+                xvalue[xvalue<-10]=np.nan
+                yvalue[yvalue>10]=np.nan
+                yvalue[yvalue<-10]=np.nan
 
-                # masking xvalue (deleting invalid entries)
-                #                 xvalue = np.ma.masked_outside(xvalue,-1*self.mySystem.max_norm,
-                #                                               self.mySystem.max_norm)
-                #                 myMask = xvalue.mask
-                #                 new_time = np.ma.array(self.t, mask=myMask).compressed()
-                #                 yvalue = np.ma.array(yvalue, mask=myMask).compressed()
-                #                 xvalue = xvalue.compressed()
-                #                 QtCore.pyqtRemoveInputHook()
-                #                 embed()
-                # masking yvalue
-                #                 yvalue = np.ma.masked_outside(yvalue,-1*self.mySystem.max_norm,
-                #                                               self.mySystem.max_norm)
-                #                 myMask = yvalue.mask
-                #                 new_time = np.ma.array(self.t, mask=myMask).compressed()
-                #                 xvalue = np.ma.array(xvalue, mask=myMask)
-                #                 yvalue = yvalue.compressed()
-
-                #                 QtCore.pyqtRemoveInputHook()
-                #                 embed()
                 # plot solution in phase plane:
                 traj_ppForwardColor = myConfig.read("Trajectories", "traj_ppForwardColor")
-                plot1 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue, yvalue, traj_ppForwardColor)
-                plot3d_forward = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue,  time, traj_ppForwardColor)
+                trajectory.forward_yofx = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue, yvalue, traj_ppForwardColor)
+                trajectory.forward_tofxy= self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue,  time, traj_ppForwardColor)
 
                 zero_arrayx = np.array([10]*len(time))
                 zero_arrayy = np.array([-10]*len(time))
                 if myConfig.get_boolean("3d-plot", "3d_showXProjection"):
                     plot3d_forward_projx = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, zero_arrayx, time, "0.75")
-                    traj_stack.append(plot3d_forward_projx)
+                    trajectory.forward_projx = plot3d_forward_projx #
                 if myConfig.get_boolean("3d-plot", "3d_showYProjection"):
                     plot3d_forward_projy = self.mySystem.Txy.Plot.canvas.axes.plot(zero_arrayy, yvalue, time, "0.75")
-                    traj_stack.append(plot3d_forward_projy)
+                    trajectory.forward_projy = plot3d_forward_projy #
                 if myConfig.get_boolean("3d-plot", "3d_showYXProjection"):
-                    plot3d_forward_projxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue, 0, "0.75")
-                    traj_stack.append(plot3d_forward_projxy)
+                    plot3d_forward_projxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue, yvalue, tzero, "0.75")
+                    trajectory.forward_projxy = plot3d_forward_projxy #
 
                 # numpy array with both x and y values in pairs
                 # TODO: might be faster if xvalues or yvalues greater than self.mySystem.max_norm
                 # are masked before calculating the norm
 
-                xvalue, yvalue = self.filter_values(xvalue, yvalue)
+                #~ xvalue, yvalue = self.filter_values(xvalue, yvalue)
 
-                # THIS HAS BEEN COMMENTED
-                #                 z = np.column_stack((xvalue,yvalue))
-                #
-                #                 # put norm of each pair in numpy array
-                #                 normed_z = np.array([np.linalg.norm(v) for v in z])
-                #
-                #                 # masking
-                #                 max_norm = self.mySystem.max_norm
-                #                 masked_normed_z = np.ma.masked_greater(normed_z, max_norm)
-                #                 myMask = masked_normed_z.mask
-                #
-                #                 # new xvalue and yvalue
-                #                 xvalue = np.ma.array(xvalue, mask=myMask)
-                #                 yvalue = np.ma.array(yvalue, mask=myMask)
-                # UNTIL HERE!
+                # plot solution in x(t) and y(t):
+                trajectory.forward_xoft = self.mySystem.Xt.Plot.canvas.axes.plot(time, xvalue, color=traj_ppForwardColor)
+                trajectory.forward_yoft = self.mySystem.Yt.Plot.canvas.axes.plot(time, yvalue, color=traj_ppForwardColor)
 
-                # plot solution in x(t):
-                traj_x_tColor = myConfig.read("Trajectories", "traj_x_tColor")
-                plot2 = self.mySystem.Xt.Plot.canvas.axes.plot(time, xvalue, color=traj_x_tColor)
-
-                # plot solution in y(t):
-                traj_y_tColor = myConfig.read("Trajectories", "traj_y_tColor")
-                plot3 = self.mySystem.Yt.Plot.canvas.axes.plot(time, yvalue, color=traj_y_tColor)
-
-                # self.myLogger.message("forward trajectory done for initial condition "+str(initialCondition))
-                traj_stack.append(plot1)
-                traj_stack.append(plot2)
-                traj_stack.append(plot3)
-                traj_stack.append(plot3d_forward)
-
-            # backward in time --------------------------------------------
             if backward:
-                self.x_bw = integrate.odeint(self.mySystem.equation.n_rhs, initial_condition, time)
+                trajectory.x_backward = integrate.odeint(self.mySystem.equation.rhs, initial_condition, negtime)
                 #, full_output=1, printmessg=1)#, mxstep=5000)
                 # self.x_bw, infodict2 = integrate.odeint(self.mySystem.n_rhs,
                 # initialCondition, self.t)#, full_output=1, printmessg=1)#, mxstep=5000)
+                #~ trajectory.x_backward = self.x_bw
 
-                xvalue_bw = self.x_bw[:, 0]
-                yvalue_bw = self.x_bw[:, 1]
+                xvalue_bw = trajectory.x_backward[:, 0]
+                yvalue_bw = trajectory.x_backward[:, 1]
 
-                #                 # masking xvalue_bw (deleting invalid entries)
-                #                 xvalue_bw = np.ma.masked_outside(xvalue_bw,1*self.mySystem.max_norm,
-                #                                                  self.mySystem.max_norm)
-                #                 yvalue_bw = np.ma.array(yvalue_bw, mask=xvalue_bw.mask)
-                #                 xvalue_bw = xvalue_bw.compressed()
-                #
-                #                 # masking yvalue_bw
-                #                 yvalue_bw = np.ma.masked_outside(yvalue_bw,1*self.mySystem.max_norm,
-                #                                                  self.mySystem.max_norm)
-                #                 xvalue = np.ma.array(xvalue, mask=yvalue.mask)
-                #                 yvalue_bw = yvalue_bw.compressed()
-
-                #                 xvalue, yvalue = self.filter_values(xvalue,yvalue)
+                # restrict to visible area
+                # TODO: read from lineedits / config
+                xvalue_bw[xvalue_bw>10]=np.nan
+                xvalue_bw[xvalue_bw<-10]=np.nan
+                yvalue_bw[yvalue_bw>10]=np.nan
+                yvalue_bw[yvalue_bw<-10]=np.nan
 
                 # plot in phase plane:
                 traj_ppBackwardColor = myConfig.read("Trajectories", "traj_ppBackwardColor")
-                plot4 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, color=traj_ppBackwardColor)
-                plot3d_backward = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw,  -time, traj_ppForwardColor)
+                trajectory.backward_yofx = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, color=traj_ppBackwardColor)
+                trajectory.backward_tofxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw,  negtime, traj_ppBackwardColor)
 
                 zero_arrayx = np.array([10]*len(time))
                 zero_arrayy = np.array([-10]*len(time))
                 if myConfig.get_boolean("3d-plot", "3d_showXProjection"):
-                    plot3d_backward_projx = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, zero_arrayx, -time, "0.75")
-                    traj_stack.append(plot3d_backward_projx)
+                    plot3d_backward_projx = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, zero_arrayx, negtime, "0.75")
+                    trajectory.backward_projx = plot3d_backward_projx
                 if myConfig.get_boolean("3d-plot", "3d_showYProjection"):
-                    plot3d_backwardprojy = self.mySystem.Txy.Plot.canvas.axes.plot(zero_arrayy, yvalue_bw, -time, "0.75")
-                    traj_stack.append(plot3d_backwardprojy)
+                    plot3d_backwardprojy = self.mySystem.Txy.Plot.canvas.axes.plot(zero_arrayy, yvalue_bw, negtime, "0.75")
+                    trajectory.backward_projy = plot3d_backwardprojy
                 if myConfig.get_boolean("3d-plot", "3d_showYXProjection"):
                     plot3d_backward_projxy = self.mySystem.Txy.Plot.canvas.axes.plot(xvalue_bw, yvalue_bw, 0, "0.75")
-                    traj_stack.append(plot3d_backward_projxy)
+                    trajectory.backward_projxy = plot3d_backward_projxy
 
-                traj_stack.append(plot4)
-                traj_stack.append(plot3d_backward)
-
-            #                self.myLogger.message("backward trajectory
-            #                                       done for initial condition "+str(initialCondition))
+                # plot solution in x(t) and y(t):
+                trajectory.backward_xoft = self.mySystem.Xt.Plot.canvas.axes.plot(negtime, xvalue_bw, color=traj_ppBackwardColor)
+                trajectory.backward_yoft = self.mySystem.Yt.Plot.canvas.axes.plot(negtime, yvalue_bw, color=traj_ppBackwardColor)
 
             # mark init:
             if myConfig.get_boolean("Trajectories", "traj_plotInitPoint"):
                 traj_initPointColor = myConfig.read("Trajectories", "traj_initPointColor")
-                plot5 = self.mySystem.Phaseplane.Plot.canvas.axes.plot(initial_condition[0],
+                trajectory.init_2d = self.mySystem.Phaseplane.Plot.canvas.axes.plot(initial_condition[0],
                                                initial_condition[1],
                                                '.',
                                                color=traj_initPointColor)
                                     
-                plot3d_initpoint = self.mySystem.Txy.Plot.canvas.axes.plot([initial_condition[0]],
+                trajectory.init_3d = self.mySystem.Txy.Plot.canvas.axes.plot([initial_condition[0]],
                                                                            [initial_condition[1]],
-                                                                           [0],
+                                                                           [tzero],
                                                                            '.',
                                                                            color=traj_initPointColor)
-                traj_stack.append(plot5)
-                traj_stack.append(plot3d_initpoint)
 
-            if len(traj_stack) != 0:
-                # mark init:
-                self.traj_dict[str(initial_condition)] = traj_stack
+            self.trajectories.append(trajectory)
 
             self.mySystem.update()
 
@@ -253,24 +189,172 @@ class TrajectoryHandler(object):
             myLogger.debug_message(str(type(error)))
             myLogger.debug_message(str(error))
 
-    def remove(self, init):
-        """ this function removes a single trajectory specified by its initial value. not implemented right now
-        """
-        pass
+    def get_trajectory(self, init, tzero):
+        for i in self.trajectories:
+            if i.initpos == init and i.t0 == tzero:
+                return i
+        return None
+
+    def remove_trajectory(self, init, tzero):
+        trajectory = self.get_trajectory(init, tzero)
+        if trajectory != None:
+            trajectory.remove()
 
     def remove_all(self):
-        """ this function removes every trajectory in y(x), x(t) and y(t)
-        """
-        for i in self.traj_dict:
-            # i is the next key
-            for j in xrange(0, len(self.traj_dict[i])):
-                # j is a list element from the traj_stack
-                try:
-                    self.traj_dict[i].pop()[0].remove()
-                except Exception as error:
-                    myLogger.error_message("Could not delete trajectory")
-                    myLogger.debug_message(str(type(error)))
-                    myLogger.debug_message(str(error))
+        for i in self.trajectories:
+            i.remove()
+        self.trajectories = []
         self.mySystem.update()
 
-#~ myTrajectories = TrajectoryHandler()
+    def mark_points_in_time(self, time):
+        for i in self.trajectories:
+            i.mark_point(time)
+        self.mySystem.update()
+
+    def remove_marked_points(self):
+        for i in self.trajectories:
+            i.remove_marked_point()
+        self.mySystem.update()
+            
+class Trajectory(object):
+    def __init__(self, mySystem, initpos, t0):
+        self.mySystem = mySystem
+        self.initpos = initpos
+        self.t0 = t0
+        self.x_forward = None # raw data
+        self.x_backward = None # raw data
+
+        # 2d
+        self.init_2d = None
+
+        self.forward_yofx = None
+        self.forward_yoft = None
+        self.forward_xoft = None
+
+        self.backward_yofx = None
+        self.backward_yoft = None
+        self.backward_xoft = None        
+
+        # 3d
+        self.init_3d = None
+
+        self.forward_tofxy = None
+        self.forward_projx = None
+        self.forward_projy = None
+        self.forward_projxy = None
+
+        self.backward_tofxy = None
+        self.backward_projx = None
+        self.backward_projy = None
+        self.backward_projxy = None
+
+        self.marked_point2d = None
+        self.vertical_marker_xt = None
+        self.vertical_marker_yt = None
+        self.marked_point3d = None
+        
+    def remove(self):
+        self.trajlist = [   self.init_2d,
+                            self.forward_yofx,
+                            self.forward_yoft,
+                            self.forward_xoft,
+                            self.backward_yofx,
+                            self.backward_yoft,
+                            self.backward_xoft,
+                            self.init_3d,
+                            self.forward_tofxy,
+                            self.forward_projx,
+                            self.forward_projy,
+                            self.forward_projxy,
+                            self.backward_tofxy,
+                            self.backward_projx,
+                            self.backward_projy,
+                            self.backward_projxy ]
+
+        for i in self.trajlist:
+            if i!=None:
+                try:
+                    i.pop().remove()
+                except Exception as error:
+                    myLogger.error_message("An " + str(type(error)) + " error occured while removing a trajectory: " + str(error))
+
+        self.remove_marked_point()
+
+    def remove_marked_point(self):
+        if self.marked_point2d != None:
+            #~ try:
+            self.marked_point2d.pop().remove()
+            #~ except:
+                #~ pass
+        
+        if self.vertical_marker_xt != None:
+            #~ try:
+            self.vertical_marker_xt.remove()
+            #~ except:
+                #~ pass
+
+        if self.vertical_marker_yt != None:
+            #~ try:
+                self.vertical_marker_yt.remove()
+            #~ except:
+                #~ pass
+        
+        if self.marked_point3d != None:
+            #~ try:
+            self.marked_point3d.pop().remove()
+            #~ except:
+                #~ pass
+
+    def mark_point(self, time):
+        # this should not be called here:
+        # either there are no points yet, or their data should be
+        # modified using set_data(..)
+        # anyway, the conventions for this method seem to differ
+        # (see below)
+        self.remove_marked_point()
+
+        # search correct point in numpy array:
+        traj_integrationtime = float(myConfig.read("Trajectories", "traj_integrationtime"))
+        traj_integrationstep = float(myConfig.read("Trajectories", "traj_integrationstep"))
+        num = int(traj_integrationtime/traj_integrationstep)
+        if time>self.t0:
+            # use self.x_forward
+            time_array = pl.linspace(self.t0, traj_integrationtime, num)
+            time_ = self.find_nearest_value_in_array(time_array, time)
+            index = np.where(time_array==time_)
+            xx, yy = self.x_forward[index][0]
+        elif time<self.t0:
+            # use self.x_backward
+            negtime_array = pl.linspace(self.t0, -traj_integrationtime, num)
+            time_ = self.find_nearest_value_in_array(negtime_array, time)
+            index = np.where(negtime_array==time_)
+            xx, yy = self.x_backward[index][0]
+        else:
+            xx, yy = self.initpos
+            time_ = 0
+
+        # 2d plot
+        traj_marked_point_color = 'k' # TODO: read from config
+        #~ if self.marked_point2d == None:
+        self.marked_point2d = self.mySystem.Phaseplane.Plot.canvas.axes.plot(xx, yy, '.',
+                                            color=traj_marked_point_color)
+        #~ else:
+            #~ self.marked_point2d.set_data([xx,yy])
+        # vertical marker in x(t) and y(t)
+        self.vertical_marker_xt = self.mySystem.Xt.Plot.canvas.axes.axvline(x=time, color='0.75')
+        self.vertical_marker_yt = self.mySystem.Yt.Plot.canvas.axes.axvline(x=time, color='0.75')
+
+        # 3d plot
+        self.marked_point3d = self.mySystem.Txy.Plot.canvas.axes.plot([xx], [yy], [time_], '.',
+                                            color=traj_marked_point_color)
+        #~ -> doesn't work for some reason..
+        #~ self.vertical_marker_xt.set_data([time,0])
+        #~ self.vertical_marker_yt.set_data([time]) -> doesn't work for some reason..
+        #~ self.marked_point3d[0].set_data([xx,yy,time_])
+
+    def find_nearest_value_in_array(self, array, value):
+        # see http://stackoverflow.com/questions/2566412/find-nearest-value-in-numpy-array
+        assert isinstance(array, np.ndarray)
+        idx = (np.abs(array-value)).argmin()
+        return array[idx]
+               

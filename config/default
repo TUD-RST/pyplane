@@ -14,12 +14,14 @@ plot_topOfPlot = 0.90
 plot_leftOfPlot = 0.05
 plot_rightOfPlot = 0.975
 plot_bottomOfPlot = 0.03
+plot_xmin = -10.
+plot_xmax = 10.
+plot_ymin = -10.
+plot_ymax = 10.
+plot_tmin = -10.
+plot_tmax = 10.
 
 [Phaseplane]
-pp_xmin = -10.
-pp_xmax = 10.
-pp_ymin = -10.
-pp_ymax = 10.
 pp_showXTicks = True
 pp_showYTicks = True
 pp_showMinorTicks = True
@@ -31,10 +33,6 @@ pp_showYLabel = False
 pp_labelFontSize = 12
 
 [x-t-plot]
-x_tmin = 0.
-x_tmax = 10.
-x_xmin = -10.
-x_xmax = 10.
 x_showXTicks = True
 x_showYTicks = True
 x_showMinorTicks = True
@@ -46,10 +44,6 @@ x_showYLabel = False
 x_labelFontSize = 12
 
 [y-t-plot]
-y_tmin = 0.
-y_tmax = 10.
-y_ymin = -10.
-y_ymax = 10.
 y_showXTicks = True
 y_showYTicks = True
 y_showMinorTicks = True
@@ -61,12 +55,6 @@ y_showYLabel = False
 y_labelFontSize = 12
 
 [3d-plot]
-3d_tmin = 0.
-3d_tmax = 10.
-3d_xmin = -10
-3d_xmax = 10.
-3d_ymin = -10.
-3d_ymax = 10.
 3d_showTTicks = True
 3d_showXTicks = True
 3d_showYTicks = True
@@ -80,7 +68,7 @@ y_labelFontSize = 12
 3d_labelFontSize = 12
 3d_showXProjection = False
 3d_showYProjection = False
-3d_showYXProjection = True
+3d_showYXProjection = false
 
 [System]
 max_norm = 1e5
@@ -113,14 +101,14 @@ nc_gridPointsInY = 500
 
 [Trajectories]
 traj_ppForwardColor = #0000ff
-traj_ppBackwardColor = #0000ff
+traj_ppBackwardColor = #800080
 traj_x_tColor = #0000ff
 traj_y_tColor = #0000ff
 traj_plotInitPoint = True
 traj_initPointColor = #ff0000
 traj_checkForwardByDefault = True
 traj_checkBackwardByDefault = True
-traj_integrationtime = 10.
+traj_integrationtime = 10
 traj_integrationstep = 0.0005
 
 [Linearization]

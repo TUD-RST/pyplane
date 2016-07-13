@@ -206,17 +206,11 @@
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_8">
               <item>
-               <spacer name="horizontalSpacer">
+               <widget class="QSlider" name="slider">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
+               </widget>
               </item>
               <item>
                <widget class="QPushButton" name="FctClearButton">
@@ -351,7 +345,7 @@
      <x>0</x>
      <y>0</y>
      <width>770</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

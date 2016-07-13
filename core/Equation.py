@@ -37,16 +37,23 @@ class Equation(object):
         #~ assert isinstance(y_dot_string, str)
 
         self.x, self.y = sp.symbols('x, y')
+        self.t = sp.symbols('t')
 
         self.x_dot_expr = sp.sympify(self.x_dot_string)
         self.y_dot_expr = sp.sympify(self.y_dot_string)
 
-        self.x_dot = sp.lambdify((self.x, self.y), self.x_dot_expr, 'numpy')
-        self.y_dot = sp.lambdify((self.x, self.y), self.y_dot_expr, 'numpy')
+        self.x_dot = sp.lambdify((self.x, self.y, self.t), self.x_dot_expr, 'numpy')
+        self.y_dot = sp.lambdify((self.x, self.y, self.t), self.y_dot_expr, 'numpy')
 
         self.max_norm = float(myConfig.read("System", "max_norm"))
 
         self.set_rhs(self.x_dot_string, self.y_dot_string)
+
+    def is_time_dependent(self):
+        if ("t" in self.x_dot_string) or ("t" in self.y_dot_string):
+            return True
+        else:
+            return False
 
     def set_rhs(self, x_dot_string, y_dot_string):
         """ this function sets the differential equations
@@ -55,8 +62,8 @@ class Equation(object):
         self.x_dot_expr = sp.sympify(x_dot_string)
         self.y_dot_expr = sp.sympify(y_dot_string)
 
-        self.x_dot = sp.lambdify((self.x, self.y), self.x_dot_expr, 'numpy')
-        self.y_dot = sp.lambdify((self.x, self.y), self.y_dot_expr, 'numpy')
+        self.x_dot = sp.lambdify((self.x, self.y, self.t), self.x_dot_expr, 'numpy')
+        self.y_dot = sp.lambdify((self.x, self.y, self.t), self.y_dot_expr, 'numpy')
 
     def what_is_my_system(self):
         """ this function returns the current system
@@ -77,8 +84,8 @@ class Equation(object):
         else:
             self.x, self.y = z
 
-        xx_dot = self.x_dot(self.x, self.y)
-        yy_dot = self.y_dot(self.x, self.y)
+        xx_dot = self.x_dot(self.x, self.y, t)
+        yy_dot = self.y_dot(self.x, self.y, t)
 
         zDot = xx_dot, yy_dot
 
@@ -88,14 +95,6 @@ class Equation(object):
         #             myLogger.debug_message("norm(z dot) exceeds 1e10: norm(z')="+str(norm_zDot))
 
         return np.array([xx_dot, yy_dot])
-
-    def n_rhs(self, z, t=0):
-        """ this function is used for backward integration
-        """
-        solution = self.rhs(z, t)
-        n_solution = [x * (-1) for x in solution]
-
-        return n_solution
 
 #     def jacobian(self, X, t=0):
 #         """ return the jacobian matrix evaluated in X. """

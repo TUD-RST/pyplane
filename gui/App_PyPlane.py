@@ -75,8 +75,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         self.systems = []
 
-        self.xDotLabel.setText(u"\u1E8B(x,y) = ")
-        self.yDotLabel.setText(u"\u1E8F(x,y) = ")
+        self.xDotLabel.setText(u"\u1E8B(x,y,t) = ")
+        self.yDotLabel.setText(u"\u1E8F(x,y,t) = ")
 
         try:
             test = myConfig.read("Test", "test_var")
@@ -130,6 +130,10 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             # equation:
             self.xDotLineEdit.setText(system.equation.x_dot_string)
             self.yDotLineEdit.setText(system.equation.y_dot_string)
+            
+            # slider position
+            slider_max = 10 # TODO: read from config
+            self.slider.setValue(system.slider_pos*100/slider_max)
 
     def initialize_ui(self):
         # gets called after submitting a system (updae_ui() cannot be
@@ -140,7 +144,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.toggle_streamlines_action.setChecked(myConfig.get_boolean("Streamlines", "stream_onByDefault"))
         self.toggle_equilibrium_action.setChecked(False)
         self.toggle_nullclines_action.setChecked(myConfig.get_boolean("Nullclines", "nc_onByDefault"))
-        
+
+        self.slider.setValue(0)
 
     def new_linearized_system(self, equation, name, equilibrium):
         x_string, y_string = equation

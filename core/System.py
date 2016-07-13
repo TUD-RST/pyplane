@@ -68,6 +68,8 @@ class System(object):
         self.myPyplane.tabWidget.insertTab(0, contents, self.name)
         self.myPyplane.tabWidget.setCurrentIndex(0)
 
+        self.slider_pos = 0
+
         self.Trajectories = TrajectoryHandler(self)
         self.Functions = FunctionHandler(self)
 
@@ -98,6 +100,9 @@ class System(object):
     #~ def unpickle(self, pps_file):
         #~ self.data = pcl.load(pps_file)
         #~ assert isinstance(self.data, Container), myLogger.error_message("Could not open pps file!")
+
+    def set_slider_pos(self, slider_pos):
+        self.slider_pos = slider_pos
 
     def plot_eigenvectors(self, equilibrium):
         if self.linear:

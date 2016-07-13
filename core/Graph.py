@@ -20,6 +20,7 @@ __author__ = 'Klemens Fritzsche'
 
 import matplotlib.pyplot as plt
 import sympy as sp
+import numpy as np
 
 from core.Canvas import Canvas
 from core.Logging import myLogger
@@ -117,6 +118,9 @@ class ThreeDPlot(object):
         self.myWidget = parent
         self.canvas = canvas
 
+        self.tzero_plane_ = None
+        self.vfield3d_ = None
+
         self._section = "3d-plot"
         self._token = "3d_"
 
@@ -173,14 +177,48 @@ class ThreeDPlot(object):
         myLogger.debug_message("3d graph cleared")
 
     def update(self):
-        #~ try:
+        # TODO: should this move to the vectorfield class?
+        if self.tzero_plane_ != None:
+            self.tzero_plane_.remove()
+        if self.vfield3d_ != None:
+            self.vfield3d_.remove()
+
+        tzero = self.myWidget.mySystem.myPyplane.slider_value()
+        tmin = float(self.myWidget.tminLineEdit.text())
+        tmax = float(self.myWidget.tmaxLineEdit.text())
+        xmin = float(self.myWidget.xminLineEdit.text())
+        xmax = float(self.myWidget.xmaxLineEdit.text())
+        ymin = float(self.myWidget.yminLineEdit.text())
+        ymax = float(self.myWidget.ymaxLineEdit.text())
+        X = np.linspace(xmin, xmax, 2)
+        Y = np.linspace(ymin, ymax, 2)
+        xx, yy = np.meshgrid(X, Y)
+        self.tzero_plane_ = self.canvas.axes.plot_surface(xx, yy, tzero, color='yellow', alpha=.2, linewidth=0, zorder=-1)
+        
+        # vectorfield
+        xmin, xmax, ymin, ymax = self.get_limits()
+
+        N = int(myConfig.read("Vectorfield", "vf_gridPointsInX"))
+        M = int(myConfig.read("Vectorfield", "vf_gridPointsInY"))
+        vf_color = str(myConfig.read("Vectorfield", "vf_color"))
+        vf_arrowHeadWidth = float(myConfig.read("Vectorfield", "vf_arrowHeadWidth"))
+        vf_arrowHeadLength = float(myConfig.read("Vectorfield", "vf_arrowHeadLength"))
+        vf_arrowWidth = float(myConfig.read("Vectorfield", "vf_arrowWidth"))
+        vf_arrowPivot = str(myConfig.read("Vectorfield", "vf_arrowPivot"))
+
+        a = np.linspace(xmin - xmin / N, xmax - xmax / N, 20)
+        b = np.linspace(ymin - ymin / M, ymax - ymax / M, 20)
+        X1, Y1 = np.meshgrid(a, b)
+        
+        DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1], tzero)
+        M = np.hypot(DX1, DY1)
+        M[M == 0] = 1.
+        DX1_mix, DY1_mix = DX1 / M, DY1 / M
+
+        self.vfield3d_ = self.canvas.axes.quiver(X1, Y1, [tzero], DX1_mix, DY1_mix, [0],
+                                          length=0.5,
+                                          color=vf_color)
         self.canvas.draw()
-        #~ except Exception as e: 
-            #~ if 'latex' in e.message.lower():
-                #~ QMessageBox.critical(None, 'Error', 'LaTeX not properly installed! Please check the following message:\n\n' + e.message)
-            #~ else:
-                #~ QMessageBox.critical(None, 'Error', 'Something seems to be wrong with matplotlib. Please check the following message:\n\n' + e.message)
-            #~ exit()
 
     def set_window_range(self):        
         _tmin = float(self.myWidget.tminLineEdit.text())
@@ -191,9 +229,6 @@ class ThreeDPlot(object):
         _ymax = float(self.myWidget.ymaxLineEdit.text())
 
         if _xmin < _xmax and _ymin < _ymax and _tmin < _tmax:
-            #~ self.canvas.axes.set_xlim3d(_xmin, _xmax)
-            #~ self.canvas.axes.set_ylim3d(_ymin, _ymax)
-            #~ self.canvas.axes.set_zlim3d(_tmin, _tmax)
             self.canvas.axes.set_xlim(_xmin, _xmax)
             self.canvas.axes.set_ylim(_ymin, _ymax)
             self.canvas.axes.set_zlim(_tmin, _tmax)
