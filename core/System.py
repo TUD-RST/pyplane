@@ -113,9 +113,11 @@ class System(object):
             jac = np.array([[A11,A12],[A21,A22]], dtype=float)
 
             eigenvalues, eigenvectors = np.linalg.eig(jac)
+            eigvec0 = eigenvectors[:,0]
+            eigvec1 = eigenvectors[:,1]
             # calculating eigenvalues and eigenvectors:
             #~ eigenvalues, eigenvectors = self.Phaseplane.Equilibria.get_eigenval_eigenvec(equilibrium)
-            myLogger.message("Eigenvectors: (" + str(eigenvectors[0][0]) + ", " + str(eigenvectors[0][1]) + ") and (" + str(eigenvectors[1][0]) + ", " + str(eigenvectors[1][1]) + ")")
+            myLogger.message("Eigenvectors: (" + str(eigvec0[0]) + ", " + str(eigvec0[1]) + ") and (" + str(eigvec1[0]) + ", " + str(eigvec1[1]) + ")")
 
             # scaling
             xmin, xmax, ymin, ymax = self.Phaseplane.Plot.get_limits()
@@ -123,11 +125,11 @@ class System(object):
             d2 = (ymax-ymin)/10
             d_large = (xmax-xmin)*(ymax-ymin)
             
-            EV0 = np.array([np.real(eigenvectors[0][0]),np.real(eigenvectors[0][1])])
+            EV0 = np.array([np.real(eigvec0[0]),np.real(eigvec0[1])])
             EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
             EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
 
-            EV1 = np.array([np.real(eigenvectors[1][0]),np.real(eigenvectors[1][1])])
+            EV1 = np.array([np.real(eigvec1[0]),np.real(eigvec1[1])])
             EV1_norm = np.sqrt(EV1[0]**2+EV1[1]**2)
             EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
 
@@ -149,6 +151,10 @@ class System(object):
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
             if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV1_scaled[0], EV1_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
+
+            self.Phaseplane.Plot.add_eigenvectors_to_title(eigvec0, eigvec1)
+
+            #~ return eigvec0, eigvec1
 
     def update(self):
         self.Phaseplane.Plot.update()
