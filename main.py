@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
+"""
+    Copyright (C) 2013
+    by Klemens Fritzsche, pyplane@leckstrom.de
 
-#    Copyright (C) 2013
-#    by Klemens Fritzsche, pyplane@leckstrom.de
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 __author__ = 'Klemens Fritzsche'
 
 import sys
 #import ast
 
-# Needed since apparently different default variant types are used under Windows and Linux
-# The line sip.setapi(...) has to be commented out if an MS windows exe is built using PyInstaller!
+# Ensure that the proper PyQT4 API version is used (otherwise dialogs using
+# QVariant do not work)
 import sip
 sip.setapi('QVariant', 2)
 
@@ -50,7 +50,7 @@ class MainApp(PyplaneMainWindow):
     """
     
     __PYPLANE_VERSION = "1.1"
-    __PYPLANE_DATE = "2016-04-08"
+    __PYPLANE_DATE = "2017-06-17"
 
     def __init__(self):
         # superclass constructor

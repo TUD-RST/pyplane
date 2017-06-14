@@ -37,7 +37,7 @@ https://github.com/TUD-RST/pyplane
 Please don't hesitate to report bugs, comments, or suggestions on
 GitHub!
 
-[1] http://www.et.tu-dresden.de/rst/
+[1] https://tu-dresden.de/ing/elektrotechnik/rst
 
 
 
@@ -55,11 +55,11 @@ Prerequisites for running natively under Python
 PyPlane runs under Python version 2.7 with the following packages
 installed:
 
-* NumPy (tested under version 1.9)
-* SciPy (tested under version 0.15)
-* Matplotlib (tested under verison 1.4.3)
-* SymPy (tested under verison 0.7.6)
-* PyQt4 (tested under version 4.11.3)
+* NumPy (tested under version 1.9.3)
+* SciPy (tested under version 0.16.1)
+* Matplotlib (tested under verison 1.5.0)
+* SymPy (tested under verison 0.7.6.1)
+* PyQt4 (tested under version 4.11.4)
 
 An optionally installed and accessible LaTeX/dvipng environment
 produces much prettier results in the linearization tabs. If no LaTeX
@@ -85,9 +85,12 @@ functional.
 Double-click on the PyPlane icon on the desktop in order to launch the
 application. Start-up may take some time.
 
-Open issues in version 1.0
+Open issues in version 1.1
 ==========================
 
+* When creating the phase plane plot for a linearized system the creation of the plot title
+  via LaTeX fails. Workaround: Just plot the streamlines or an arbitrary trajectory in the plot and 
+  the title will appear.
 * PyPlane will not launch if it detects a fully functional
   LaTeX-environment in which the package type1cm.sty is
   missing. Please place this style package in your LaTeX-installation.
