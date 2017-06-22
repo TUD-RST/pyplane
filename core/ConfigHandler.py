@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ##############################################################################
 
-import ConfigParser
+import configparser
 import os
 import ast
 
@@ -30,7 +30,7 @@ class ConfigHandler(object):
     """
 
     def __init__(self):
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.optionxform = str
 
         __dir__ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

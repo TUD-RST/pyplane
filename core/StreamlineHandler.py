@@ -75,7 +75,7 @@ class StreamlineHandler(object):
             This function removes Streamlines if existent.
         """
         if len(self.sl_stack) != 0:
-            for i in xrange(0, len(self.sl_stack)):
+            for i in range(0, len(self.sl_stack)):
                 sl = self.sl_stack.pop()
 
                 try:

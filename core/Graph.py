@@ -25,7 +25,7 @@ from core.Canvas import Canvas
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 
 class Plot(object):
     def __init__(self, parent, canvas):
@@ -77,7 +77,7 @@ class Plot(object):
             Graph.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
 
         if not myConfig.get_boolean(self._section, self._token + "showSpines"):
-            for spine in Graph.axes.spines.itervalues():
+            for spine in Graph.axes.spines.values():
                 spine.set_visible(False)
 
         self.update()
@@ -173,7 +173,7 @@ class ThreeDPlot(object):
             self.canvas.axes.set_zlabel(tlabel, fontsize=label_fontsize)
 
         if not myConfig.get_boolean(self._section, self._token + "showSpines"):
-            for spine in self.canvas.axes.spines.itervalues():
+            for spine in self.canvas.axes.spines.values():
                 spine.set_visible(False)
 
         self.update()
@@ -391,7 +391,7 @@ class Graph(object):
             Graph.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
 
         if not myConfig.get_boolean(section, token + "showSpines"):
-            for spine in Graph.axes.spines.itervalues():
+            for spine in Graph.axes.spines.values():
                 spine.set_visible(False)
 
         self.update_graph(Graph)

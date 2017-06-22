@@ -21,13 +21,14 @@ __version__ = "1.0"
 
 import sys
 import ast
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-from Ui_SettingsWidget import Ui_SettingsWidget
-from Ui_SystemTabWidget import Ui_SystemTabWidget
-from Ui_ZoomWidget import Ui_ZoomWidget
-from Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
-from Ui_ThreeDWidget import Ui_ThreeDWidget
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+from gui.Ui_SettingsWidget import Ui_SettingsWidget
+from gui.Ui_SystemTabWidget import Ui_SystemTabWidget
+from gui.Ui_ZoomWidget import Ui_ZoomWidget
+from gui.Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
+from gui.Ui_ThreeDWidget import Ui_ThreeDWidget
 from core.Canvas import Canvas, ThreeDCanvas
 from core.ConfigHandler import myConfig
 from core.Graph import Plot, ThreeDPlot, PhasePlot
@@ -39,9 +40,9 @@ from core.EquilibriumHandler import EquilibriumHandler
 from core.Logging import myLogger
 
 # TODO: It may be better to move these classes to separate files.
-class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
+class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
     def __init__(self):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
         self.SetupApplyButton.clicked.connect(self.apply_config_changes)
@@ -113,7 +114,7 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
 
         for i in items:
             # add qlabel and a qlineedit to gui
-            label = QtGui.QLabel()
+            label = QtWidgets.QLabel()
             label.setObjectName(i[0])
             label.setFixedWidth(300)
 
@@ -171,7 +172,7 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
         """
-        cbox = QtGui.QComboBox(self)
+        cbox = QtWidgets.QComboBox(self)
         cbox.setObjectName(name)
         cbox.setFixedWidth(100)
         cbox.addItem("true", "true")
@@ -192,7 +193,7 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
         """
-        lineedit = QtGui.QLineEdit(self)
+        lineedit = QtWidgets.QLineEdit(self)
         lineedit.setObjectName(name)
         lineedit.setFixedWidth(100)
         lineedit.setAlignment(QtCore.Qt.AlignRight)           
@@ -211,7 +212,7 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
         """
-        ccbox = QtGui.QComboBox(self)
+        ccbox = QtWidgets.QComboBox(self)
         ccbox.setObjectName(name)
         ccbox.setFixedWidth(100)
         ccbox.addItem("red", "#ff0000")
@@ -240,12 +241,12 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
     def add_to_layout(self, Label, LineEdit):
         count = self.SectionLayout.rowCount()
 
-        self.SectionLayout.setWidget(count, QtGui.QFormLayout.LabelRole, Label)
-        self.SectionLayout.setWidget(count, QtGui.QFormLayout.FieldRole, LineEdit)
+        self.SectionLayout.setWidget(count, QtWidgets.QFormLayout.LabelRole, Label)
+        self.SectionLayout.setWidget(count, QtWidgets.QFormLayout.FieldRole, LineEdit)
 
     def remove_visible_items(self):
         if len(self.stack_visible) != 0:
-            for i in xrange(0, len(self.stack_visible)):
+            for i in range(0, len(self.stack_visible)):
                 # get element from stack which is a list
                 # with [QLineEdit,section,variable]
                 element = self.stack_visible.pop()
@@ -285,10 +286,10 @@ class SettingsWidget(QtGui.QWidget, Ui_SettingsWidget):
         myLogger.debug_message("New value for " + str(variable) + ":" + new_value)
 
 
-class SystemTabWidget(QtGui.QWidget, Ui_SystemTabWidget):
+class SystemTabWidget(QtWidgets.QWidget, Ui_SystemTabWidget):
     def __init__(self, parent):
         self.mySystem = parent
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
 
         # Embed widgets: not working, but why?!
@@ -303,10 +304,10 @@ class SystemTabWidget(QtGui.QWidget, Ui_SystemTabWidget):
         else:
             self.mySystem.myPyplane.update_ui()
 
-class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
+class ZoomWidgetSimple(QtWidgets.QWidget, Ui_ZoomWidgetSimple):
     # TODO: Is this class really necessary? -> inheritance from ZoomWidget?
     def __init__(self, parent, parameter):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
         
         self.mySystem = parent
@@ -314,7 +315,7 @@ class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
 
         # TODO: This should probably move to the Plot-class:
         self.latex_installed = self.mySystem.myPyplane.latex_installed
-        self.Layout = QtGui.QVBoxLayout(self.frame)
+        self.Layout = QtWidgets.QVBoxLayout(self.frame)
 
         self.Canvas = Canvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
@@ -333,17 +334,17 @@ class ZoomWidgetSimple(QtGui.QWidget, Ui_ZoomWidgetSimple):
         self.ZoomButton.clicked.connect(self.Canvas.toggle_zoom_mode)
         self.ZoomButton.setCheckable(True)
 
-class ThreeDWidget(QtGui.QWidget, Ui_ThreeDWidget):
+class ThreeDWidget(QtWidgets.QWidget, Ui_ThreeDWidget):
     # TODO: Is this class really necessary? -> inheritance from ZoomWidget?
     def __init__(self, parent):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
         
         self.mySystem = parent
 
         # TODO: This should probably move to the Plot-class:
         self.latex_installed = self.mySystem.myPyplane.latex_installed
-        self.Layout = QtGui.QVBoxLayout(self.frame)
+        self.Layout = QtWidgets.QVBoxLayout(self.frame)
 
         self.Canvas = ThreeDCanvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
@@ -360,14 +361,14 @@ class ThreeDWidget(QtGui.QWidget, Ui_ThreeDWidget):
         # connect buttons
         self.SetButton.clicked.connect(self.Plot.set_window_range)
 
-class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
+class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
     def __init__(self, parent):
         self.mySystem = parent
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
         
         self.latex_installed = self.mySystem.myPyplane.latex_installed
-        self.Layout = QtGui.QVBoxLayout(self.frame)
+        self.Layout = QtWidgets.QVBoxLayout(self.frame)
         self.Canvas = Canvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
 
@@ -401,7 +402,8 @@ class PhaseplaneWidget(QtGui.QWidget, Ui_ZoomWidget):
         self.RefreshButton.clicked.connect(self.Plot.refresh)
         self.CreateTrajectoryButton.clicked.connect(self.mySystem.Trajectories.create_trajectory)
         # linearize button and combo box
-        self.connect(self.linBox, QtCore.SIGNAL('activated(QString)'), self.eq_chosen)
+        # TODO: Fix next line!
+        #self.connect(self.linBox, QtCore.SIGNAL('activated(QString)'), self.eq_chosen)
         self.linButton.clicked.connect(self.linearize_system)
 
         self.hide_linearization_objects()

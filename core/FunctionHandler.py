@@ -87,9 +87,9 @@ class FunctionHandler(object):
 
     def remove_all(self):
         if len(self.fct_stack) != 0:
-            for i in xrange(0, len(self.fct_stack)):
+            for i in range(0, len(self.fct_stack)):
                 fct = self.fct_stack.pop().collections
-                for j in xrange(0, len(fct)):
+                for j in range(0, len(fct)):
                     try:
                         fct[j].remove()
                     except Exception as error:

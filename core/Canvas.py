@@ -20,8 +20,8 @@ __author__ = 'Klemens Fritzsche'
 
 import pylab as pl
 import matplotlib as mpl
-from PyQt4 import QtGui
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5 import QtWidgets
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import rc
 from matplotlib import pyplot as plt
@@ -81,7 +81,7 @@ class Canvas(FigureCanvas):
         #~ self.toolbar = NavigationToolbar(self, self.myWidget.mpl_layout, coordinates=True)
         #~ self.myWidget.mplvl.addWidget(self.toolbar)
 
-        FigureCanvas.setSizePolicy(self, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
         # zoom mode on/off

@@ -22,8 +22,8 @@ __author__ = 'Klemens Fritzsche'
 # was created using qt4-designer and pyuic4
 # the class pyplaneMainWindow represents the CONTROLLER element of the mvc-structure
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 import traceback
 import sys
 import os
@@ -33,7 +33,7 @@ from IPython import embed
 import numpy as np
 import ast
 
-from Ui_PyPlane import Ui_pyplane
+from gui.Ui_PyPlane import Ui_pyplane
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 from core.System import System
@@ -52,10 +52,10 @@ def handle_exception(error):
     tb_msg = "".join(lines)
     myLogger.append_to_file(tb_msg)
 
-class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
+class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
         super(PyplaneMainWindow, self).__init__()
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowTitle('PyPlane')
 
@@ -75,8 +75,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         self.systems = []
 
-        self.xDotLabel.setText(u"\u1E8B(x,y) = ")
-        self.yDotLabel.setText(u"\u1E8F(x,y) = ")
+        self.xDotLabel.setText("\u1E8B(x,y) = ")
+        self.yDotLabel.setText("\u1E8F(x,y) = ")
 
         try:
             test = myConfig.read("Test", "test_var")
@@ -161,7 +161,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.update_ui()
 
     def close_all_tabs(self):
-        for i in xrange(self.tabWidget.count()-1):
+        for i in range(self.tabWidget.count()-1):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
         self.update_ui()
@@ -169,7 +169,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def initialize_new_system_tab(self):
         # Create new system tab
         self.mySystemTab = SystemTabWidget()
-        contents = QtGui.QWidget(self.tabWidget)
+        contents = QtWidgets.QWidget(self.tabWidget)
         self.mySystemTab.setupUi(contents)
 
         number = self.tabWidget.count()
@@ -240,7 +240,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.load_system('library/tmp.ppf')
 
     def load_system_from_file(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self,
+        file_name = QtWidgets.QFileDialog.getOpenFileName(self,
                                                       'Open pyplane file', '',
                                                       'pyplane file (*.ppf)')
         if len(file_name) > 0:
@@ -262,7 +262,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
             system = self.systems[index]
-            file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
+            file_name, filter = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self,
                                                                            'Save pyplane file', '',
                                                                            'pyplane file (*.ppf)')
             #~ sys_pickleds = system.pickle(file_name)
@@ -292,7 +292,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """
 
         q_files_types = QtCore.QString(".png;;.svg;;.pdf;;.eps")
-        q_file_name, q_file_type = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
+        q_file_name, q_file_type = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self,
                                                                        "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
                                                                        q_files_types)
         # Ensure we are out of the QString world in the following                                                               
@@ -486,9 +486,9 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def remove_function_from_plot(self):
         if len(self.fct_stack) != 0:
-            for i in xrange(0, len(self.fct_stack)):
+            for i in range(0, len(self.fct_stack)):
                 fct = self.fct_stack.pop().collections
-                for j in xrange(0, len(fct)):
+                for j in range(0, len(fct)):
                     try:
                         fct[j].remove()
                     except Exception as error:
@@ -504,7 +504,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 if __name__ == "__main__":
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window_object = PyplaneMainWindow()
     window_object.showFullScreen()
     window_object.show()

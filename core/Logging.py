@@ -24,7 +24,7 @@ Module implementing logging capabilities
 
 import time
 
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets, QtGui
 
 defaultLogFileName = 'config/logmessages.txt'
 
@@ -74,7 +74,7 @@ class Logger(object):
 
     def register_output(self, terminal):
         # output in logField
-        assert isinstance(terminal, QtGui.QTextEdit)
+        assert isinstance(terminal, QtWidgets.QTextEdit)
         self.ppTerminal = terminal
 
     def sec_to_string(self, sec):

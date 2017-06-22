@@ -2,81 +2,71 @@
 
 # Form implementation generated from reading ui file 'gui/Ui_SystemTabWidget.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
-
-try:
-    _fromUtf8 = QtCore.QString.fromUtf8
-except AttributeError:
-    def _fromUtf8(s):
-        return s
-
-try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
-except AttributeError:
-    def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_SystemTabWidget(object):
     def setupUi(self, SystemTabWidget):
-        SystemTabWidget.setObjectName(_fromUtf8("SystemTabWidget"))
+        SystemTabWidget.setObjectName("SystemTabWidget")
         SystemTabWidget.resize(639, 541)
-        self.horizontalLayout = QtGui.QHBoxLayout(SystemTabWidget)
-        self.horizontalLayout.setMargin(0)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(SystemTabWidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
-        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.tabWidget = QtGui.QTabWidget(SystemTabWidget)
-        self.tabWidget.setTabPosition(QtGui.QTabWidget.South)
-        self.tabWidget.setObjectName(_fromUtf8("tabWidget"))
-        self.ppTab = QtGui.QWidget()
-        self.ppTab.setObjectName(_fromUtf8("ppTab"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.ppTab)
-        self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.ppLayout = QtGui.QVBoxLayout()
-        self.ppLayout.setObjectName(_fromUtf8("ppLayout"))
-        self.ppPlaceholder = QtGui.QWidget(self.ppTab)
-        self.ppPlaceholder.setObjectName(_fromUtf8("ppPlaceholder"))
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.tabWidget = QtWidgets.QTabWidget(SystemTabWidget)
+        self.tabWidget.setTabPosition(QtWidgets.QTabWidget.South)
+        self.tabWidget.setObjectName("tabWidget")
+        self.ppTab = QtWidgets.QWidget()
+        self.ppTab.setObjectName("ppTab")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.ppTab)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.ppLayout = QtWidgets.QVBoxLayout()
+        self.ppLayout.setObjectName("ppLayout")
+        self.ppPlaceholder = QtWidgets.QWidget(self.ppTab)
+        self.ppPlaceholder.setObjectName("ppPlaceholder")
         self.ppLayout.addWidget(self.ppPlaceholder)
         self.verticalLayout.addLayout(self.ppLayout)
-        self.tabWidget.addTab(self.ppTab, _fromUtf8(""))
-        self.xTab = QtGui.QWidget()
-        self.xTab.setObjectName(_fromUtf8("xTab"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.xTab)
-        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
-        self.xLayout = QtGui.QVBoxLayout()
-        self.xLayout.setObjectName(_fromUtf8("xLayout"))
-        self.xPlaceholder = QtGui.QWidget(self.xTab)
-        self.xPlaceholder.setObjectName(_fromUtf8("xPlaceholder"))
+        self.tabWidget.addTab(self.ppTab, "")
+        self.xTab = QtWidgets.QWidget()
+        self.xTab.setObjectName("xTab")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.xTab)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.xLayout = QtWidgets.QVBoxLayout()
+        self.xLayout.setObjectName("xLayout")
+        self.xPlaceholder = QtWidgets.QWidget(self.xTab)
+        self.xPlaceholder.setObjectName("xPlaceholder")
         self.xLayout.addWidget(self.xPlaceholder)
         self.verticalLayout_2.addLayout(self.xLayout)
-        self.tabWidget.addTab(self.xTab, _fromUtf8(""))
-        self.yTab = QtGui.QWidget()
-        self.yTab.setObjectName(_fromUtf8("yTab"))
-        self.verticalLayout_3 = QtGui.QVBoxLayout(self.yTab)
-        self.verticalLayout_3.setObjectName(_fromUtf8("verticalLayout_3"))
-        self.yLayout = QtGui.QVBoxLayout()
-        self.yLayout.setObjectName(_fromUtf8("yLayout"))
-        self.yPlaceholder = QtGui.QWidget(self.yTab)
-        self.yPlaceholder.setObjectName(_fromUtf8("yPlaceholder"))
+        self.tabWidget.addTab(self.xTab, "")
+        self.yTab = QtWidgets.QWidget()
+        self.yTab.setObjectName("yTab")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.yTab)
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.yLayout = QtWidgets.QVBoxLayout()
+        self.yLayout.setObjectName("yLayout")
+        self.yPlaceholder = QtWidgets.QWidget(self.yTab)
+        self.yPlaceholder.setObjectName("yPlaceholder")
         self.yLayout.addWidget(self.yPlaceholder)
         self.verticalLayout_3.addLayout(self.yLayout)
-        self.tabWidget.addTab(self.yTab, _fromUtf8(""))
-        self.tTab = QtGui.QWidget()
-        self.tTab.setObjectName(_fromUtf8("tTab"))
-        self.verticalLayout_5 = QtGui.QVBoxLayout(self.tTab)
-        self.verticalLayout_5.setObjectName(_fromUtf8("verticalLayout_5"))
-        self.tLayout = QtGui.QVBoxLayout()
-        self.tLayout.setObjectName(_fromUtf8("tLayout"))
-        self.tPlaceholder = QtGui.QWidget(self.tTab)
-        self.tPlaceholder.setObjectName(_fromUtf8("tPlaceholder"))
+        self.tabWidget.addTab(self.yTab, "")
+        self.tTab = QtWidgets.QWidget()
+        self.tTab.setObjectName("tTab")
+        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.tTab)
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_5.setObjectName("verticalLayout_5")
+        self.tLayout = QtWidgets.QVBoxLayout()
+        self.tLayout.setObjectName("tLayout")
+        self.tPlaceholder = QtWidgets.QWidget(self.tTab)
+        self.tPlaceholder.setObjectName("tPlaceholder")
         self.tLayout.addWidget(self.tPlaceholder)
         self.verticalLayout_5.addLayout(self.tLayout)
-        self.tabWidget.addTab(self.tTab, _fromUtf8(""))
+        self.tabWidget.addTab(self.tTab, "")
         self.horizontalLayout.addWidget(self.tabWidget)
 
         self.retranslateUi(SystemTabWidget)
@@ -84,9 +74,10 @@ class Ui_SystemTabWidget(object):
         QtCore.QMetaObject.connectSlotsByName(SystemTabWidget)
 
     def retranslateUi(self, SystemTabWidget):
-        SystemTabWidget.setWindowTitle(_translate("SystemTabWidget", "Form", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.ppTab), _translate("SystemTabWidget", "Phase Plane", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.xTab), _translate("SystemTabWidget", "x(t)", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.yTab), _translate("SystemTabWidget", "y(t)", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tTab), _translate("SystemTabWidget", "t(x,y)", None))
+        _translate = QtCore.QCoreApplication.translate
+        SystemTabWidget.setWindowTitle(_translate("SystemTabWidget", "Form"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.ppTab), _translate("SystemTabWidget", "Phase Plane"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.xTab), _translate("SystemTabWidget", "x(t)"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.yTab), _translate("SystemTabWidget", "y(t)"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tTab), _translate("SystemTabWidget", "t(x,y)"))
 
