@@ -295,14 +295,11 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         """ export dialog for pyplane plot
         """
 
-        q_files_types = QtCore.QString(".png;;.svg;;.pdf;;.eps")
-        q_file_name, q_file_type = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                       "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
-                                                                       q_files_types)
-        # Ensure we are out of the QString world in the following                                                               
-        file_name = str(q_file_name)
-        file_type = str(q_file_type)
-            
+        files_types = ".png;;.svg;;.pdf;;.eps"
+        file_name, file_type = QtWidgets.QFileDialog.getSaveFileName(self,
+                                                                     "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
+                                                                     files_types)
+
         if file_name:
             # Fix: Under some KDE's the file_type is returned empty because
             # of a "DBUS-error". Hence, in such cases, we try to take the 
