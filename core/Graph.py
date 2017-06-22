@@ -61,6 +61,7 @@ class Plot(object):
             self.canvas.axes.yaxis.set_ticks([])
 
         if myConfig.get_boolean(self._section, self._token + "showXLabel"):
+            pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
             xlabel = "$t$"
             self.canvas.axes.set_xlabel(xlabel, fontsize=pp_label_fontsize)
 
@@ -74,7 +75,7 @@ class Plot(object):
         if myConfig.get_boolean(self._section, self._token + "showYLabel"):
             pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
             ylabel = "$%s$" % self.myWidget.param
-            Graph.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
+            self.canvas.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
 
         if not myConfig.get_boolean(self._section, self._token + "showSpines"):
             for spine in Graph.axes.spines.values():
@@ -291,9 +292,9 @@ class PhasePlot(Plot):
 
         myLogger.message("Equilibrium Point chosen: "+str(xdata)+", "+str(ydata))
 
-        equilibrium = [map(float,xdata)[0], map(float,ydata)[0]]
-
         # obsolete:
+        #equilibrium = [map(float,xdata)[0], map(float,ydata)[0]]
+
         #~ self.myWidget.add_linearization_tab(equilibrium)
         #xdata[ind], ydata[ind])
         #print

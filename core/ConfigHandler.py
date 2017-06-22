@@ -81,7 +81,7 @@ class ConfigHandler(object):
             value = self.config.getboolean(str(section), str(variable))
             myLogger.debug_message(str(variable) + "\": " + str(value) + " (config)")
             return value
-        elif str(variable) in self.decr:
+        elif str(variable) in self.descr:
         #self.descr.has_key(str(variable)):
             # fallback value
             value = self.descr[str(variable)][1]
@@ -94,7 +94,7 @@ class ConfigHandler(object):
 
     def apply_changes(self):
         # stores temporary config
-        with open('config/default', 'wb') as configfile:
+        with open('config/default', 'w') as configfile:
             self.config.write(configfile)
 
 
