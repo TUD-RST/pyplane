@@ -60,6 +60,6 @@ exec_command(["pyuic5", "gui/Ui_ThreeDWidget.ui", "-o", "gui/Ui_ThreeDWidget.py"
 exec_command(["pyuic5", "gui/Ui_ZoomWidgetSimple.ui", "-o", "gui/Ui_ZoomWidgetSimple.py"])
 exec_command(["pyuic5", "gui/Ui_ZoomWidget.ui", "-o", "gui/Ui_ZoomWidget.py"])
 
-# Has to be done manually since pyrcc5 is an exe
-# pyrcc resources/icons.qrc -o gui/icons_rc.py
-#exec_command(["pyrcc5", "resources/icons.qrc", "-o", "gui/icons_rc.py"])
+# Has to be done manually since pyrcc5 is an exe, icoms_rc.py must go into the root directory!
+# pyrcc resources/icons.qrc -o icons_rc.py
+#exec_command(["pyrcc5", "resources/icons.qrc", "-o", "icons_rc.py"])
