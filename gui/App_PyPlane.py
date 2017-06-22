@@ -240,14 +240,18 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         self.load_system('library/tmp.ppf')
 
     def load_system_from_file(self):
-        file_name = QtWidgets.QFileDialog.getOpenFileName(self,
-                                                      'Open pyplane file', '',
-                                                      'pyplane file (*.ppf)')
+        file_name = QtWidgets.QFileDialog.getOpenFileName(self, 'Open pyplane file', '', 'pyplane file (*.ppf)')
+
+        # Function returns on some platforms a tuple: First element -> file name, second element -> filter
+        # We do only need the filter
+        if type(file_name) == tuple:
+            file_name = file_name[0]
+
         if len(file_name) > 0:
             self.load_system(file_name)
+            self.submit()
+            self.update_ui()
 
-        self.submit()
-        self.update_ui()
 
     def save_tmp_system(self):
         if len(self.systems) > 0:
