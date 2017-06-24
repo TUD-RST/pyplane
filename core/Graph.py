@@ -89,7 +89,7 @@ class Plot(object):
             title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
             title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
             dec_place = 2 # TODO: read from config
-            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$\n$\mathbf{v}_1=("+str(round(vec0[0],dec_place))+","+str(round(vec0[1],dec_place))+"$)^T\qquad\mathbf{v}_2=("+str(round(vec1[0],dec_place))+","+str(round(vec1[1],dec_place))+")^T$")
+            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$\n$\mathbf{v}_1=("+str(round(vec0[0],dec_place))+","+str(round(vec0[1],dec_place))+")^T\qquad\mathbf{v}_2=("+str(round(vec1[0],dec_place))+","+str(round(vec1[1],dec_place))+")^T$")
 
     def update(self):
         try:
