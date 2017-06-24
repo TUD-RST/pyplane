@@ -44,7 +44,7 @@ class Equation(object):
         self.x_dot = sp.lambdify((self.x, self.y), self.x_dot_expr, 'numpy')
         self.y_dot = sp.lambdify((self.x, self.y), self.y_dot_expr, 'numpy')
 
-        self.max_norm = float(myConfig.read("System", "max_norm"))
+        self.max_norm = float(myConfig.read("System", "sys_max_norm"))
 
         self.set_rhs(self.x_dot_string, self.y_dot_string)
 

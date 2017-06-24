@@ -62,7 +62,7 @@ class MainApp(PyplaneMainWindow):
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
         # check config file if shown by default
-        self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")
+        self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
         
         #~ # connect buttons ------------------------------------------------------
@@ -100,7 +100,7 @@ class MainApp(PyplaneMainWindow):
         self.toggle_terminal_action = QtWidgets.QAction('Terminal', self.show_menu)
         self.toggle_terminal_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_T)
         self.toggle_terminal_action.setCheckable(True)
-        if myConfig.get_boolean("Logging", "showTerminal"):
+        if myConfig.get_boolean("Logging", "log_showTerminal"):
             self.toggle_terminal_action.setChecked(True)
         self.toggle_terminal_action.triggered.connect(self.toggle_terminal)
         self.show_menu.addAction(self.toggle_terminal_action)

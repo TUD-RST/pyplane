@@ -61,7 +61,7 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         self.model = QtGui.QStandardItemModel(self.SectionListView)
 
         for section in sectionlist:
-            item = QtGui.QStandardItem(section)
+            item = QtGui.QStandardItem(section[0])
             # add item to the model
             self.model.appendRow(item)
 
@@ -123,7 +123,10 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
             #QtCore.pyqtRemoveInputHook()
             #embed()
 
-            item_description = str(self.descr[i[0]][0])
+            try:
+                item_description = str(self.descr[i[0]][0])
+            except KeyError:
+                myLogger.debug_message("Key %s not found in description list (key deprecated or invalid), ignoring...!" % (i[0]))
 
             label.setText(str(item_description) + ":")
             label.setAlignment(QtCore.Qt.AlignRight)

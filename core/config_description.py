@@ -1,13 +1,15 @@
 {
-    "sectionlist": ["Logging", "Plotting", "Phaseplane", "x-t-plot", "y-t-plot", "3d-plot", "System", "Vectorfield", "Streamlines",
-                    "Nullclines", "Trajectories", "Functions", "Linearization", "Export", "Test"],
+    "sectionlist": [["Logging", "log_"], ["Plotting", "plot_"], ["Phaseplane", "pp_"], ["x-t-plot", "x_"],
+                    ["y-t-plot", "y_"], ["3d-plot", "3d_"], ["System", "sys_"], ["Vectorfield", "vf_"],
+                    ["Streamlines", "stream_"], ["Nullclines", "nc_"], ["Trajectories", "traj_"], ["Functions", "fct_"],
+                    ["Linearization", "lin_"], ["Export", "pdf"], ["Test", "test_"]],
 
     "Logging": "Logging Behaviour",
     "log_showDbg": ["Enable debug mode", False],
     "log_showError": ["Show error messages", True],
     "log_showWarning": ["Show warnings", True],
     "log_showTime": ["Show time in log messages", True],
-    "showTerminal": ["Show PyPlane terminal", True],
+    "log_showTerminal": ["Show PyPlane terminal", True],
 
     "Plotting": "Change General Plotting Settings",
     "plot_background": ["Background color of plot surrounding area", "#ffffff"],
@@ -87,7 +89,7 @@
     "3d_showYXProjection": ["Show projection on t(x,y) plane", True],
 
     "System": "Settings for Numerical Integration",
-    "max_norm": ["Set norm([x,y]) threshold (see documentation)", 1e5],
+    "sys_max_norm": ["Set norm([x,y]) threshold (see documentation)", 1e5],
 
     "Vectorfield": "Vectorfield Properties",
     "vf_onByDefault": ["Turn on by default", True],
@@ -144,6 +146,6 @@
     "pdf_exportInSeparateFiles": ["Export graphs in separate pdfs", False],
 
     "Test": "This is just for testing",
-    "test_var": ["Read test variable vom config"],
+    "test_var": ["Test variable", "Read test variable vom config"],
 
 }

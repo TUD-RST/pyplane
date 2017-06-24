@@ -47,14 +47,29 @@ class ConfigHandler(object):
         # read config-descriptions from dictionary
         self.descr = {}
 
-        with open('core/config_description.py', 'r') as dict:
-            data = dict.read()
-            self.descr = ast.literal_eval(data)
+        with open('core/config_description.py', 'r') as configdict:
+            configdata = configdict.read()
+            self.descr = ast.literal_eval(configdata)
 
+        # Ensure that the configuration loaded from disk matches the requirments from the config description:
+        # Missing sections and options are added and set to the default values from the config description
+        # (See config_description.py)
+        # sectioninfo[0] -> Name of section, sectioninfo[1] -> Prefix of the section options
+        for sectioninfo in self.descr["sectionlist"]:
+            # Add missing sections
+            if not self.config.has_section(sectioninfo[0]):
+                self.config.add_section(sectioninfo[0])
+
+            # Get the option names that BEGIN with the correct prefix associated with the section
+            optionnames = [optionname for optionname in self.descr if sectioninfo[1] in optionname[0:len(sectioninfo[1])]]
+
+            # Add missing options and set them to the default values
+            for optionname in optionnames:
+                if not self.config.has_option(sectioninfo[0], optionname):
+                    self.config.set(sectioninfo[0], optionname, str(self.descr[optionname][1]))
 
     def cancle_and_reload(self):
         self.__init__()
-
 
     def write(self, section, variable, new_value):
         """ this function saves a variable to config
@@ -90,7 +105,6 @@ class ConfigHandler(object):
         else:
             #pass
             myLogger.error_message("Error! A variable was called that does not exist.")
-
 
     def apply_changes(self):
         # stores temporary config
