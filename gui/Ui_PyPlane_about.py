@@ -163,11 +163,12 @@ class Ui_DlgAbout(object):
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Faculty of Electrical and Computer Engineering</p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Institute of Control Theory</p>\n"
 "<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en</span></a></p></body></html>"))
-        self.txtGPL.setText(_translate("DlgAbout", "This program is free software, licensed under the terms of the GNU General Public License, Version 3\n"
-"http://www.gnu.org/license/"))
-        self.label_2.setText(_translate("DlgAbout", "Please consult\n"
-"<https://github.com/TUD-RST/pyplane.git>\n"
-" for updated versions of this program!"))
+        self.txtGPL.setText(_translate("DlgAbout", "<html><head/><body><p>This program is free software, licensed under the terms of the GNU General Public License, Version 3</p><p><a href=\"http://www.gnu.org/license/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.gnu.org/license/</span></a></p></body></html>"))
+        self.label_2.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please consult <a href=\"https://github.com/TUD-RST/pyplane.git\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/TUD-RST/pyplane.git</span></a> for updated versions of this program!</p></body></html>"))
         self.label_python_version.setText(_translate("DlgAbout", "Python-Version:"))
         self.python_version_info.setText(_translate("DlgAbout", "TextLabel"))
         self.label_qt_version.setText(_translate("DlgAbout", "QT-Version:"))

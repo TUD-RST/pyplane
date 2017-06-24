@@ -1,5 +1,5 @@
 [Logging]
-log_showDbg = true
+log_showDbg = false
 log_showError = True
 log_showWarning = True
 log_showTime = True
