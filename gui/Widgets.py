@@ -16,10 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-__version__ = "1.0"
 
-import sys
 import ast
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
@@ -32,12 +29,16 @@ from gui.Ui_ThreeDWidget import Ui_ThreeDWidget
 from core.Canvas import Canvas, ThreeDCanvas
 from core.ConfigHandler import myConfig
 from core.Graph import Plot, ThreeDPlot, PhasePlot
-from core.TrajectoryHandler import TrajectoryHandler
 from core.NullclineHandler import NullclineHandler
 from core.Vectorfield import Vectorfield
 from core.StreamlineHandler import StreamlineHandler
 from core.EquilibriumHandler import EquilibriumHandler
 from core.Logging import myLogger
+
+
+__author__ = 'Klemens Fritzsche'
+__version__ = "1.0"
+
 
 # TODO: It may be better to move these classes to separate files.
 class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
@@ -49,8 +50,8 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
 
         # read config-descriptions from dictionary
         self.descr = {}
-        with open('core/config_description.py', 'r') as dict:
-            data = dict.read()
+        with open('core/config_description.py', 'r') as descr:
+            data = descr.read()
             self.descr = ast.literal_eval(data)
 
         # qlistview
@@ -72,6 +73,8 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         self.SectionListView.clicked.connect(self.settings_item_clicked)
 
         self.stack_visible = []
+
+        self.section = None
 
     def apply_config_changes(self):
         myConfig.apply_changes()
@@ -120,37 +123,32 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
 
             # this does not seem to work, but why?:
             label.setAlignment(QtCore.Qt.AlignRight)
-            #QtCore.pyqtRemoveInputHook()
-            #embed()
+            # QtCore.pyqtRemoveInputHook()
+            # embed()
 
             try:
                 item_description = str(self.descr[i[0]][0])
             except KeyError:
-                myLogger.debug_message("Key %s not found in description list (key deprecated or invalid), ignoring...!" % (i[0]))
+                myLogger.debug_message("Key %s not found in description list (key deprecated or invalid), ignoring...!"
+                                       % (i[0]))
 
             label.setText(str(item_description) + ":")
             label.setAlignment(QtCore.Qt.AlignRight)
 
-            #lineedit = QtGui.QLineEdit()
-            #lineedit.setObjectName(i[0])
-            #lineedit.setFixedWidth(100)
-            #lineedit.setAlignment(QtCore.Qt.AlignRight)
             value = myConfig.read(self.section, i[0])
-            #lineedit.setText(value)
-            
+
             if (value.lower() == "true") | (value.lower() == "false"):
                 input_widget = self.create_boolean_combo_box(i[0], value)
             elif "color" in item_description.lower():
                 input_widget = self.create_color_chooser(i[0], value)
             else:
                 input_widget = self.create_line_edit(i[0], value)
-                
-            
+
             # add to stack_visible:
             # what was the 0 for?
             self.stack_visible.append([label, 0])
-            #self.stack_visible.append([lineedit, self.section, str(i[0])])
-            #self.add_to_layout(label, lineedit)
+            # self.stack_visible.append([lineedit, self.section, str(i[0])])
+            # self.add_to_layout(label, lineedit)
             self.stack_visible.append([input_widget, self.section, str(i[0])])
             self.add_to_layout(label, input_widget)
 
@@ -159,11 +157,11 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
             # http://stackoverflow.com/questions/938429/
             #                                       scope-of-python-lambda-functions-and-their-parameters/938493#938493
             # noinspection PyUnresolvedReferences
-            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
-            #lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
-            #lineedit.textEdited.connect(lambda lineedit=lineedit: self.new_value(lineedit,self.section,i[0]))
+            # lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
+            # lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, i[0]))
+            # lineedit.textEdited.connect(lambda lineedit=lineedit: self.new_value(lineedit,self.section,i[0]))
 
-            #print(self.stack_visible)
+            # print(self.stack_visible)
 
     def create_boolean_combo_box(self, name, value):
         """ 
@@ -215,6 +213,7 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
         """
+        # TODO (jcw): Implement color picker for custom color
         ccbox = QtWidgets.QComboBox(self)
         ccbox.setObjectName(name)
         ccbox.setFixedWidth(100)
@@ -225,6 +224,7 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         ccbox.addItem("cyan", "#00ffff")
         ccbox.addItem("magenta", "#ff00ff")
         ccbox.addItem("purple", "#800080")
+        ccbox.addItem("lime", "#00ff00")
         ccbox.addItem("black", "#000000")
         ccbox.addItem("dark grey", "#666666")
         ccbox.addItem("light grey", "#b3b3b3")
@@ -296,8 +296,8 @@ class SystemTabWidget(QtWidgets.QWidget, Ui_SystemTabWidget):
         self.setupUi(self)
 
         # Embed widgets: not working, but why?!
-        #~ self.ppWidget = ZoomWidget()
-        #~ self.ppLayout.addWidget(self.ppWidget)
+        # self.ppWidget = ZoomWidget()
+        # self.ppLayout.addWidget(self.ppWidget)
 
         self.mySystem.myPyplane.tabWidget.currentChanged.connect(self.on_change)
 
@@ -306,6 +306,7 @@ class SystemTabWidget(QtWidgets.QWidget, Ui_SystemTabWidget):
             self.mySystem.myPyplane.disable_menu_items()
         else:
             self.mySystem.myPyplane.update_ui()
+
 
 class ZoomWidgetSimple(QtWidgets.QWidget, Ui_ZoomWidgetSimple):
     # TODO: Is this class really necessary? -> inheritance from ZoomWidget?
@@ -337,6 +338,7 @@ class ZoomWidgetSimple(QtWidgets.QWidget, Ui_ZoomWidgetSimple):
         self.ZoomButton.clicked.connect(self.Canvas.toggle_zoom_mode)
         self.ZoomButton.setCheckable(True)
 
+
 class ThreeDWidget(QtWidgets.QWidget, Ui_ThreeDWidget):
     # TODO: Is this class really necessary? -> inheritance from ZoomWidget?
     def __init__(self, parent):
@@ -364,6 +366,7 @@ class ThreeDWidget(QtWidgets.QWidget, Ui_ThreeDWidget):
         # connect buttons
         self.SetButton.clicked.connect(self.Plot.set_window_range)
 
+
 class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
     def __init__(self, parent):
         self.mySystem = parent
@@ -374,7 +377,6 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         self.Layout = QtWidgets.QVBoxLayout(self.frame)
         self.Canvas = Canvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
-
 
         # set forward and backward integration true
         if myConfig.get_boolean("Trajectories", "traj_checkForwardByDefault"):
@@ -406,7 +408,7 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         self.CreateTrajectoryButton.clicked.connect(self.mySystem.Trajectories.create_trajectory)
         # linearize button and combo box
         # TODO: Fix next line!
-        #self.connect(self.linBox, QtCore.SIGNAL('activated(QString)'), self.eq_chosen)
+        # self.connect(self.linBox, QtCore.SIGNAL('activated(QString)'), self.eq_chosen)
         self.linButton.clicked.connect(self.linearize_system)
 
         self.hide_linearization_objects()

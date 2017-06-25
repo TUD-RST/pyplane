@@ -112,7 +112,7 @@ nc_gridPointsInX = 500
 nc_gridPointsInY = 500
 
 [Trajectories]
-traj_ppForwardColor = #0000ff
+traj_ppForwardColor = #00ff00
 traj_ppBackwardColor = #00ffff
 traj_x_tColor = #0000ff
 traj_y_tColor = #0000ff
