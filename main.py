@@ -25,15 +25,8 @@ from gui.App_PyPlane import PyplaneMainWindow
 from gui.Dlg_PyPlane_about import AboutDialog
 from core.Logging import myLogger
 
-# This import is required by PyInstaller in order to produce a
-# correctly working executable
-import tkinter.filedialog
 
 __author__ = 'Klemens Fritzsche'
-
-# Ensure that the proper PyQT4 API version is used (otherwise dialogs using
-# QVariant do not work)
-#sip.setapi('QVariant', 2)
 
 
 # noinspection PyUnresolvedReferences

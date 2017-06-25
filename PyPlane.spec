@@ -3,13 +3,13 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
-             pathex=['core', 'D:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
+a = Analysis(['D:\\winkler\\Jan\\Projekte\\PyPlane\\pyplane\\main.py'],
+             pathex=['c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq', 'D:\\winkler\\Jan\\Projekte\\PyPlane\\pyplane\\core', 'D:\\winkler\\Jan\\Projekte\\PyPlane\\pyplane'],
              binaries=[],
              datas=[],
-             hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack'],
+             hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'tkinter.filedialog'],
              hookspath=[],
-             runtime_hooks=['runtime_hook_pyqt4.py'],
+             runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True , icon='resources\\pyplane_icon_32px.ico')
+          console=True , icon='D:\\winkler\\Jan\\Projekte\\PyPlane\\pyplane\\resources\\pyplane_icon_32px.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
