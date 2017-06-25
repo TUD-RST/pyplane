@@ -16,29 +16,25 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-
 # this file contains the central class that inherits from the base gui class (VIEW) that
 # was created using qt4-designer and pyuic4
 # the class pyplaneMainWindow represents the CONTROLLER element of the mvc-structure
 
 from PyQt5 import QtWidgets
-from PyQt5 import QtCore
 import traceback
-import sys
 import os
-
 import sympy as sp
-from IPython import embed
 import numpy as np
-import ast
-
 from gui.Ui_PyPlane import Ui_pyplane
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 from core.System import System
 import core.PyPlaneHelpers as myHelpers
 from gui.Widgets import SettingsWidget
+
+
+__author__ = 'Klemens Fritzsche'
+
 
 def handle_exception(error):
 
@@ -51,6 +47,7 @@ def handle_exception(error):
     lines = traceback.format_exception(exc_type, exc_value, exc_tb)
     tb_msg = "".join(lines)
     myLogger.append_to_file(tb_msg)
+
 
 class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
@@ -140,16 +137,14 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         self.toggle_streamlines_action.setChecked(myConfig.get_boolean("Streamlines", "stream_onByDefault"))
         self.toggle_equilibrium_action.setChecked(False)
         self.toggle_nullclines_action.setChecked(myConfig.get_boolean("Nullclines", "nc_onByDefault"))
-        
 
     def new_linearized_system(self, equation, name, equilibrium):
-        x_string, y_string = equation
         xe, ye = equilibrium
         system = System(self, equation, name=name, linear=True)
         self.systems.insert(0, system)
         system.plot_eigenvectors(equilibrium)
 
-        myLogger.message("------ new linearized system created ------")
+        myLogger.message("------ new linearized system created at xe = " + str(xe) + ", ye = " + str(ye) + " ------")
         myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
         myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
 
@@ -165,25 +160,6 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
         self.update_ui()
-
-    def initialize_new_system_tab(self):
-        # Create new system tab
-        self.mySystemTab = SystemTabWidget()
-        contents = QtWidgets.QWidget(self.tabWidget)
-        self.mySystemTab.setupUi(contents)
-
-        number = self.tabWidget.count()
-        self.tabWidget.insertTab(0, contents, "System %s" % (str(number)))
-        self.tabWidget.setCurrentIndex(0)
-
-        # TODO: check why this can't be done within the SystemTabWidget
-        #       class!
-        self.ppWidget = PhaseplaneWidget(self)
-        self.mySystemTab.ppLayout.addWidget(self.ppWidget)
-        self.xWidget = ZoomWidgetSimple()
-        self.mySystemTab.xLayout.addWidget(self.xWidget)
-        self.yWidget = ZoomWidgetSimple()
-        self.mySystemTab.yLayout.addWidget(self.yWidget)
 
     def new_system(self, equation):
         system = System(self, equation)
@@ -222,14 +198,13 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         """ load previous system (from tmp file) """
 
         with open(file_name, 'r') as sysfile:
-    # TODO: This does not work, but how would i find a way to store a
-    #       system?
-            #~ pps_file = pcl.loads(sysfile.read())
-            #~ system = System(self)
-            #~ system.unpickle(pps_file)
-            #~ self.systems.insert(0, system)
-            #~ self.xDotLineEdit.setText(sysfile.readline().strip())
-            #~ self.yDotLineEdit.setText(sysfile.readline().strip())
+            # TODO: This does not work, but how would i find a way to store a system?
+            # pps_file = pcl.loads(sysfile.read())
+            # system = System(self)
+            # system.unpickle(pps_file)
+            # self.systems.insert(0, system)
+            # self.xDotLineEdit.setText(sysfile.readline().strip())
+            # self.yDotLineEdit.setText(sysfile.readline().strip())
             xdot_string = str(sysfile.readline())
             ydot_string = str(sysfile.readline())
             self.xDotLineEdit.setText(xdot_string.strip())
@@ -252,7 +227,6 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
             self.submit()
             self.update_ui()
 
-
     def save_tmp_system(self):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
@@ -266,15 +240,13 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
             system = self.systems[index]
-            file_name, filter = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                           'Save pyplane file', '',
-                                                                           'pyplane file (*.ppf)')
-            #~ sys_pickleds = system.pickle(file_name)
-            #~ system.equation.what_is_my_system()
+            file_name, filter = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self, "Save pyplane file", "",
+                                                                               "pyplane file (*.ppf)")
+            # sys_pickleds = system.pickle(file_name)
+            # system.equation.what_is_my_system()
             self.save_system(file_name, system.equation.what_is_my_system())
         else:
             myLogger.error_message("There is no system to save!")
-
 
     def save_system(self, file_name, system):
         x_dot_string = str(system[0])
@@ -296,9 +268,9 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         """
 
         files_types = ".png;;.svg;;.pdf;;.eps"
-        file_name, file_type = QtWidgets.QFileDialog.getSaveFileName(self,
-                                                                     "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
-                                                                     files_types)
+        file_name, file_type = \
+            QtWidgets.QFileDialog.getSaveFileName(self, "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
+                                                  files_types)
 
         if file_name:
             # Fix: Under some KDE's the file_type is returned empty because
@@ -430,6 +402,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         self.y = sp.symbols('y')
         self.fct = None
 
+        fct_txt = ""
         try:
             fct_txt = str(self.yLineEdit.text())
         except UnicodeEncodeError as exc:
