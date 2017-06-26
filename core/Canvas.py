@@ -16,8 +16,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-
 import pylab as pl
 import matplotlib as mpl
 from PyQt5 import QtWidgets
@@ -28,6 +26,9 @@ from matplotlib import pyplot as plt
 from core.Toolbar import Toolbar
 from core.ConfigHandler import myConfig
 from core.Logging import myLogger
+
+
+__author__ = 'Klemens Fritzsche'
 
 
 class Canvas(FigureCanvas):
@@ -61,7 +62,11 @@ class Canvas(FigureCanvas):
 
         self.axes = self.fig.add_subplot(111)
 
-        self.axes.set_axis_bgcolor(plot_CanvasBackground)
+        # Matplotlib 2.0 vs. 1.5 behavior...
+        try:
+            self.axes.set_facecolor(plot_CanvasBackground)  # Matplotlib >= 2
+        except AttributeError:
+            self.axes.set_axis_bgcolor(plot_CanvasBackground)   # Matplotlib < 2
 
         # matplotlib background transparent (issues on old versions?)
         if myConfig.get_boolean("Plotting", "plot_backgroundTransparent"):
@@ -78,8 +83,8 @@ class Canvas(FigureCanvas):
         self.navigationToolbar = Toolbar(self)
 
         # TODO: rather as a real toolbar:
-        #~ self.toolbar = NavigationToolbar(self, self.myWidget.mpl_layout, coordinates=True)
-        #~ self.myWidget.mplvl.addWidget(self.toolbar)
+        # self.toolbar = NavigationToolbar(self, self.myWidget.mpl_layout, coordinates=True)
+        # self.myWidget.mplvl.addWidget(self.toolbar)
 
         FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
@@ -106,7 +111,6 @@ class ThreeDCanvas(Canvas):
         super(ThreeDCanvas, self).__init__(parent, latex_installed)
         self.myWidget = parent
         self.axes = self.fig.gca(projection='3d')
-
 
         self.axes.set_zlabel("t")
         self.axes.set_ylabel("y")
