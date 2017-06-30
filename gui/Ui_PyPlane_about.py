@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/Ui_PyPlane_about.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -11,17 +11,17 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_DlgAbout(object):
     def setupUi(self, DlgAbout):
         DlgAbout.setObjectName("DlgAbout")
-        DlgAbout.resize(579, 422)
+        DlgAbout.resize(601, 478)
         self.buttonBox = QtWidgets.QDialogButtonBox(DlgAbout)
-        self.buttonBox.setGeometry(QtCore.QRect(230, 390, 341, 32))
+        self.buttonBox.setGeometry(QtCore.QRect(250, 440, 341, 32))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.grpInfo = QtWidgets.QGroupBox(DlgAbout)
-        self.grpInfo.setGeometry(QtCore.QRect(10, 3, 561, 391))
+        self.grpInfo.setGeometry(QtCore.QRect(10, 3, 581, 431))
         self.grpInfo.setObjectName("grpInfo")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.grpInfo)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 541, 361))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 20, 561, 401))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -48,6 +48,7 @@ class Ui_DlgAbout(object):
         font.setBold(True)
         font.setWeight(75)
         self.pyplane_version_info.setFont(font)
+        self.pyplane_version_info.setWordWrap(True)
         self.pyplane_version_info.setObjectName("pyplane_version_info")
         self.formLayout_2.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.pyplane_version_info)
         self.label_pyplane_date = QtWidgets.QLabel(self.verticalLayoutWidget)
@@ -82,13 +83,43 @@ class Ui_DlgAbout(object):
         self.pyplane_platform.setFont(font)
         self.pyplane_platform.setObjectName("pyplane_platform")
         self.formLayout_2.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.pyplane_platform)
+        self.label_python_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_python_version.setObjectName("label_python_version")
+        self.formLayout_2.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.label_python_version)
+        self.label_qt_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_qt_version.setObjectName("label_qt_version")
+        self.formLayout_2.setWidget(4, QtWidgets.QFormLayout.LabelRole, self.label_qt_version)
+        self.label_pyqt_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_pyqt_version.setObjectName("label_pyqt_version")
+        self.formLayout_2.setWidget(5, QtWidgets.QFormLayout.LabelRole, self.label_pyqt_version)
+        self.label_matplotlib_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_matplotlib_version.setObjectName("label_matplotlib_version")
+        self.formLayout_2.setWidget(6, QtWidgets.QFormLayout.LabelRole, self.label_matplotlib_version)
+        self.python_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.python_version_info.setObjectName("python_version_info")
+        self.formLayout_2.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.python_version_info)
+        self.qt_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.qt_version_info.setObjectName("qt_version_info")
+        self.formLayout_2.setWidget(4, QtWidgets.QFormLayout.FieldRole, self.qt_version_info)
+        self.pyqt_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.pyqt_version_info.setObjectName("pyqt_version_info")
+        self.formLayout_2.setWidget(5, QtWidgets.QFormLayout.FieldRole, self.pyqt_version_info)
+        self.matplotlib_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.matplotlib_version_info.setObjectName("matplotlib_version_info")
+        self.formLayout_2.setWidget(6, QtWidgets.QFormLayout.FieldRole, self.matplotlib_version_info)
+        self.label_numpy_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_numpy_version.setObjectName("label_numpy_version")
+        self.formLayout_2.setWidget(7, QtWidgets.QFormLayout.LabelRole, self.label_numpy_version)
+        self.label_sympy_version = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.label_sympy_version.setObjectName("label_sympy_version")
+        self.formLayout_2.setWidget(8, QtWidgets.QFormLayout.LabelRole, self.label_sympy_version)
+        self.numpy_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.numpy_version_info.setObjectName("numpy_version_info")
+        self.formLayout_2.setWidget(7, QtWidgets.QFormLayout.FieldRole, self.numpy_version_info)
+        self.sympy_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.sympy_version_info.setObjectName("sympy_version_info")
+        self.formLayout_2.setWidget(8, QtWidgets.QFormLayout.FieldRole, self.sympy_version_info)
         self.verticalLayout_2.addLayout(self.formLayout_2)
-        self.txtCopyright = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.txtCopyright.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
-        self.txtCopyright.setWordWrap(True)
-        self.txtCopyright.setOpenExternalLinks(False)
-        self.txtCopyright.setObjectName("txtCopyright")
-        self.verticalLayout_2.addWidget(self.txtCopyright)
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
         self.label = QtWidgets.QLabel(self.verticalLayoutWidget)
         self.label.setMaximumSize(QtCore.QSize(200, 200))
@@ -98,45 +129,18 @@ class Ui_DlgAbout(object):
         self.label.setObjectName("label")
         self.horizontalLayout_2.addWidget(self.label)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
+        self.txtCopyright = QtWidgets.QLabel(self.verticalLayoutWidget)
+        self.txtCopyright.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.txtCopyright.setWordWrap(True)
+        self.txtCopyright.setOpenExternalLinks(False)
+        self.txtCopyright.setObjectName("txtCopyright")
+        self.verticalLayout.addWidget(self.txtCopyright)
         self.txtGPL = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.txtGPL.setAlignment(QtCore.Qt.AlignCenter)
+        self.txtGPL.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.txtGPL.setWordWrap(True)
         self.txtGPL.setOpenExternalLinks(False)
         self.txtGPL.setObjectName("txtGPL")
         self.verticalLayout.addWidget(self.txtGPL)
-        self.label_2 = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_2.setWordWrap(True)
-        self.label_2.setOpenExternalLinks(False)
-        self.label_2.setObjectName("label_2")
-        self.verticalLayout.addWidget(self.label_2)
-        self.formLayout = QtWidgets.QFormLayout()
-        self.formLayout.setObjectName("formLayout")
-        self.label_python_version = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_python_version.setObjectName("label_python_version")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.LabelRole, self.label_python_version)
-        self.python_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.python_version_info.setObjectName("python_version_info")
-        self.formLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.python_version_info)
-        self.label_qt_version = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_qt_version.setObjectName("label_qt_version")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_qt_version)
-        self.label_pyqt_version = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_pyqt_version.setObjectName("label_pyqt_version")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.LabelRole, self.label_pyqt_version)
-        self.label_matplotlib_version = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.label_matplotlib_version.setObjectName("label_matplotlib_version")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.LabelRole, self.label_matplotlib_version)
-        self.qt_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.qt_version_info.setObjectName("qt_version_info")
-        self.formLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.qt_version_info)
-        self.pyqt_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.pyqt_version_info.setObjectName("pyqt_version_info")
-        self.formLayout.setWidget(2, QtWidgets.QFormLayout.FieldRole, self.pyqt_version_info)
-        self.matplotlib_version_info = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.matplotlib_version_info.setObjectName("matplotlib_version_info")
-        self.formLayout.setWidget(3, QtWidgets.QFormLayout.FieldRole, self.matplotlib_version_info)
-        self.verticalLayout.addLayout(self.formLayout)
 
         self.retranslateUi(DlgAbout)
         self.buttonBox.accepted.connect(DlgAbout.accept)
@@ -153,29 +157,31 @@ class Ui_DlgAbout(object):
         self.pyplane_date.setText(_translate("DlgAbout", "TextLabel"))
         self.label_platform.setText(_translate("DlgAbout", "Platform:"))
         self.pyplane_platform.setText(_translate("DlgAbout", "TextLabel"))
-        self.txtCopyright.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Copyright (C) 2013-2017</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">by Klemens Fritzsche and Jan Winkler</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Technische Universität Dresden</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Faculty of Electrical and Computer Engineering</p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Institute of Control Theory</p>\n"
-"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en</span></a></p></body></html>"))
-        self.txtGPL.setText(_translate("DlgAbout", "<html><head/><body><p>This program is free software, licensed under the terms of the GNU General Public License, Version 3</p><p><a href=\"http://www.gnu.org/license/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.gnu.org/license/</span></a></p></body></html>"))
-        self.label_2.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please consult <a href=\"https://github.com/TUD-RST/pyplane.git\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/TUD-RST/pyplane.git</span></a> for updated versions of this program!</p></body></html>"))
         self.label_python_version.setText(_translate("DlgAbout", "Python-Version:"))
-        self.python_version_info.setText(_translate("DlgAbout", "TextLabel"))
         self.label_qt_version.setText(_translate("DlgAbout", "QT-Version:"))
         self.label_pyqt_version.setText(_translate("DlgAbout", "PyQT-Version:"))
         self.label_matplotlib_version.setText(_translate("DlgAbout", "Matplotlib-Version:"))
+        self.python_version_info.setText(_translate("DlgAbout", "TextLabel"))
         self.qt_version_info.setText(_translate("DlgAbout", "TextLabel"))
         self.pyqt_version_info.setText(_translate("DlgAbout", "TextLabel"))
         self.matplotlib_version_info.setText(_translate("DlgAbout", "TextLabel"))
+        self.label_numpy_version.setText(_translate("DlgAbout", "NumPy-Version:"))
+        self.label_sympy_version.setText(_translate("DlgAbout", "SymPy-Version:"))
+        self.numpy_version_info.setText(_translate("DlgAbout", "TextLabel"))
+        self.sympy_version_info.setText(_translate("DlgAbout", "TextLabel"))
+        self.txtCopyright.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Copyright (C) 2013-2017 by Klemens Fritzsche and Jan Winkler</p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Technische Universität Dresden </p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Faculty of Electrical and Computer Engineering - Institute of Control Theory</p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en</span></a></p></body></html>"))
+        self.txtGPL.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This program is free software, licensed under the terms of the GNU General Public License, Version 3: <a href=\"http://www.gnu.org/license/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.gnu.org/license/</span></a></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please consult <a href=\"https://github.com/TUD-RST/pyplane.git\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/TUD-RST/pyplane.git</span></a> for updated versions of this program!</p></body></html>"))
 
 import icons_rc

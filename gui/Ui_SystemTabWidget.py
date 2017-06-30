@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/Ui_SystemTabWidget.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -22,7 +22,6 @@ class Ui_SystemTabWidget(object):
         self.ppTab = QtWidgets.QWidget()
         self.ppTab.setObjectName("ppTab")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.ppTab)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.ppLayout = QtWidgets.QVBoxLayout()
         self.ppLayout.setObjectName("ppLayout")
@@ -34,7 +33,6 @@ class Ui_SystemTabWidget(object):
         self.xTab = QtWidgets.QWidget()
         self.xTab.setObjectName("xTab")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.xTab)
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.xLayout = QtWidgets.QVBoxLayout()
         self.xLayout.setObjectName("xLayout")
@@ -46,7 +44,6 @@ class Ui_SystemTabWidget(object):
         self.yTab = QtWidgets.QWidget()
         self.yTab.setObjectName("yTab")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.yTab)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.yLayout = QtWidgets.QVBoxLayout()
         self.yLayout.setObjectName("yLayout")
@@ -58,7 +55,6 @@ class Ui_SystemTabWidget(object):
         self.tTab = QtWidgets.QWidget()
         self.tTab.setObjectName("tTab")
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.tTab)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.tLayout = QtWidgets.QVBoxLayout()
         self.tLayout.setObjectName("tLayout")

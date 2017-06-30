@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'gui/Ui_PyPlane.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -52,7 +52,7 @@ class Ui_pyplane(object):
         sizePolicy.setHeightForWidth(self.submitButton.sizePolicy().hasHeightForWidth())
         self.submitButton.setSizePolicy(sizePolicy)
         self.submitButton.setMinimumSize(QtCore.QSize(0, 0))
-        self.submitButton.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.submitButton.setMaximumSize(QtCore.QSize(120, 16777215))
         self.submitButton.setObjectName("submitButton")
         self.xDotBox.addWidget(self.submitButton)
         self.syst.addLayout(self.xDotBox)
@@ -71,7 +71,7 @@ class Ui_pyplane(object):
         sizePolicy.setHeightForWidth(self.clearButton.sizePolicy().hasHeightForWidth())
         self.clearButton.setSizePolicy(sizePolicy)
         self.clearButton.setMinimumSize(QtCore.QSize(0, 0))
-        self.clearButton.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.clearButton.setMaximumSize(QtCore.QSize(120, 16777215))
         self.clearButton.setObjectName("clearButton")
         self.yDotBox.addWidget(self.clearButton)
         self.syst.addLayout(self.yDotBox)
@@ -101,7 +101,7 @@ class Ui_pyplane(object):
         sizePolicy.setHeightForWidth(self.FctPlotButton.sizePolicy().hasHeightForWidth())
         self.FctPlotButton.setSizePolicy(sizePolicy)
         self.FctPlotButton.setMinimumSize(QtCore.QSize(0, 0))
-        self.FctPlotButton.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.FctPlotButton.setMaximumSize(QtCore.QSize(120, 16777215))
         self.FctPlotButton.setObjectName("FctPlotButton")
         self.horizontalLayout_6.addWidget(self.FctPlotButton)
         self.funcBox.addLayout(self.horizontalLayout_6)
@@ -118,7 +118,7 @@ class Ui_pyplane(object):
         sizePolicy.setHeightForWidth(self.FctClearButton.sizePolicy().hasHeightForWidth())
         self.FctClearButton.setSizePolicy(sizePolicy)
         self.FctClearButton.setMinimumSize(QtCore.QSize(0, 0))
-        self.FctClearButton.setMaximumSize(QtCore.QSize(100, 16777215))
+        self.FctClearButton.setMaximumSize(QtCore.QSize(120, 16777215))
         self.FctClearButton.setObjectName("FctClearButton")
         self.horizontalLayout_8.addWidget(self.FctClearButton)
         self.verticalLayout_10.addLayout(self.horizontalLayout_8)
@@ -135,7 +135,6 @@ class Ui_pyplane(object):
         self.tab.setMaximumSize(QtCore.QSize(750, 16777215))
         self.tab.setObjectName("tab")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.tab)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.SettingsLayout = QtWidgets.QVBoxLayout()
         self.SettingsLayout.setSpacing(6)
@@ -170,7 +169,7 @@ class Ui_pyplane(object):
         self.gridLayout.addLayout(self.full, 0, 0, 1, 1)
         pyplane.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(pyplane)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 30))
         self.menubar.setObjectName("menubar")
         pyplane.setMenuBar(self.menubar)
         self.actionNew = QtWidgets.QAction(pyplane)

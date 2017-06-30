@@ -11,6 +11,8 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QT_VERSION_STR
 from PyQt5.Qt import PYQT_VERSION_STR
 import matplotlib as mp
+import numpy as np
+import sympy as sp
 
 from .Ui_PyPlane_about import Ui_DlgAbout
 
@@ -34,6 +36,8 @@ class AboutDialog(QtWidgets.QDialog, Ui_DlgAbout):
         self.qt_version_info.setText(QT_VERSION_STR)
         self.pyqt_version_info.setText(PYQT_VERSION_STR)
         self.matplotlib_version_info.setText(mp.__version__)
+        self.numpy_version_info.setText(np.version.version)
+        self.sympy_version_info.setText(sp.__version__)
 
         self.show()
         self.buttonBox.button(QtWidgets.QDialogButtonBox.Ok).clicked.connect(self.close)
