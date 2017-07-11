@@ -263,7 +263,7 @@ class TrajectoryHandler(object):
         """
         for i in self.traj_dict:
             # i is the next key
-            for j in xrange(0, len(self.traj_dict[i])):
+            for j in range(0, len(self.traj_dict[i])):
                 # j is a list element from the traj_stack
                 try:
                     self.traj_dict[i].pop()[0].remove()

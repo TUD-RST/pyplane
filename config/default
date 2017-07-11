@@ -3,7 +3,7 @@ log_showDbg = false
 log_showError = True
 log_showWarning = True
 log_showTime = True
-showTerminal = False
+log_showTerminal = True
 
 [Plotting]
 plot_background = #ffffff
@@ -71,7 +71,7 @@ y_labelFontSize = 12
 3d_showXTicks = True
 3d_showYTicks = True
 3d_showMinorTicks = True
-3d_showSpines = false
+3d_showSpines = true
 3d_showGrid = false
 3d_showTitle = True
 3d_showTLabel = true
@@ -83,7 +83,7 @@ y_labelFontSize = 12
 3d_showYXProjection = True
 
 [System]
-max_norm = 1e5
+sys_max_norm = 100000.0
 
 [Vectorfield]
 vf_onByDefault = True
@@ -112,8 +112,8 @@ nc_gridPointsInX = 500
 nc_gridPointsInY = 500
 
 [Trajectories]
-traj_ppForwardColor = #0000ff
-traj_ppBackwardColor = #0000ff
+traj_ppForwardColor = #00ff00
+traj_ppBackwardColor = #00ffff
 traj_x_tColor = #0000ff
 traj_y_tColor = #0000ff
 traj_plotInitPoint = True

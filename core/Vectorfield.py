@@ -82,7 +82,7 @@ class Vectorfield(object):
         """ This function removes the vector field if existent.
         """
         if len(self.stack) != 0:
-            for i in xrange(0, len(self.stack)):
+            for i in range(0, len(self.stack)):
                 try:
                     self.stack.pop().remove()
                     myLogger.message("Vector field removed")

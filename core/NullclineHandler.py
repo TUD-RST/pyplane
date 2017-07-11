@@ -94,9 +94,9 @@ class NullclineHandler(object):
 
     def remove(self):
         if len(self.nc_stack) != 0:
-            for i in xrange(0, len(self.nc_stack)):
+            for i in range(0, len(self.nc_stack)):
                 nc = self.nc_stack.pop().collections
-                for j in xrange(0, len(nc)):
+                for j in range(0, len(nc)):
                     try:
                         nc[j].remove()
                     except Exception as error:

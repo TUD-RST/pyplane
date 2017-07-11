@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>770</width>
-    <height>757</height>
+    <width>800</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -86,7 +86,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>100</width>
+                <width>120</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -129,7 +129,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>100</width>
+                <width>120</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -190,7 +190,7 @@
               </property>
               <property name="maximumSize">
                <size>
-                <width>100</width>
+                <width>120</width>
                 <height>16777215</height>
                </size>
               </property>
@@ -234,7 +234,7 @@
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>100</width>
+                  <width>120</width>
                   <height>16777215</height>
                  </size>
                 </property>
@@ -271,7 +271,7 @@
         <widget class="QWidget" name="tab">
          <property name="maximumSize">
           <size>
-           <width>720</width>
+           <width>750</width>
            <height>16777215</height>
           </size>
          </property>
@@ -281,6 +281,9 @@
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
            <layout class="QVBoxLayout" name="SettingsLayout">
+            <property name="spacing">
+             <number>6</number>
+            </property>
             <item>
              <widget class="QWidget" name="SettingsWidgetPlaceholder" native="true"/>
             </item>
@@ -312,7 +315,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>7</pointsize>
+          <pointsize>8</pointsize>
          </font>
         </property>
         <property name="mouseTracking">
@@ -350,8 +353,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>770</width>
-     <height>21</height>
+     <width>800</width>
+     <height>30</height>
     </rect>
    </property>
   </widget>
@@ -410,7 +413,7 @@
  <connections>
   <connection>
    <sender>actionQuit</sender>
-   <signal>activated()</signal>
+   <signal>triggered()</signal>
    <receiver>pyplane</receiver>
    <slot>close()</slot>
    <hints>

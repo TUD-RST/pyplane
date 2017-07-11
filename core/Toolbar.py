@@ -18,7 +18,8 @@
 
 __author__ = 'Klemens Fritzsche'
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
+from PyQt5 import QtGui
 from matplotlib.backend_bases import NavigationToolbar2 as NavigationToolbar
 from matplotlib.backends.backend_qt4 import cursord
 
@@ -39,12 +40,12 @@ class Toolbar(NavigationToolbar):
         w = abs(x1 - x0)
         h = abs(y1 - y0)
 
-        rect = [int(val) for val in min(x0, x1), min(y0, y1), w, h]
+        rect = [int(val) for val in (min(x0, x1), min(y0, y1), w, h)]
         self.canvas.drawRectangle(rect)
 
     def set_cursor(self, cursor):
-        QtGui.QApplication.restoreOverrideCursor()
-        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(cursord[cursor]))
+        QtWidgets.QApplication.restoreOverrideCursor()
+        QtWidgets.QApplication.setOverrideCursor(QtGui.QCursor(cursord[cursor]))
 
 if __package__ is None:
     __package__ = "core.toolbar"

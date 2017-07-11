@@ -16,11 +16,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
+
 
 __author__ = 'Klemens Fritzsche'
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 import sympy as sp
 import pylab as pl
@@ -62,7 +62,7 @@ class System(object):
 
         # content of new systems tab:
         self._tab = SystemTabWidget(self)
-        contents = QtGui.QWidget(self.myPyplane.tabWidget)
+        contents = QtWidgets.QWidget(self.myPyplane.tabWidget)
         self._tab.setupUi(contents)
 
         self.myPyplane.tabWidget.insertTab(0, contents, self.name)
