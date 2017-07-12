@@ -20,7 +20,8 @@
 # was created using qt4-designer and pyuic4
 # the class pyplaneMainWindow represents the CONTROLLER element of the mvc-structure
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
+from qtpy.QtCore import Qt as Qtp  # Needed for WA_DeleteOnClose; How to import this from PyQt???
 import traceback
 import os
 import sympy as sp
@@ -168,6 +169,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
     def submit(self):
         """ This function gets called after clicking on the submit button
         """
+        myLogger.message("New system submitted...")
         try:
             xtxt = str(self.xDotLineEdit.text())
             ytxt = str(self.yDotLineEdit.text())
@@ -182,15 +184,38 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
                 x_string = str(self.xDotLineEdit.text())
                 y_string = str(self.yDotLineEdit.text())
 
-                equation = (x_string, y_string)
-                system = System(self, equation)
-                self.systems.insert(0, system)
-                self.save_tmp_system()
+                try:
+                    # Non-modal (!) Box intended for calming down the user...
+                    info_box = QtWidgets.QMessageBox(self)
+                    info_box.setAttribute(Qtp.WA_DeleteOnClose)
+                    info_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                    info_box.setIcon(QtWidgets.QMessageBox.Information)
+                    info_box.setWindowTitle("New system")
+                    info_box.setText("The new system is being processed, please wait! \nEspecially when LaTeX is used "
+                                     "for the labels this may take some time and the program might seem unresponsive!")
+                    info_box.setModal(False)
+                    info_box.show()
+                    QtCore.QCoreApplication.processEvents()
 
-                myLogger.message("------ new system created ------")
-                myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
-                myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
+                    # Processing equations
+                    equation = (x_string, y_string)
+                    system = System(self, equation)
+                    self.systems.insert(0, system)
+                    self.save_tmp_system()
 
+                    myLogger.message("------ new system created ------")
+                    myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
+                    myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
+
+                    try:
+                        info_box.close()
+                    except RuntimeError: # if dialog has already been closed by the user
+                        pass
+
+                except BaseException as exc:
+                    QtWidgets.QMessageBox.critical(self, "Error!", "An error occured while processing the system. "
+                                                                   "Detailed error message: \n %s" % exc)
+                    myLogger.error_message(str(exc))
             else:
                 myLogger.error_message("Please check system!")
 

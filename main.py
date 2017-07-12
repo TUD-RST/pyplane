@@ -40,7 +40,7 @@ class MainApp(PyplaneMainWindow):
     """
     
     __PYPLANE_VERSION = "2.0 beta"
-    __PYPLANE_DATE = "2017-07-11"
+    __PYPLANE_DATE = "2017-07-12"
 
     def __init__(self):
         # superclass constructor
@@ -58,12 +58,12 @@ class MainApp(PyplaneMainWindow):
         self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
         
-        #~ # connect buttons ------------------------------------------------------
-        #~ # connect buttons: system
+        # # connect buttons ------------------------------------------------------
+        # # connect buttons: system
         self.clearButton.clicked.connect(self.clear_trajectories)
         self.submitButton.clicked.connect(self.submit)
 
-        #~ # connect buttons: additional function
+        # # connect buttons: additional function
         self.FctPlotButton.clicked.connect(self.add_function)
         self.FctClearButton.clicked.connect(self.remove_functions)
 
@@ -81,7 +81,7 @@ class MainApp(PyplaneMainWindow):
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_S)
         self.file_menu.addAction('&Export As...', self.export_as, QtCore.Qt.CTRL + QtCore.Qt.Key_E)
         self.file_menu.addAction('&Close', self.close_current_tab, QtCore.Qt.CTRL + QtCore.Qt.Key_W)
-        #~ self.file_menu.addAction('&Close All', self.close_all_tabs, QtCore.Qt.CTRL + QtCore.Qt.ShiftModifier + QtCore.Qt.Key_W)
+        # self.file_menu.addAction('&Close All', self.close_all_tabs, QtCore.Qt.CTRL + QtCore.Qt.ShiftModifier + QtCore.Qt.Key_W)
         self.file_menu.addAction('&Quit', self.file_quit, QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
 
@@ -102,31 +102,31 @@ class MainApp(PyplaneMainWindow):
         self.toggle_vectorfield_action = QtWidgets.QAction('&Plot Vector Field', self.show_menu)
         self.toggle_vectorfield_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_V)
         self.toggle_vectorfield_action.setCheckable(True)
-        #~ if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
-            #~ self.toggle_vectorfield_action.setChecked(True)
+        # if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
+        #    self.toggle_vectorfield_action.setChecked(True)
         self.toggle_vectorfield_action.triggered.connect(self.vf_helper_function)
         self.show_menu.addAction(self.toggle_vectorfield_action)
 
         # streamlines checkbox
         self.toggle_streamlines_action = QtWidgets.QAction('&Plot Streamlines', self.show_menu)
         self.toggle_streamlines_action.setCheckable(True)
-        #~ if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
-            #~ self.toggle_streamlines_action.setChecked(True)
+        # if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
+        #    self.toggle_streamlines_action.setChecked(True)
         self.toggle_streamlines_action.triggered.connect(self.sl_helper_function)
         self.show_menu.addAction(self.toggle_streamlines_action)
 
         # equilibrium checkbox
         self.toggle_equilibrium_action = QtWidgets.QAction('&Find an Equilibrium Point / Linearize', self.show_menu)
         self.toggle_equilibrium_action.setCheckable(True)
-        #~ self.toggle_equilibrium_action.setChecked(False)
+        # self.toggle_equilibrium_action.setChecked(False)
         self.toggle_equilibrium_action.triggered.connect(self.eq_helper_function)
         self.show_menu.addAction(self.toggle_equilibrium_action)
         #self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
 
         # linearize checkbox
-        #~ self.linearize_action = QtWidgets.QAction('&Linearize', self.show_menu)
-        #~ self.linearize_action.triggered.connect(self.linearize_helper_function)
-        #~ self.show_menu.addAction(self.linearize_action)
+        # self.linearize_action = QtWidgets.QAction('&Linearize', self.show_menu)
+        # self.linearize_action.triggered.connect(self.linearize_helper_function)
+        # self.show_menu.addAction(self.linearize_action)
 
         # nullclines checkbox
         self.toggle_nullclines_action = QtWidgets.QAction('Nullclines', self.show_menu)
@@ -135,14 +135,14 @@ class MainApp(PyplaneMainWindow):
         # if system exists: read toggle-value
         # if not: read from config
         # TODO: new systems tab chosen -> check/uncheck toggle!
-        #~ if self.systems == []:
+        # if self.systems == []:
             # read current systems tab:        
-        #~ if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
-            #~ self.toggle_nullclines_action.setChecked(True)
+        # if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
+            # self.toggle_nullclines_action.setChecked(True)
         self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
         self.show_menu.addAction(self.toggle_nullclines_action)
 
-        #~ self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
+        # self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
 
         # help
         self.help_menu = QtWidgets.QMenu('&Help', self)
@@ -151,7 +151,7 @@ class MainApp(PyplaneMainWindow):
 
         # initializing with default values ------------------------------------------------------
         self.init()
-        #~ self.build_settings_tab()
+        # self.build_settings_tab()
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
@@ -194,10 +194,10 @@ class MainApp(PyplaneMainWindow):
             system.Phaseplane.Equilibria.toggle()
             self.update_ui()
 
-    #~ def linearize_helper_function(self):
-        #~ system = self.get_current_system()
-        #~ if system != None:
-            #~ system.Phaseplane.toggle_linearization_objects()
+    # def linearize_helper_function(self):
+        # system = self.get_current_system()
+        # if system != None:
+            # system.Phaseplane.toggle_linearization_objects()
 
     def toggle_nullclines(self):
         system = self.get_current_system()
