@@ -9,11 +9,11 @@ log_showTerminal = True
 plot_background = #ffffff
 plot_backgroundTransparent = false
 plot_CanvasBackground = #ffffff
-plot_fontSize = 12
-plot_topOfPlot = 0.90
-plot_leftOfPlot = 0.05
+plot_fontSize = 9
+plot_topOfPlot = 0.89
+plot_leftOfPlot = 0.1
 plot_rightOfPlot = 0.975
-plot_bottomOfPlot = 0.03
+plot_bottomOfPlot = 0.05
 
 [Phaseplane]
 pp_xmin = -10.
@@ -26,8 +26,8 @@ pp_showMinorTicks = True
 pp_showSpines = True
 pp_showGrid = true
 pp_showTitle = True
-pp_showXLabel = False
-pp_showYLabel = False
+pp_showXLabel = false
+pp_showYLabel = false
 pp_labelFontSize = 12
 
 [x-t-plot]
