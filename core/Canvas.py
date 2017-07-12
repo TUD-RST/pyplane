@@ -41,9 +41,9 @@ class Canvas(FigureCanvas):
         plot_CanvasBackground = str(myConfig.read("Plotting", "plot_CanvasBackground"))
         plot_fontSize = int(myConfig.read("Plotting", "plot_fontSize"))
         plot_topOfPlot = float(myConfig.read("Plotting", "plot_topOfPlot"))
-        plot_leftOfPlot = float(myConfig.read("Plotting", "plot_leftOfPlot"))
+        plot_leftOfPlot = 0.12#float(myConfig.read("Plotting", "plot_leftOfPlot"))
         plot_rightOfPlot = float(myConfig.read("Plotting", "plot_rightOfPlot"))
-        plot_bottomOfPlot = float(myConfig.read("Plotting", "plot_bottomOfPlot"))
+        plot_bottomOfPlot = 0.1#float(myConfig.read("Plotting", "plot_bottomOfPlot"))
 
         self.fig = pl.Figure(facecolor=plot_background)
 

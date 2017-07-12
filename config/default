@@ -11,9 +11,9 @@ plot_backgroundTransparent = false
 plot_CanvasBackground = #ffffff
 plot_fontSize = 9
 plot_topOfPlot = 0.89
-plot_leftOfPlot = 0.1
+plot_leftOfPlot = 0.12
 plot_rightOfPlot = 0.975
-plot_bottomOfPlot = 0.05
+plot_bottomOfPlot = 0.1
 
 [Phaseplane]
 pp_xmin = -10.
@@ -26,8 +26,8 @@ pp_showMinorTicks = True
 pp_showSpines = True
 pp_showGrid = true
 pp_showTitle = True
-pp_showXLabel = false
-pp_showYLabel = false
+pp_showXLabel = true
+pp_showYLabel = true
 pp_labelFontSize = 12
 
 [x-t-plot]
@@ -41,8 +41,8 @@ x_showMinorTicks = True
 x_showSpines = True
 x_showGrid = True
 x_showTitle = True
-x_showXLabel = False
-x_showYLabel = False
+x_showXLabel = true
+x_showYLabel = true
 x_labelFontSize = 12
 
 [y-t-plot]
@@ -56,8 +56,8 @@ y_showMinorTicks = True
 y_showSpines = True
 y_showGrid = True
 y_showTitle = True
-y_showXLabel = False
-y_showYLabel = False
+y_showXLabel = true
+y_showYLabel = true
 y_labelFontSize = 12
 
 [3d-plot]

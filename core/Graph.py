@@ -62,7 +62,7 @@ class Plot(object):
 
         if myConfig.get_boolean(self._section, self._token + "showXLabel"):
             pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
-            xlabel = "$t$"
+            xlabel = "$%s$" % self.myWidget.xlabel_str
             self.canvas.axes.set_xlabel(xlabel, fontsize=pp_label_fontsize)
 
         if myConfig.get_boolean(self._section, self._token + "showTitle"):
@@ -74,7 +74,7 @@ class Plot(object):
 
         if myConfig.get_boolean(self._section, self._token + "showYLabel"):
             pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
-            ylabel = "$%s$" % self.myWidget.param
+            ylabel = "$%s$" % self.myWidget.ylabel_str
             self.canvas.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
 
         # TODO (jcw): Check if this can be removed (together with Graph class)

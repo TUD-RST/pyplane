@@ -316,6 +316,8 @@ class ZoomWidgetSimple(QtWidgets.QWidget, Ui_ZoomWidgetSimple):
         
         self.mySystem = parent
         self.param = parameter # "x" or "y"
+        self.ylabel_str = self.param
+        self.xlabel_str = "t"
 
         # TODO: This should probably move to the Plot-class:
         self.latex_installed = self.mySystem.myPyplane.latex_installed
@@ -347,6 +349,11 @@ class ThreeDWidget(QtWidgets.QWidget, Ui_ThreeDWidget):
         
         self.mySystem = parent
 
+        # Axis labels
+        self.xlabel_str = "x"
+        self.ylabel_str = "y"
+        self.zlabel_str = "t"
+
         # TODO: This should probably move to the Plot-class:
         self.latex_installed = self.mySystem.myPyplane.latex_installed
         self.Layout = QtWidgets.QVBoxLayout(self.frame)
@@ -377,6 +384,10 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         self.Layout = QtWidgets.QVBoxLayout(self.frame)
         self.Canvas = Canvas(self, self.latex_installed)
         self.Layout.addWidget(self.Canvas)
+
+        # Axis labels
+        self.xlabel_str = "x"
+        self.ylabel_str = "y"
 
         # set forward and backward integration true
         if myConfig.get_boolean("Trajectories", "traj_checkForwardByDefault"):

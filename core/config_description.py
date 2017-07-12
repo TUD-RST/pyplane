@@ -17,9 +17,9 @@
     "plot_CanvasBackground": ["Background color of the plot", "#ffffff"],
     "plot_fontSize": ["Font size of tick markers and title", 9],
     "plot_topOfPlot": ["Space on top of the plot", 0.89],
-    "plot_leftOfPlot": ["Space on the left of the plot", 0.1],
+    "plot_leftOfPlot": ["Space on the left of the plot", 0.12],
     "plot_rightOfPlot": ["Space on the right of the plot", 0.975],
-    "plot_bottomOfPlot": ["Space on the bottom of the plot", 0.05],
+    "plot_bottomOfPlot": ["Space on the bottom of the plot", 0.1],
 
     "Phaseplane": "Specify Phaseplane Properties",
     "pp_xmin": ["Minimum x value of the plot", -10.],
