@@ -17,11 +17,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # this file contains the central class that inherits from the base gui class (VIEW) that
-# was created using qt4-designer and pyuic4
+# was created using qt5-designer and pyuic5
 # the class pyplaneMainWindow represents the CONTROLLER element of the mvc-structure
 
 from PyQt5 import QtWidgets, QtCore
-from qtpy.QtCore import Qt as Qtp  # Needed for WA_DeleteOnClose; How to import this from PyQt???
+from PyQt5.QtCore import Qt
 import traceback
 import os
 import sympy as sp
@@ -33,12 +33,10 @@ from core.System import System
 import core.PyPlaneHelpers as myHelpers
 from gui.Widgets import SettingsWidget
 
-
 __author__ = 'Klemens Fritzsche'
 
 
 def handle_exception(error):
-
     myLogger.error_message("Error: An Python Exception occured.")
     myLogger.debug_message(str(type(error)))
     myLogger.debug_message(str(error))
@@ -133,7 +131,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         # gets called after submitting a system (updae_ui() cannot be
         # used since the new system tab is not visible yet
         # values are taken from config file
-        
+
         self.toggle_vectorfield_action.setChecked(myConfig.get_boolean("Vectorfield", "vf_onByDefault"))
         self.toggle_streamlines_action.setChecked(myConfig.get_boolean("Streamlines", "stream_onByDefault"))
         self.toggle_equilibrium_action.setChecked(False)
@@ -151,13 +149,13 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
 
     def close_current_tab(self):
         index = self.tabWidget.currentIndex()
-        if index != self.tabWidget.count()-1:
+        if index != self.tabWidget.count() - 1:
             self.tabWidget.removeTab(index)
             self.systems.pop(index)
         self.update_ui()
 
     def close_all_tabs(self):
-        for i in range(self.tabWidget.count()-1):
+        for i in range(self.tabWidget.count() - 1):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
         self.update_ui()
@@ -187,12 +185,13 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
                 try:
                     # Non-modal (!) Box intended for calming down the user...
                     info_box = QtWidgets.QMessageBox(self)
-                    info_box.setAttribute(Qtp.WA_DeleteOnClose)
+                    info_box.setAttribute(Qt.WA_DeleteOnClose)
                     info_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
                     info_box.setIcon(QtWidgets.QMessageBox.Information)
-                    info_box.setWindowTitle("New system")
-                    info_box.setText("The new system is being processed, please wait! \nEspecially when LaTeX is used "
-                                     "for the labels this may take some time and the program might seem unresponsive!")
+                    info_box.setWindowTitle("New system submitted")
+                    info_box.setText("The new system is being processed now, please wait! \n"
+                                     "Especially when LaTeX is used for the labels this may take some time and the "
+                                     "program might seem unresponsive!")
                     info_box.setModal(False)
                     info_box.show()
                     QtCore.QCoreApplication.processEvents()
@@ -209,7 +208,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
 
                     try:
                         info_box.close()
-                    except RuntimeError: # if dialog has already been closed by the user
+                    except RuntimeError:  # if dialog has already been closed by the user
                         pass
 
                 except BaseException as exc:
@@ -310,7 +309,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
             #
             file_name2, file_type2 = os.path.splitext(file_name)
             if not file_type:
-                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:                    
+                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:
                     file_type = ".png"
                 else:
                     # Allow things like figure.case21.pdf
@@ -366,7 +365,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         if system != None:
             filename_pp = str(filename) + "_pp.png"
             system.Phaseplane.Plot.canvas.fig.savefig(filename_pp,
-                                             bbox_inches='tight')
+                                                      bbox_inches='tight')
 
             filename_x = str(filename) + "_x.png"
             system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
@@ -462,7 +461,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
 
                 X, Y = np.meshgrid(x, y)
 
-                #yvalue = self.fct(xvalue)
+                # yvalue = self.fct(xvalue)
 
                 myfunc = self.fct(X, Y)
                 # TODO: plots like y=1/x have a connection between -inf and +inf that is not actually there!
@@ -499,6 +498,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
             myLogger.debug_message("no function to delete")
 
         self.myGraph.update_graph(self.myGraph.plot_pp)
+
 
 if __name__ == "__main__":
     import sys
