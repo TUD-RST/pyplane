@@ -5,10 +5,11 @@ Builds a Windows executable of PyPlane
 Make sure that pyinstaller is properly installed in your Python distribution!
 
 Please note in order to build a properly working exe:
--> Include the statement "import FileDialog" in main.py (an error in matplotlib)
 -> Set recursion limit in build_main.py of your PyInstaller installation
    (see HowTo-Windows-Exe.txt for more information)
--> Modify the function exec_command(...) in file site-packages\PyInstaller\compat.py according to the
+-> Modify the function exec_command(...) in file lib\site-packages\PyInstaller\compat.py according to the
+   instructions in How-To-Windows-Exe.txt
+-> Modify the file lib\site-packages\PyInstaller\hook-botocore.py according to the
    instructions in How-To-Windows-Exe.txt
 -> Set qt_bin_path and libzmq_path in this script appropriately
 
@@ -40,6 +41,19 @@ qt_bin_path = 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-pa
 libzmq_path = 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq'
 additional_paths = 'core'
 
+# Check if dirs exist
+if not os.path.exists(qt_bin_path):
+    print("The QT directory %s does not exist!\n\n \
+          Please set the directory appropriately (see HowTo-Windows-Exe.txt for more information!)" 
+           % qt_bin_path)
+    exit(-1)
+    
+if not os.path.exists(libzmq_path):
+    print("The LIB ZMG directory %s does not exist!\n\n\
+           Please set the directory appropriately (see HowTo-Windows-Exe.txt for more information!)" 
+           % libzmq_path)
+    exit(-1)
+
 # The path of this script, we work with absolute paths in the following because of problems in PyInstaller
 base_path = os.getcwd()
 
@@ -64,7 +78,7 @@ if os.path.exists(build_dir):
     shutil.rmtree(build_dir, ignore_errors=True)
 
 # Call pyinstaller
-print('Executing command %s' % cmd)
+print('Executing command pyinstaller %s' % cmd)
 pyinstaller_run(cmd)
 
 # Copy the config directory to the build directory
