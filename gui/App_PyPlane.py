@@ -264,7 +264,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
             system = self.systems[index]
-            file_name, filter = QtWidgets.QFileDialog.getSaveFileNameAndFilter(self, "Save pyplane file", "",
+            file_name, file_type = QtWidgets.QFileDialog.getSaveFileName(self, "Save pyplane file", "",
                                                                                "pyplane file (*.ppf)")
             # sys_pickleds = system.pickle(file_name)
             # system.equation.what_is_my_system()
