@@ -77,9 +77,6 @@ Python 2.7 is version 1.1.
 Prerequisites for the stand-alone version
 -----------------------------------------
 
-(Currently a installer for PyPlane 1.1 is available only, but you
-can build one for 2.0beta from source.)
-
 The stand-alone version is only available for MS Windows operating
 systems on which no Python is installed. You just need to run the
 provided installer file PyPlane_Setup.exe. It will create a directory
@@ -93,12 +90,11 @@ functional.
 Double-click on the PyPlane icon on the desktop in order to launch the
 application. Start-up may take some time.
 
-Open issues in version 2.0beta
-==============================
 
-* When LaTeX is not installed on your system the plot dimensions might
-  be such that the labels are not fully displayed.
-
+Example systems
+---------------
+In the directory "library" you find several example systems which you can 
+load via "Open - From File" or by pressing STRG+O
 
 
 Important files in the base directory

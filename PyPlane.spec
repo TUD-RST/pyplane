@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['D:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\main.py'],
-             pathex=['c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq', 'D:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\core', 'D:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
+a = Analysis(['d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\main.py'],
+             pathex=['c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\core', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
              binaries=[],
              datas=[],
              hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'tkinter.filedialog'],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True , icon='D:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\resources\\pyplane_icon_32px.ico')
+          console=True , icon='d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\resources\\pyplane_icon_32px.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
