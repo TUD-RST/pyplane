@@ -1,42 +1,32 @@
 # -*- coding: utf-8 -*-
+"""
+    Copyright (C) 2013
+    by Klemens Fritzsche, pyplane@leckstrom.de
 
-#    Copyright (C) 2013
-#    by Klemens Fritzsche, pyplane@leckstrom.de
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU General Public License for more details.
-#
-#    You should have received a copy of the GNU General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-__author__ = 'Klemens Fritzsche'
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
 import sys
-#import ast
-
-# Needed since apparently different default variant types are used under Windows and Linux
-# The line sip.setapi(...) has to be commented out if an MS windows exe is built using PyInstaller!
 import sip
-sip.setapi('QVariant', 2)
-
-from PyQt4 import QtGui
-from PyQt4 import QtCore
-
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 from core.ConfigHandler import myConfig
 from gui.App_PyPlane import PyplaneMainWindow
 from gui.Dlg_PyPlane_about import AboutDialog
 from core.Logging import myLogger
 
-# This import is required by PyInstaller in order to produce a
-# correctly working executable
-import FileDialog
+
+__author__ = 'Klemens Fritzsche'
 
 
 # noinspection PyUnresolvedReferences
@@ -49,8 +39,8 @@ class MainApp(PyplaneMainWindow):
         settings GUI logic (listview elements, variable description, etc)
     """
     
-    __PYPLANE_VERSION = "1.1"
-    __PYPLANE_DATE = "2016-04-08"
+    __PYPLANE_VERSION = "2.0 beta"
+    __PYPLANE_DATE = "2017-07-12"
 
     def __init__(self):
         # superclass constructor
@@ -65,34 +55,34 @@ class MainApp(PyplaneMainWindow):
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
         # check config file if shown by default
-        self.terminal_toggle = myConfig.get_boolean("Logging", "showTerminal")
+        self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
         
-        #~ # connect buttons ------------------------------------------------------
-        #~ # connect buttons: system
+        # # connect buttons ------------------------------------------------------
+        # # connect buttons: system
         self.clearButton.clicked.connect(self.clear_trajectories)
         self.submitButton.clicked.connect(self.submit)
 
-        #~ # connect buttons: additional function
+        # connect buttons: additional function
         self.FctPlotButton.clicked.connect(self.add_function)
         self.FctClearButton.clicked.connect(self.remove_functions)
 
         self.slider.setMinimum(-100)
         self.slider.setMaximum(100)
         self.slider.setValue(0)
-        self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
+        self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
         self.slider.setTickInterval(20)
         self.slider.valueChanged.connect(self.slider_func)
         
-        self.statusBar = QtGui.QStatusBar()
+        self.statusBar = QtWidgets.QStatusBar()
         self.setStatusBar(self.statusBar)
         #~ self.statusBar.showMessage("test")
 
         # file menu ------------------------------------------------------
         # file
-        self.file_menu = QtGui.QMenu('&System', self)
+        self.file_menu = QtWidgets.QMenu('&System', self)
 
-        self.load = QtGui.QMenu('&Open', self)
+        self.load = QtWidgets.QMenu('&Open', self)
         self.file_menu.addMenu(self.load)
         self.load.addAction('&Recent', self.load_tmp_system)
         self.load.addAction('&From File', self.load_system_from_file,
@@ -102,77 +92,77 @@ class MainApp(PyplaneMainWindow):
                                  QtCore.Qt.CTRL + QtCore.Qt.Key_S)
         self.file_menu.addAction('&Export As...', self.export_as, QtCore.Qt.CTRL + QtCore.Qt.Key_E)
         self.file_menu.addAction('&Close', self.close_current_tab, QtCore.Qt.CTRL + QtCore.Qt.Key_W)
-        #~ self.file_menu.addAction('&Close All', self.close_all_tabs, QtCore.Qt.CTRL + QtCore.Qt.ShiftModifier + QtCore.Qt.Key_W)
+        # self.file_menu.addAction('&Close All', self.close_all_tabs, QtCore.Qt.CTRL + QtCore.Qt.ShiftModifier + QtCore.Qt.Key_W)
         self.file_menu.addAction('&Quit', self.file_quit, QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
 
         # show
-        self.show_menu = QtGui.QMenu('&Show', self)
+        self.show_menu = QtWidgets.QMenu('&Show', self)
         self.menuBar().addMenu(self.show_menu)
 
         # terminal checkbox
-        self.toggle_terminal_action = QtGui.QAction('Terminal', self.show_menu)
+        self.toggle_terminal_action = QtWidgets.QAction('Terminal', self.show_menu)
         self.toggle_terminal_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_T)
         self.toggle_terminal_action.setCheckable(True)
-        if myConfig.get_boolean("Logging", "showTerminal"):
+        if myConfig.get_boolean("Logging", "log_showTerminal"):
             self.toggle_terminal_action.setChecked(True)
         self.toggle_terminal_action.triggered.connect(self.toggle_terminal)
         self.show_menu.addAction(self.toggle_terminal_action)
 
         # vector field checkbox
-        self.toggle_vectorfield_action = QtGui.QAction('&Plot Vector Field', self.show_menu)
+        self.toggle_vectorfield_action = QtWidgets.QAction('&Plot Vector Field', self.show_menu)
         self.toggle_vectorfield_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_V)
         self.toggle_vectorfield_action.setCheckable(True)
-        #~ if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
-            #~ self.toggle_vectorfield_action.setChecked(True)
+        # if myConfig.get_boolean("Vectorfield", "vf_onByDefault"):
+        #    self.toggle_vectorfield_action.setChecked(True)
         self.toggle_vectorfield_action.triggered.connect(self.vf_helper_function)
         self.show_menu.addAction(self.toggle_vectorfield_action)
 
         # streamlines checkbox
-        self.toggle_streamlines_action = QtGui.QAction('&Plot Streamlines', self.show_menu)
+        self.toggle_streamlines_action = QtWidgets.QAction('&Plot Streamlines', self.show_menu)
         self.toggle_streamlines_action.setCheckable(True)
-        #~ if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
-            #~ self.toggle_streamlines_action.setChecked(True)
+        # if myConfig.get_boolean("Streamlines", "stream_onByDefault"):
+        #    self.toggle_streamlines_action.setChecked(True)
         self.toggle_streamlines_action.triggered.connect(self.sl_helper_function)
         self.show_menu.addAction(self.toggle_streamlines_action)
 
         # equilibrium checkbox
-        self.toggle_equilibrium_action = QtGui.QAction('&Find an Equilibrium Point / Linearize', self.show_menu)
+        self.toggle_equilibrium_action = QtWidgets.QAction('&Find an Equilibrium Point / Linearize', self.show_menu)
         self.toggle_equilibrium_action.setCheckable(True)
-        #~ self.toggle_equilibrium_action.setChecked(False)
+        # self.toggle_equilibrium_action.setChecked(False)
         self.toggle_equilibrium_action.triggered.connect(self.eq_helper_function)
         self.show_menu.addAction(self.toggle_equilibrium_action)
         #self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
 
         # linearize checkbox
-        #~ self.linearize_action = QtGui.QAction('&Linearize', self.show_menu)
-        #~ self.linearize_action.triggered.connect(self.linearize_helper_function)
-        #~ self.show_menu.addAction(self.linearize_action)
+        # self.linearize_action = QtWidgets.QAction('&Linearize', self.show_menu)
+        # self.linearize_action.triggered.connect(self.linearize_helper_function)
+        # self.show_menu.addAction(self.linearize_action)
 
         # nullclines checkbox
-        self.toggle_nullclines_action = QtGui.QAction('Nullclines', self.show_menu)
+        self.toggle_nullclines_action = QtWidgets.QAction('Nullclines', self.show_menu)
         self.toggle_nullclines_action.setShortcut(QtCore.Qt.CTRL + QtCore.Qt.Key_N)
         self.toggle_nullclines_action.setCheckable(True)
         # if system exists: read toggle-value
         # if not: read from config
         # TODO: new systems tab chosen -> check/uncheck toggle!
-        #~ if self.systems == []:
+        # if self.systems == []:
             # read current systems tab:        
-        #~ if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
-            #~ self.toggle_nullclines_action.setChecked(True)
+        # if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
+            # self.toggle_nullclines_action.setChecked(True)
         self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
         self.show_menu.addAction(self.toggle_nullclines_action)
 
-        #~ self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
+        # self.show_menu.addAction('&Calculate Nullclines (symbolic)', myNullclines.print_symbolic_nullclines)
 
         # help
-        self.help_menu = QtGui.QMenu('&Help', self)
+        self.help_menu = QtWidgets.QMenu('&Help', self)
         self.menuBar().addMenu(self.help_menu)
         self.help_menu.addAction('&About', self.about)
 
         # initializing with default values ------------------------------------------------------
         self.init()
-        #~ self.build_settings_tab()
+        # self.build_settings_tab()
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
@@ -231,10 +221,10 @@ class MainApp(PyplaneMainWindow):
             system.Phaseplane.Equilibria.toggle()
             self.update_ui()
 
-    #~ def linearize_helper_function(self):
-        #~ system = self.get_current_system()
-        #~ if system != None:
-            #~ system.Phaseplane.toggle_linearization_objects()
+    # def linearize_helper_function(self):
+        # system = self.get_current_system()
+        # if system != None:
+            # system.Phaseplane.toggle_linearization_objects()
 
     def toggle_nullclines(self):
         system = self.get_current_system()
@@ -267,7 +257,7 @@ class MainApp(PyplaneMainWindow):
     def about(self):
         AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
 
-app = QtGui.QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 main = MainApp()
 main.show()
 sys.exit(app.exec_())

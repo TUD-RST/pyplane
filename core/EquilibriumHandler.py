@@ -57,18 +57,18 @@ class EquilibriumHandler(object):
 
     def list_equilibria(self):
         eq_list = []
-        for i in xrange(len(self.stack)):
+        for i in range(len(self.stack)):
             eq_list.append(self.stack[i].coordinates)
         return eq_list
 
     def list_characterized_equilibria(self):
         character_list = []
-        for i in xrange(len(self.stack)):
+        for i in range(len(self.stack)):
             character_list.append(self.stack[i].character)
         return character_list
 
     def get_equilibrium_by_character_identifier(self, character_identifier):
-        for i in xrange(len(self.stack)):
+        for i in range(len(self.stack)):
             if self.stack[i].character == character_identifier:
                 return self.stack[i]
         return None
@@ -193,7 +193,7 @@ class EquilibriumHandler(object):
         #~ from IPython import embed
         #~ QtCore.pyqtRemoveInputHook()
         #~ embed()
-        if str(equilibrium) in self.jacobians.keys():
+        if str(equilibrium) in list(self.jacobians.keys()):
             return self.jacobians[str(equilibrium)]
         else:
             return None

@@ -1,14 +1,14 @@
 About 
 ===== 
 PyPlane is a free software for phase plane analysis of second order
-dynamical systems written in PYTHON and QT4 (compare e.g. MATLAB's
+dynamical systems written in PYTHON 3.5 and PyQT5 (compare MATLAB's
 [pplane](http://math.rice.edu/~dfield/)).
 
 ![Screenshot](/resources/pyplane_screenshot.png?raw=true)
 
 Features:
-* Vector fields and streamlines for second order nonlinear time-variant
-dynamical systems of the form x'=f(x,y,t), y'=g(x,y,t)
+* Vector fields and streamlines for second order nonlinear
+dynamical systems of the form x'=f(x,y), y'=g(x,y)
 * Forward and backward solution trajectories for arbitrary
 initial conditions in the phase plane
 * Time dependent solutions x(t) and y(t)
@@ -37,7 +37,7 @@ https://github.com/TUD-RST/pyplane
 Please don't hesitate to report bugs, comments, or suggestions on
 GitHub!
 
-[1] http://www.et.tu-dresden.de/rst/
+[1] https://tu-dresden.de/ing/elektrotechnik/rst
 
 
 
@@ -52,14 +52,14 @@ Windows.
 Prerequisites for running natively under Python
 ----------------------------------------------- 
 
-PyPlane runs under Python version 2.7 with the following packages
+PyPlane runs under Python version 3.5 with the following packages
 installed:
 
-* NumPy (tested under version 1.9)
-* SciPy (tested under version 0.15)
-* Matplotlib (tested under verison 1.4.3)
-* SymPy (tested under verison 0.7.6)
-* PyQt4 (tested under version 4.11.3)
+* NumPy (tested under version 1.13)
+* SciPy (tested under version 0.19.1)
+* Matplotlib (tested under verison 1.5.3 and 2.0.2)
+* SymPy (tested under verison 1.0)
+* PyQt5 (tested under version 5.8.2)
 
 An optionally installed and accessible LaTeX/dvipng environment
 produces much prettier results in the linearization tabs. If no LaTeX
@@ -67,6 +67,11 @@ is installed the program is still fully functional.
 
 Call "python main.py" in the base directory of PyPlane in order to
 launch the application.
+
+Python 2
+--------
+The last version of this program which is fully compatible with 
+Python 2.7 is version 1.1.
 
 
 Prerequisites for the stand-alone version
@@ -85,13 +90,11 @@ functional.
 Double-click on the PyPlane icon on the desktop in order to launch the
 application. Start-up may take some time.
 
-Open issues in version 1.0
-==========================
 
-* PyPlane will not launch if it detects a fully functional
-  LaTeX-environment in which the package type1cm.sty is
-  missing. Please place this style package in your LaTeX-installation.
-
+Example systems
+---------------
+In the directory "library" you find several example systems which you can 
+load via "Open - From File" or by pressing STRG+O
 
 
 Important files in the base directory

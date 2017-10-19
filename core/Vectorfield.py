@@ -56,7 +56,7 @@ class Vectorfield(object):
             a = np.linspace(xmin - xmin / N, xmax - xmax / N, N)
             b = np.linspace(ymin - ymin / M, ymax - ymax / M, M)
             X1, Y1 = np.meshgrid(a, b)
-            
+
             try:
                 t = self.myWidget.mySystem.myPyplane.slider_value()
                 DX1, DY1 = self.myWidget.mySystem.equation.rhs([X1, Y1], t)
@@ -83,7 +83,7 @@ class Vectorfield(object):
         """ This function removes the vector field if existent.
         """
         if len(self.stack) != 0:
-            for i in xrange(0, len(self.stack)):
+            for i in range(0, len(self.stack)):
                 try:
                     self.stack.pop().remove()
                     myLogger.message("Vector field removed")

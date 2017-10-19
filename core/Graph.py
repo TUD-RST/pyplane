@@ -16,9 +16,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-
-import matplotlib.pyplot as plt
 import sympy as sp
 import numpy as np
 
@@ -26,7 +23,10 @@ from core.Canvas import Canvas
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 
-from PyQt4.QtGui import QMessageBox
+from PyQt5.QtWidgets import QMessageBox
+
+__author__ = 'Klemens Fritzsche'
+
 
 class Plot(object):
     def __init__(self, parent, canvas):
@@ -62,7 +62,8 @@ class Plot(object):
             self.canvas.axes.yaxis.set_ticks([])
 
         if myConfig.get_boolean(self._section, self._token + "showXLabel"):
-            xlabel = "$t$"
+            pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
+            xlabel = "$%s$" % self.myWidget.xlabel_str
             self.canvas.axes.set_xlabel(xlabel, fontsize=pp_label_fontsize)
 
         if myConfig.get_boolean(self._section, self._token + "showTitle"):
@@ -74,24 +75,38 @@ class Plot(object):
 
         if myConfig.get_boolean(self._section, self._token + "showYLabel"):
             pp_label_fontsize = myConfig.read(self._section, self._token + "labelFontSize")
-            ylabel = "$%s$" % self.myWidget.param
-            Graph.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
+            ylabel = "$%s$" % self.myWidget.ylabel_str
+
+            self.canvas.axes.set_ylabel(ylabel, fontsize=pp_label_fontsize)
 
         if not myConfig.get_boolean(self._section, self._token + "showSpines"):
-            for spine in Graph.axes.spines.itervalues():
+            for spine in self.canvas.axes.spines.itervalues():
                 spine.set_visible(False)
 
         self.update()
-        myLogger.debug_message("Graph cleared") 
+        myLogger.debug_message("Graph cleared")
+        
+    def add_eigenvectors_to_title(self, vec0, vec1):
+        if myConfig.get_boolean(self._section, self._token + "showTitle"):
+            title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
+            title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
+            dec_place = 2  # TODO: read from config
+            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot +
+                                       "$\n$\mathbf{v}_1=("+str(round(vec0[0],dec_place)) + "," +
+                                       str(round(vec0[1],dec_place)) + ")^T\qquad\mathbf{v}_2=(" +
+                                       str(round(vec1[0],dec_place)) + "," + str(round(vec1[1],dec_place)) + ")^T$")
 
     def update(self):
         try:
             self.canvas.draw()
-        except Exception as e: 
-            if 'latex' in e.message.lower():
-                QMessageBox.critical(None, 'Error', 'LaTeX not properly installed! Please check the following message:\n\n' + e.message)
+        except Exception as e:
+            if 'latex' in str(e).lower():
+                QMessageBox.critical(None, 'Error',
+                                     'LaTeX not properly installed! Please check the following message:\n\n' + str(e))
             else:
-                QMessageBox.critical(None, 'Error', 'Something seems to be wrong with matplotlib. Please check the following message:\n\n' + e.message)
+                QMessageBox.critical(None, 'Error',
+                                     'Something seems to be wrong with matplotlib. Please check the following message:'
+                                     '\n\n' + str(e))
             exit()        
 
     def set_window_range(self):
@@ -170,7 +185,7 @@ class ThreeDPlot(object):
             self.canvas.axes.set_zlabel(tlabel, fontsize=label_fontsize)
 
         if not myConfig.get_boolean(self._section, self._token + "showSpines"):
-            for spine in self.canvas.axes.spines.itervalues():
+            for spine in self.canvas.axes.spines.values():
                 spine.set_visible(False)
 
         self.update()
@@ -306,8 +321,8 @@ class PhasePlot(Plot):
                     if equilibrium_point is not None:
                         # is this supposed to be here?
                         pass
-                        #~ jacobian = self.myWidget.Equilibria.approx_ep_jacobian(equilibrium_point)
-                        #~ self.myWidget.mySystem.myPyplane.new_linearized_system(self.myWidget.mySystem, jacobian, equilibrium_point)
+                        # jacobian = self.myWidget.Equilibria.approx_ep_jacobian(equilibrium_point)
+                        # self.myWidget.mySystem.myPyplane.new_linearized_system(self.myWidget.mySystem, jacobian, equilibrium_point)
         else:
             myLogger.debug_message("in zoom mode")
 
@@ -315,7 +330,7 @@ class PhasePlot(Plot):
         thisline = event.artist
         xdata = thisline.get_xdata()
         ydata = thisline.get_ydata()
-        ind = event.ind
+        # ind = event.ind
 
         myLogger.message("Equilibrium Point chosen: "+str(xdata)+", "+str(ydata))
 
@@ -331,7 +346,6 @@ class Graph(object):
     """
         This class is in charge of plotting the vectorfield, streamlines,
         nullclines and trajectories.
-
     """
 
     def __init__(self, parent, plot_pp, plot_x, plot_y):

@@ -16,15 +16,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-
 """
 Module implementing logging capabilities
 """
 
 import time
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-from PyQt4 import QtCore, QtGui
+__author__ = 'Klemens Fritzsche'
 
 defaultLogFileName = 'config/logmessages.txt'
 
@@ -48,7 +47,7 @@ class Logger(object):
 
         # TODO Read This from Config
         self.dbg_verbosity_level = 5
-        #self.logtime = myConfig.get_boolean("Logging","log_showTime")
+        # self.logtime = myConfig.get_boolean("Logging","log_showTime")
 
         self.t_zero = time.time()
         #         self.message(" ------ Logging started: %s -----" % time.ctime() )
@@ -58,6 +57,9 @@ class Logger(object):
         self.show_error = True
         self.show_warning = True
         self.show_debug = True
+
+        # The terminal on the GUI into which the messages are written. Will be set later.
+        self.ppTerminal = None
 
     def initialize(self):
         """
@@ -74,7 +76,7 @@ class Logger(object):
 
     def register_output(self, terminal):
         # output in logField
-        assert isinstance(terminal, QtGui.QTextEdit)
+        assert isinstance(terminal, QtWidgets.QTextEdit)
         self.ppTerminal = terminal
 
     def sec_to_string(self, sec):
@@ -95,6 +97,8 @@ class Logger(object):
 
     def message(self, msg, color='white'):
 
+        assert (self.ppTerminal is not None)
+
         # set text color
         if color == 'white':
             self.ppTerminal.setTextColor(QtGui.QColor(255, 255, 255, 255))
@@ -110,10 +114,17 @@ class Logger(object):
 
         msg = "%s: %s" % (self.sec_to_string(t), msg)
 
+        # Write message to terminal on GUI and ensure that the terminal is scrolled to the buttom
+        # (i.e. the most recent entry is always shown)
         self.ppTerminal.append(msg)
+        cursor = self.ppTerminal.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        self.ppTerminal.setTextCursor(cursor)
 
-        #msg=time.ctime()+" "+msg
+        # Write message to internal list
         self.msg_list.append(msg)
+
+        # Write message to log file
         self.append_to_file(msg)
 
     def error_message(self, msg):

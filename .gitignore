@@ -1,4 +1,6 @@
+.directory
 *.pyc
 /windows
 /config/logmessages.txt
 library/tmp.ppf
+.idea

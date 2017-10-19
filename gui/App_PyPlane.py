@@ -16,14 +16,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-__author__ = 'Klemens Fritzsche'
-
 # this file contains the central class that inherits from the base gui class (VIEW) that
-# was created using qt4-designer and pyuic4
+# was created using qt5-designer and pyuic5
 # the class pyplaneMainWindow represents the CONTROLLER element of the mvc-structure
 
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import Qt
 import traceback
 import sys
 import os
@@ -31,17 +29,16 @@ import os
 import sympy as sp
 from IPython import embed
 import numpy as np
-import ast
-
-from Ui_PyPlane import Ui_pyplane
+from gui.Ui_PyPlane import Ui_pyplane
 from core.Logging import myLogger
 from core.ConfigHandler import myConfig
 from core.System import System
 import core.PyPlaneHelpers as myHelpers
 from gui.Widgets import SettingsWidget
 
-def handle_exception(error):
+__author__ = 'Klemens Fritzsche'
 
+def handle_exception(error):
     myLogger.error_message("Error: An Python Exception occured.")
     myLogger.debug_message(str(type(error)))
     myLogger.debug_message(str(error))
@@ -52,10 +49,10 @@ def handle_exception(error):
     tb_msg = "".join(lines)
     myLogger.append_to_file(tb_msg)
 
-class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
+class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
     def __init__(self, parent=None):
         super(PyplaneMainWindow, self).__init__()
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setupUi(self)
         self.setWindowTitle('PyPlane')
 
@@ -75,8 +72,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
         self.systems = []
 
-        self.xDotLabel.setText(u"\u1E8B(x,y,t) = ")
-        self.yDotLabel.setText(u"\u1E8F(x,y,t) = ")
+        self.xDotLabel.setText("\u1E8B(x,y) = ")
+        self.yDotLabel.setText("\u1E8F(x,y) = ")
 
         try:
             test = myConfig.read("Test", "test_var")
@@ -139,7 +136,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         # gets called after submitting a system (updae_ui() cannot be
         # used since the new system tab is not visible yet
         # values are taken from config file
-        
+
         self.toggle_vectorfield_action.setChecked(myConfig.get_boolean("Vectorfield", "vf_onByDefault"))
         self.toggle_streamlines_action.setChecked(myConfig.get_boolean("Streamlines", "stream_onByDefault"))
         self.toggle_equilibrium_action.setChecked(False)
@@ -154,19 +151,19 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.systems.insert(0, system)
         system.plot_eigenvectors(equilibrium)
 
-        myLogger.message("------ new linearized system created ------")
+        myLogger.message("------ new linearized system created at xe = " + str(xe) + ", ye = " + str(ye) + " ------")
         myLogger.message("    x' = " + str(system.equation.what_is_my_system()[0]))
         myLogger.message("    y' = " + str(system.equation.what_is_my_system()[1]) + "\n", )
 
     def close_current_tab(self):
         index = self.tabWidget.currentIndex()
-        if index != self.tabWidget.count()-1:
+        if index != self.tabWidget.count() - 1:
             self.tabWidget.removeTab(index)
             self.systems.pop(index)
         self.update_ui()
 
     def close_all_tabs(self):
-        for i in xrange(self.tabWidget.count()-1):
+        for i in range(self.tabWidget.count() - 1):
             self.tabWidget.removeTab(i)
             # TODO: Delete Data
         self.update_ui()
@@ -174,7 +171,8 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def initialize_new_system_tab(self):
         # Create new system tab
         self.mySystemTab = SystemTabWidget()
-        contents = QtGui.QWidget(self.tabWidget)
+        # contents = QtGui.QWidget(self.tabWidget)
+        contents = QWidget(self.tabWidget)
         self.mySystemTab.setupUi(contents)
 
         number = self.tabWidget.count()
@@ -197,6 +195,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
     def submit(self):
         """ This function gets called after clicking on the submit button
         """
+        myLogger.message("New system submitted...")
         try:
             xtxt = str(self.xDotLineEdit.text())
             ytxt = str(self.yDotLineEdit.text())
@@ -227,14 +226,13 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """ load previous system (from tmp file) """
 
         with open(file_name, 'r') as sysfile:
-    # TODO: This does not work, but how would i find a way to store a
-    #       system?
-            #~ pps_file = pcl.loads(sysfile.read())
-            #~ system = System(self)
-            #~ system.unpickle(pps_file)
-            #~ self.systems.insert(0, system)
-            #~ self.xDotLineEdit.setText(sysfile.readline().strip())
-            #~ self.yDotLineEdit.setText(sysfile.readline().strip())
+            # TODO: This does not work, but how would i store a system?
+            # pps_file = pcl.loads(sysfile.read())
+            # system = System(self)
+            # system.unpickle(pps_file)
+            # self.systems.insert(0, system)
+            # self.xDotLineEdit.setText(sysfile.readline().strip())
+            # self.yDotLineEdit.setText(sysfile.readline().strip())
             xdot_string = str(sysfile.readline())
             ydot_string = str(sysfile.readline())
             self.xDotLineEdit.setText(xdot_string.strip())
@@ -245,14 +243,17 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.load_system('library/tmp.ppf')
 
     def load_system_from_file(self):
-        file_name = QtGui.QFileDialog.getOpenFileName(self,
-                                                      'Open pyplane file', '',
-                                                      'pyplane file (*.ppf)')
+        file_name = QtWidgets.QFileDialog.getOpenFileName(self, 'Open pyplane file', '', 'pyplane file (*.ppf)')
+
+        # On some platforms function returns a tuple: First element -> file name, second element -> filter
+        # We do only need the filter
+        if type(file_name) == tuple:
+            file_name = file_name[0]
+
         if len(file_name) > 0:
             self.load_system(file_name)
-
-        self.submit()
-        self.update_ui()
+            self.submit()
+            self.update_ui()
 
     def save_tmp_system(self):
         if len(self.systems) > 0:
@@ -267,15 +268,13 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
             system = self.systems[index]
-            file_name, filter = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                           'Save pyplane file', '',
-                                                                           'pyplane file (*.ppf)')
-            #~ sys_pickleds = system.pickle(file_name)
-            #~ system.equation.what_is_my_system()
+            file_name, file_type = QtWidgets.QFileDialog.getSaveFileName(self, "Save pyplane file", "",
+                                                                               "pyplane file (*.ppf)")
+            # sys_pickleds = system.pickle(file_name)
+            # system.equation.what_is_my_system()
             self.save_system(file_name, system.equation.what_is_my_system())
         else:
             myLogger.error_message("There is no system to save!")
-
 
     def save_system(self, file_name, system):
         x_dot_string = str(system[0])
@@ -296,14 +295,11 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         """ export dialog for pyplane plot
         """
 
-        q_files_types = QtCore.QString(".png;;.svg;;.pdf;;.eps")
-        q_file_name, q_file_type = QtGui.QFileDialog.getSaveFileNameAndFilter(self,
-                                                                       "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
-                                                                       q_files_types)
-        # Ensure we are out of the QString world in the following                                                               
-        file_name = str(q_file_name)
-        file_type = str(q_file_type)
-            
+        files_types = ".png;;.svg;;.pdf;;.eps"
+        file_name, file_type = \
+            QtWidgets.QFileDialog.getSaveFileName(self, "Export PyPlane Plot as .png, .svg, .pdf, or .eps-file", "",
+                                                  files_types)
+
         if file_name:
             # Fix: Under some KDE's the file_type is returned empty because
             # of a "DBUS-error". Hence, in such cases, we try to take the 
@@ -317,7 +313,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
             #
             file_name2, file_type2 = os.path.splitext(file_name)
             if not file_type:
-                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:                    
+                if file_type2 not in [".png", ".svg", ".pdf", ".eps"]:
                     file_type = ".png"
                 else:
                     # Allow things like figure.case21.pdf
@@ -372,8 +368,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         system = self.get_current_system()
         if system != None:
             filename_pp = str(filename) + "_pp.png"
-            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp,
-                                             bbox_inches='tight')
+            system.Phaseplane.Plot.canvas.fig.savefig(filename_pp, bbox_inches='tight')
 
             filename_x = str(filename) + "_x.png"
             system.Xt.Plot.canvas.fig.savefig(filename_x, bbox_inches='tight')
@@ -434,6 +429,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
         self.y = sp.symbols('y')
         self.fct = None
 
+        fct_txt = ""
         try:
             fct_txt = str(self.yLineEdit.text())
         except UnicodeEncodeError as exc:
@@ -468,7 +464,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
                 X, Y = np.meshgrid(x, y)
 
-                #yvalue = self.fct(xvalue)
+                # yvalue = self.fct(xvalue)
 
                 myfunc = self.fct(X, Y)
                 # TODO: plots like y=1/x have a connection between -inf and +inf that is not actually there!
@@ -491,9 +487,9 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 
     def remove_function_from_plot(self):
         if len(self.fct_stack) != 0:
-            for i in xrange(0, len(self.fct_stack)):
+            for i in range(0, len(self.fct_stack)):
                 fct = self.fct_stack.pop().collections
-                for j in xrange(0, len(fct)):
+                for j in range(0, len(fct)):
                     try:
                         fct[j].remove()
                     except Exception as error:
@@ -509,7 +505,7 @@ class PyplaneMainWindow(QtGui.QMainWindow, Ui_pyplane):
 if __name__ == "__main__":
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window_object = PyplaneMainWindow()
     window_object.showFullScreen()
     window_object.show()

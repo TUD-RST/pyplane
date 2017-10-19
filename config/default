@@ -3,63 +3,75 @@ log_showDbg = false
 log_showError = True
 log_showWarning = True
 log_showTime = True
-showTerminal = False
+log_showTerminal = true
 
 [Plotting]
 plot_background = #ffffff
 plot_backgroundTransparent = false
 plot_CanvasBackground = #ffffff
-plot_fontSize = 12
-plot_topOfPlot = 0.90
-plot_leftOfPlot = 0.05
+plot_fontSize = 9
+plot_topOfPlot = 0.89
+plot_leftOfPlot = 0.12
 plot_rightOfPlot = 0.975
-plot_bottomOfPlot = 0.03
-plot_xmin = -10.
-plot_xmax = 10.
-plot_ymin = -10.
-plot_ymax = 10.
-plot_tmin = -10.
-plot_tmax = 10.
+plot_bottomOfPlot = 0.1
 
 [Phaseplane]
+pp_xmin = -10.
+pp_xmax = 10.
+pp_ymin = -10.
+pp_ymax = 10.
 pp_showXTicks = True
 pp_showYTicks = True
 pp_showMinorTicks = True
 pp_showSpines = True
 pp_showGrid = true
 pp_showTitle = True
-pp_showXLabel = False
-pp_showYLabel = False
+pp_showXLabel = true
+pp_showYLabel = true
 pp_labelFontSize = 12
 
 [x-t-plot]
+x_tmin = 0.
+x_tmax = 10.
+x_xmin = -10.
+x_xmax = 10.
 x_showXTicks = True
 x_showYTicks = True
 x_showMinorTicks = True
 x_showSpines = True
 x_showGrid = True
 x_showTitle = True
-x_showXLabel = False
-x_showYLabel = False
+x_showXLabel = true
+x_showYLabel = true
 x_labelFontSize = 12
 
 [y-t-plot]
+y_tmin = 0.
+y_tmax = 10.
+y_ymin = -10.
+y_ymax = 10.
 y_showXTicks = True
 y_showYTicks = True
 y_showMinorTicks = True
 y_showSpines = True
 y_showGrid = True
 y_showTitle = True
-y_showXLabel = False
-y_showYLabel = False
+y_showXLabel = true
+y_showYLabel = true
 y_labelFontSize = 12
 
 [3d-plot]
+3d_tmin = -10
+3d_tmax = 10.
+3d_xmin = -10
+3d_xmax = 10.
+3d_ymin = -10.
+3d_ymax = 10.
 3d_showTTicks = True
 3d_showXTicks = True
 3d_showYTicks = True
 3d_showMinorTicks = True
-3d_showSpines = false
+3d_showSpines = true
 3d_showGrid = false
 3d_showTitle = True
 3d_showTLabel = true
@@ -71,7 +83,7 @@ y_labelFontSize = 12
 3d_showYXProjection = false
 
 [System]
-max_norm = 1e5
+sys_max_norm = 100000.0
 
 [Vectorfield]
 vf_onByDefault = True
@@ -100,15 +112,15 @@ nc_gridPointsInX = 500
 nc_gridPointsInY = 500
 
 [Trajectories]
-traj_ppForwardColor = #0000ff
-traj_ppBackwardColor = #800080
+traj_ppForwardColor = #00ff00
+traj_ppBackwardColor = #00ffff
 traj_x_tColor = #0000ff
 traj_y_tColor = #0000ff
 traj_plotInitPoint = True
 traj_initPointColor = #ff0000
 traj_checkForwardByDefault = True
 traj_checkBackwardByDefault = True
-traj_integrationtime = 10
+traj_integrationtime = 10.
 traj_integrationstep = 0.0005
 
 [Linearization]
