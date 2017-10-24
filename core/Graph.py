@@ -69,7 +69,7 @@ class Plot(object):
         if myConfig.get_boolean(self._section, self._token + "showTitle"):
             title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
             title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
-            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$")
+            self.canvas.axes.set_title(r"$ \left(\!\!\begin{array}{c}\dot{x}\\ \dot{y}\end{array} \!\!\right) = \left(\begin{array}{c}" + title_x_dot + r"\\" + title_y_dot + r"\end{array} \right)$")
         else:
             self.canvas.fig.subplots_adjust(top=0.99)
 
@@ -91,10 +91,8 @@ class Plot(object):
             title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
             title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
             dec_place = 2  # TODO: read from config
-            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot +
-                                       "$\n$\mathbf{v}_1=("+str(round(vec0[0],dec_place)) + "," +
-                                       str(round(vec0[1],dec_place)) + ")^T\qquad\mathbf{v}_2=(" +
-                                       str(round(vec1[0],dec_place)) + "," + str(round(vec1[1],dec_place)) + ")^T$")
+
+            self.canvas.axes.set_title(r"$ \left(\!\!\begin{array}{c}\dot{x}\\ \dot{y}\end{array} \!\!\right) = \left(\begin{array}{c}" + title_x_dot + r"\\" + title_y_dot + r"\end{array} \right),\quad \mathbf{v}_1= \left(\!\!\begin{array}{c}" + str(round(vec0[0],dec_place)) + r"\\" + str(round(vec0[1],dec_place)) + r"\end{array}\!\!\right),\quad \mathbf{v}_2= \left(\!\!\begin{array}{c}" + str(round(vec1[0],dec_place)) + r"\\" + str(round(vec1[1],dec_place)) + r"\end{array}\!\!\right)$")
 
     def update(self):
         try:
@@ -165,7 +163,7 @@ class ThreeDPlot(object):
         if myConfig.get_boolean(self._section, self._token + "showTitle"):
             title_x_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[0])
             title_y_dot = sp.latex(self.myWidget.mySystem.equation.what_is_my_system()[1])
-            self.canvas.axes.set_title("$\\dot{x} = " + title_x_dot + "$\n$\\dot{y} = " + title_y_dot + "$")
+            self.canvas.axes.set_title(r"$ \left(\!\!\begin{array}{c}\dot{x}\\ \dot{y}\end{array} \!\!\right) = \left(\begin{array}{c}" + title_x_dot + r"\\" + title_y_dot + r"\end{array} \right)$")
         else:
             self.canvas.fig.subplots_adjust(top=0.99)
 
