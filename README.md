@@ -1,7 +1,7 @@
 About 
 ===== 
 PyPlane is a free software for phase plane analysis of second order
-dynamical systems written in PYTHON 3.5 and PyQT5 (compare MATLAB's
+dynamical systems written in PYTHON 3.6 and PyQT5 (compare MATLAB's
 [pplane](http://math.rice.edu/~dfield/)).
 
 ![Screenshot](/resources/pyplane_screenshot.png?raw=true)
@@ -52,14 +52,14 @@ Windows.
 Prerequisites for running natively under Python
 ----------------------------------------------- 
 
-PyPlane runs under Python version 3.5 with the following packages
-installed:
+PyPlane runs under Python version 3.5.x and 3.6.x with the following 
+packages installed:
 
-* NumPy (tested under version 1.13)
-* SciPy (tested under version 0.19.1)
-* Matplotlib (tested under verison 1.5.3 and 2.0.2)
-* SymPy (tested under verison 1.0)
-* PyQt5 (tested under version 5.8.2)
+* NumPy (tested under version 1.13.3)
+* SciPy (tested under version 1.0.0)
+* Matplotlib (tested under version 1.5.3 and 2.1.0)
+* SymPy (tested under version 1.1.1)
+* PyQt5 (tested under version 5.9.1)
 
 An optionally installed and accessible LaTeX/dvipng environment
 produces much prettier results in the linearization tabs. If no LaTeX
@@ -108,9 +108,10 @@ Run this script in order to convert ui-files created by QT4 Designer to
 py-files and to generate the resource file icons_rc.py
 
 ###### build_exe.py
-Run this Python script on windows machines in order to build a
+Run this Python script on Windows machines in order to build a
 stand-alone executable for MS Windows (which does not require a
-separate Python installation)
+separate Python installation). See the file How-To-Windows-Exe.txt for
+information how to setup the pyinstaller environment.
 
 ###### InstallerPyPlane.nsi
 Run this script from Nullsoft installer to build an installation
