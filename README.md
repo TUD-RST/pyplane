@@ -71,13 +71,14 @@ launch the application.
 Python 2
 --------
 The last version of this program which is fully compatible with 
-Python 2.7 is version 1.1.
+Python 2.7 is [version 1.1](https://github.com/TUD-RST/pyplane/releases/tag/PyPlane_v1.1.0).
 
 
 Prerequisites for the stand-alone version
 -----------------------------------------
 
-The stand-alone version is only available for MS Windows operating
+The [stand-alone version](https://github.com/TUD-RST/pyplane/releases)
+is only available for MS Windows operating
 systems on which no Python is installed. You just need to run the
 provided installer file PyPlane_Setup.exe. It will create a directory
 on your desktop in which all required files will be stored. A shortcut
