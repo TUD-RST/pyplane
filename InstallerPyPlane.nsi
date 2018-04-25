@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "PyPlane"
-!define PRODUCT_VERSION "2.0beta"
+!define PRODUCT_VERSION "2.0beta3"
 !define PRODUCT_PUBLISHER "Institut fuer Regelungs- und Steuerungstheorie"
 !define PRODUCT_WEB_SITE "https://github.com/TUD-RST/pyplane.git"
 
