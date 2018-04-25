@@ -31,14 +31,14 @@ infile = 'main.py'
 descrfile = 'core\\config_description.py'
 iconfile = 'resources\\pyplane_icon_32px.ico'
 
-# Directories
+# Directories (adjust the qt_bin and libzmq paths!)
 config_dir = 'config'
 lib_dir = 'library'
 temp_dir = 'windows\\temp'
 build_dir = 'windows\\build'
 exe_dir = build_dir + '\\' + exename + '\\'
-qt_bin_path = 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\PyQt5\\Qt\\bin'
-libzmq_path = 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq'
+qt_bin_path = 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\PyQt5\\Qt\\bin'
+libzmq_path = 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\zmq'
 additional_paths = 'core'
 
 # Check if dirs exist
@@ -68,6 +68,7 @@ cmd = ['--clean',
        '--hidden-import=mpl_toolkits',
        '--hidden-import=scipy.linalg.cython_blas',
        '--hidden-import=scipy.linalg.cython_lapack',
+       '--hidden-import=scipy._lib.messagestream',
        '--hidden-import=tkinter.filedialog',
        '--icon=%s' % os.path.join(base_path, iconfile),
        '--name=%s' % (exename),

@@ -4,10 +4,10 @@ block_cipher = None
 
 
 a = Analysis(['d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\main.py'],
-             pathex=['c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-32bit-3.5.2.2Qt5\\python-3.5.2\\Lib\\site-packages\\zmq', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\core', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
+             pathex=['c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\zmq', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\core', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
              binaries=[],
              datas=[],
-             hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'tkinter.filedialog'],
+             hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'scipy._lib.messagestream', 'tkinter.filedialog'],
              hookspath=[],
              runtime_hooks=[],
              excludes=[],
