@@ -21,25 +21,28 @@ import os
 import shutil
 from PyInstaller.__main__ import run as pyinstaller_run
 
-# The name of the exe tp be built
+# The name of the exe to be built
 exename = 'PyPlane'
 
-# The master file of the program
-infile = 'main.py'
+# Main directory of the app's source code
+app_dir = 'pyplane\\'
 
-# Additional files
-descrfile = 'core\\config_description.py'
-iconfile = 'resources\\pyplane_icon_32px.ico'
+# The master file of the program
+infile = app_dir + 'main.py'
+
+# Additional files in the app directory
+descrfile = app_dir + 'core\\config_description.py'
+iconfile = app_dir + 'resources\\pyplane_icon_32px.ico'
 
 # Directories (adjust the qt_bin and libzmq paths!)
-config_dir = 'config'
-lib_dir = 'library'
+config_dir = app_dir + 'config'
+lib_dir = app_dir + 'library'
 temp_dir = 'windows\\temp'
 build_dir = 'windows\\build'
 exe_dir = build_dir + '\\' + exename + '\\'
 qt_bin_path = 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\PyQt5\\Qt\\bin'
 libzmq_path = 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\zmq'
-additional_paths = 'core'
+additional_paths = app_dir + 'core'
 
 # Check if dirs exist
 if not os.path.exists(qt_bin_path):

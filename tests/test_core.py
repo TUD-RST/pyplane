@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.append('../')
+sys.path.append('../pyplane/')
 
 import core.PyPlaneHelpers as pph
 import unittest

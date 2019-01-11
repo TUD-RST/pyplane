@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\main.py'],
-             pathex=['c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\zmq', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\core', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane'],
+a = Analysis(['d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane-jcwinkler\\pyplane\\main.py'],
+             pathex=['c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'c:\\Progs\\WinPython-64bit-3.6.3.0Qt5\\python-3.6.3.amd64\\Lib\\site-packages\\zmq', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane-jcwinkler\\pyplane\\core', 'd:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane-jcwinkler'],
              binaries=[],
              datas=[],
              hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'scipy._lib.messagestream', 'tkinter.filedialog'],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True , icon='d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane\\resources\\pyplane_icon_32px.ico')
+          console=True , icon='d:\\winkler\\Uni\\Projekte\\Allgemein\\pyplane\\pyplane-jcwinkler\\pyplane\\resources\\pyplane_icon_32px.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
