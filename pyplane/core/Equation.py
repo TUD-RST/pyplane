@@ -24,8 +24,8 @@ import sympy as sp
 import pylab as pl
 import numpy as np
 
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
+from .Logging import myLogger
+from .ConfigHandler import myConfig
 
 class Equation(object):
     """ this class defines the differential equation system and contains

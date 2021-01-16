@@ -21,7 +21,7 @@ __author__ = 'Klemens Fritzsche'
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from matplotlib.backend_bases import NavigationToolbar2 as NavigationToolbar
-from matplotlib.backends.backend_qt4 import cursord
+from matplotlib.backends.backend_qt5 import cursord
 
 
 class Toolbar(NavigationToolbar):

@@ -20,10 +20,10 @@ import sys
 import sip
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from core.ConfigHandler import myConfig
-from gui.App_PyPlane import PyplaneMainWindow
-from gui.Dlg_PyPlane_about import AboutDialog
-from core.Logging import myLogger
+from .core.ConfigHandler import myConfig
+from .gui.App_PyPlane import PyplaneMainWindow
+from .gui.Dlg_PyPlane_about import AboutDialog
+from .core.Logging import myLogger
 
 
 __author__ = 'Klemens Fritzsche'
@@ -230,7 +230,11 @@ class MainApp(PyplaneMainWindow):
     def about(self):
         AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
 
-app = QtWidgets.QApplication(sys.argv)
-main = MainApp()
-main.show()
-sys.exit(app.exec_())
+def run_app():
+    app = QtWidgets.QApplication(sys.argv)
+    main = MainApp()
+    main.show()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    run_app()

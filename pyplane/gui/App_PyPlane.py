@@ -26,12 +26,12 @@ import traceback
 import os
 import sympy as sp
 import numpy as np
-from gui.Ui_PyPlane import Ui_pyplane
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
-from core.System import System
-import core.PyPlaneHelpers as myHelpers
-from gui.Widgets import SettingsWidget
+from .Ui_PyPlane import Ui_pyplane
+from ..core.Logging import myLogger
+from ..core.ConfigHandler import myConfig
+from ..core.System import System
+from ..core import PyPlaneHelpers as myHelpers
+from .Widgets import SettingsWidget
 
 __author__ = 'Klemens Fritzsche'
 
@@ -298,8 +298,8 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
 
         if file_name:
             # Fix: Under some KDE's the file_type is returned empty because
-            # of a "DBUS-error". Hence, in such cases, we try to take the 
-            # file_type from the extension specified by the user . If no valid extension 
+            # of a "DBUS-error". Hence, in such cases, we try to take the
+            # file_type from the extension specified by the user . If no valid extension
             # is set by the user file_type is set to png. This bugfix is addressed
             # in the first part of the "if not" structure.
             #
@@ -317,7 +317,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
                     file_type = file_type2
             else:
                 # This part runs on non KDE-systems or KDE-systems without
-                # the DBUS error:                
+                # the DBUS error:
                 # drop accidently added duplicate file extensions
                 # (avoid figure.png.png but allow figure.case1.png)
                 if file_type2 == file_type:

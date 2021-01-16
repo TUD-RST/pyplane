@@ -23,9 +23,9 @@ import sympy as sp
 from sympy.solvers import solve
 import matplotlib.pyplot as pyplot
 
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
-from core.Canvas import Canvas
+from .Logging import myLogger
+from .ConfigHandler import myConfig
+from .Canvas import Canvas
 
 
 class NullclineHandler(object):
