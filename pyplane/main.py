@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-import sip
+# import sip
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from .core.ConfigHandler import myConfig
@@ -38,7 +38,7 @@ class MainApp(PyplaneMainWindow):
         initializing,
         settings GUI logic (listview elements, variable description, etc)
     """
-    
+
     __PYPLANE_VERSION = "2.0 beta2"
     __PYPLANE_DATE = "2018-04-25"
 
@@ -49,15 +49,15 @@ class MainApp(PyplaneMainWindow):
 
         # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
         # further actions
-        sip.setdestroyonexit(False)
-        
+        # sip.setdestroyonexit(False)
+
         # Set Version-number
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
-        
+
         # # connect buttons ------------------------------------------------------
         # # connect buttons: system
         self.clearButton.clicked.connect(self.clear_trajectories)
@@ -136,7 +136,7 @@ class MainApp(PyplaneMainWindow):
         # if not: read from config
         # TODO: new systems tab chosen -> check/uncheck toggle!
         # if self.systems == []:
-            # read current systems tab:        
+            # read current systems tab:
         # if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
             # self.toggle_nullclines_action.setChecked(True)
         self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
@@ -155,7 +155,7 @@ class MainApp(PyplaneMainWindow):
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
-        myLogger.initialize()      
+        myLogger.initialize()
 
     def clear_trajectories(self):
         system = self.get_current_system()
