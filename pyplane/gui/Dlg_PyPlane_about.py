@@ -9,7 +9,7 @@ import sys
 import platform
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QT_VERSION_STR
-from PyQt5.Qt import PYQT_VERSION_STR
+from PyQt5.QtCore import PYQT_VERSION_STR
 import matplotlib as mp
 import numpy as np
 import sympy as sp
