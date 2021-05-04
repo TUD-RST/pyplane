@@ -25,7 +25,7 @@ from gui.Dlg_PyPlane_about import AboutDialog
 from core.Logging import myLogger
 
 
-__author__ = 'Klemens Fritzsche'
+__author__ = 'Klemens Fritzsche, Jan Winkler'
 
 
 # noinspection PyUnresolvedReferences
@@ -38,8 +38,8 @@ class MainApp(PyplaneMainWindow):
         settings GUI logic (listview elements, variable description, etc)
     """
     
-    __PYPLANE_VERSION = "2.0 beta2"
-    __PYPLANE_DATE = "2018-04-25"
+    __PYPLANE_VERSION = "2.0beta4"
+    __PYPLANE_DATE = "2021-05-05"
 
     def __init__(self):
         # superclass constructor
