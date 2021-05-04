@@ -30,9 +30,9 @@ Jan Winkler at the Institute of Control Theory [1].
 
 It is published under the GNU GENERAL PUBLIC LICENSE Version 3.
 
-The most recent version of PyPlane can always be found at GitHub:
+The most recent version of PyPlane can always be found at
 
-https://github.com/TUD-RST/pyplane
+https://github.com/TUD-RST/pyplane/releases
 
 Please don't hesitate to report bugs, comments, or suggestions on
 GitHub!
