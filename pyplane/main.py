@@ -17,7 +17,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-import sip
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from core.ConfigHandler import myConfig
@@ -47,10 +46,6 @@ class MainApp(PyplaneMainWindow):
         PyplaneMainWindow.__init__(self)
         QtCore.pyqtRemoveInputHook()
 
-        # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
-        # further actions
-        sip.setdestroyonexit(False)
-        
         # Set Version-number
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
