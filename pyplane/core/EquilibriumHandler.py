@@ -142,7 +142,7 @@ class EquilibriumHandler(object):
         self.eq_plot = self.myWidget.Plot.canvas.axes.plot(z_equilibrium[0],
                                               z_equilibrium[1],
                                               'ro',
-                                              picker=5)
+                                              pickradius=5)
 
         # equilibrium point in t(x,y):
         # TODO: let user specify this in config!

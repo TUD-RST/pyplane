@@ -134,7 +134,7 @@ class System(object):
             EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
 
             # plot equilibrium:
-            self.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1], 'ro', picker=2)
+            self.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1], 'ro', pickradius=2)
 
             # plot eigenvectors:
             color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
