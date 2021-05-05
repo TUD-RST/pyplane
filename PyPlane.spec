@@ -1,6 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 import sys
 import os
+import glob
 from PyInstaller.utils.hooks import get_module_file_attribute
 
 sys.setrecursionlimit(sys.getrecursionlimit() * 5)
@@ -10,10 +11,15 @@ block_cipher = None
 base_dir = os.getcwd()
 pyplane_dir = os.path.join(base_dir, 'pyplane')
 
+# Config data and settings of PyPlane needs to be shipped as well
+data_files = [(filename, './library') for filename in glob.glob(os.path.join(pyplane_dir, 'library', '*.ppf'))]
+data_files += [(os.path.join(pyplane_dir, 'config', 'default'), './config')]
+data_files += [(os.path.join(pyplane_dir, 'core', 'config_description.py'), './core')]
+
 a = Analysis([os.path.join(pyplane_dir, 'main.py')],
              pathex=[pyplane_dir, os.path.join(pyplane_dir, 'core'), os.path.join(os.path.dirname(get_module_file_attribute('PyQt5')), 'Qt', 'bin'), os.path.dirname(get_module_file_attribute('zmq')), base_dir],
              binaries=[],
-             datas=[],
+             datas=data_files,
              hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'scipy._lib.messagestream', 'tkinter.filedialog'],
              hookspath=[os.path.join(base_dir, 'pyinstaller-hooks')],
              runtime_hooks=[],
