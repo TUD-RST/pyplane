@@ -13,6 +13,7 @@ setup(
     author_email='firstname.lastname@tu-dresden.de',
     description='Tool for phase plane analysis of second order dynamical systems (Qt-based)',
     packages=find_packages(),
+    include_package_data=True,
     install_requires=requirements,
     entry_points = {'console_scripts': ['pyplane=pyplane.main:run_app']},
 )

@@ -23,6 +23,7 @@
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 import traceback
+import sys
 import os
 import sympy as sp
 import numpy as np
@@ -34,6 +35,11 @@ from ..core import PyPlaneHelpers as myHelpers
 from .Widgets import SettingsWidget
 
 __author__ = 'Klemens Fritzsche'
+
+
+basedir = os.path.dirname(os.path.dirname(sys.modules.get(__name__).__file__))
+librarydir = os.path.join(basedir, 'library')
+TMP_PATH = os.path.join(basedir, 'library', 'tmp.ppf')
 
 
 def handle_exception(error):
@@ -79,7 +85,9 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         except:
             test = "Could not load config file. Please check existence"
 
+        myLogger.debug_message(f"Current working dir: {os.path.abspath(os.curdir)}")
         myLogger.debug_message("Loading config file: " + test)
+
 
     def init(self):
         """ This function gets called only after program start.
@@ -236,10 +244,13 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
             myLogger.message(file_name + " loaded")
 
     def load_tmp_system(self):
-        self.load_system('library/tmp.ppf')
+        self.load_system(TMP_PATH)
 
     def load_system_from_file(self):
+        orig_dir = os.path.abspath(os.curdir)
+        os.chdir(librarydir)
         file_name = QtWidgets.QFileDialog.getOpenFileName(self, 'Open pyplane file', '', 'pyplane file (*.ppf)')
+        os.chdir(orig_dir)
 
         # Function returns on some platforms a tuple: First element -> file name, second element -> filter
         # We do only need the filter
@@ -255,7 +266,7 @@ class PyplaneMainWindow(QtWidgets.QMainWindow, Ui_pyplane):
         if len(self.systems) > 0:
             index = self.tabWidget.currentIndex()
             system = self.systems[index]
-            file_name = 'library/tmp.ppf'
+            file_name = TMP_PATH
             self.save_system(file_name, system.equation.what_is_my_system())
         else:
             myLogger.error_message("There is no system to save!")
