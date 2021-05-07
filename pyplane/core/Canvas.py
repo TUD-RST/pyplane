@@ -34,7 +34,7 @@ __author__ = 'Klemens Fritzsche'
 class Canvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
-    def __init__(self, parent, latex_installed):
+    def __init__(self, parent, latex_installed, proj_3d=False):
         self.myWidget = parent
 
         plot_background = myConfig.read("Plotting", "plot_background")
@@ -60,7 +60,7 @@ class Canvas(FigureCanvas):
         # pl.matplotlib.rc('text', antialiased=False)
         # pl.matplotlib.rc('patch', antialiased=False)
 
-        self.axes = self.fig.add_subplot(111)
+        self.axes = self.fig.add_subplot(111, projection="3d" if proj_3d else None)
 
         # Matplotlib 2.0 vs. 1.5 behavior...
         try:
@@ -108,9 +108,9 @@ class Canvas(FigureCanvas):
 
 class ThreeDCanvas(Canvas):
     def __init__(self, parent, latex_installed):
-        super(ThreeDCanvas, self).__init__(parent, latex_installed)
+        super(ThreeDCanvas, self).__init__(parent, latex_installed, proj_3d=True)
         self.myWidget = parent
-        self.axes = self.fig.gca(projection='3d')
+        self.axes = self.fig.gca()
 
         self.axes.set_zlabel("t")
         self.axes.set_ylabel("y")

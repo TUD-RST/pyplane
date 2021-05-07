@@ -17,7 +17,6 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-# import sip
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from .core.ConfigHandler import myConfig
@@ -26,7 +25,7 @@ from .gui.Dlg_PyPlane_about import AboutDialog
 from .core.Logging import myLogger
 
 
-__author__ = 'Klemens Fritzsche'
+__author__ = 'Klemens Fritzsche, Jan Winkler'
 
 
 # noinspection PyUnresolvedReferences
@@ -38,18 +37,15 @@ class MainApp(PyplaneMainWindow):
         initializing,
         settings GUI logic (listview elements, variable description, etc)
     """
+    
+    __PYPLANE_VERSION = "2.0beta4"
+    __PYPLANE_DATE = "2021-05-05"
 
-    __PYPLANE_VERSION = "2.0 beta2"
-    __PYPLANE_DATE = "2018-04-25"
 
     def __init__(self):
         # superclass constructor
         PyplaneMainWindow.__init__(self)
         QtCore.pyqtRemoveInputHook()
-
-        # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
-        # further actions
-        # sip.setdestroyonexit(False)
 
         # Set Version-number
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
