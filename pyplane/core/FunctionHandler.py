@@ -19,8 +19,8 @@
 
 import sympy as sp
 import numpy as np
-from core.ConfigHandler import myConfig
-from core.Logging import myLogger
+from .ConfigHandler import myConfig
+from .Logging import myLogger
 
 class FunctionHandler(object):
     """ this class defines the function """

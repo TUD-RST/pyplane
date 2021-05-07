@@ -22,7 +22,7 @@ import configparser
 import os
 import ast
 
-from core.Logging import myLogger
+from .Logging import myLogger, basedir
 
 
 class ConfigHandler(object):
@@ -47,7 +47,7 @@ class ConfigHandler(object):
         # read config-descriptions from dictionary
         self.descr = {}
 
-        with open('core/config_description.py', 'r') as configdict:
+        with open(os.path.join(basedir, 'core', 'config_description.py'), 'r') as configdict:
             configdata = configdict.read()
             self.descr = ast.literal_eval(configdata)
 

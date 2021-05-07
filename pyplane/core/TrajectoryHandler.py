@@ -22,8 +22,8 @@ import numpy as np
 import pylab as pl
 from scipy import integrate
 
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
+from .Logging import myLogger
+from .ConfigHandler import myConfig
 
 
 class TrajectoryHandler(object):

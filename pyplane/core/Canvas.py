@@ -23,9 +23,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import rc
 from matplotlib import pyplot as plt
-from core.Toolbar import Toolbar
-from core.ConfigHandler import myConfig
-from core.Logging import myLogger
+from .Toolbar import Toolbar
+from .ConfigHandler import myConfig
+from .Logging import myLogger
 
 
 __author__ = 'Klemens Fritzsche'

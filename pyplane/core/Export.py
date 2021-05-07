@@ -20,7 +20,7 @@
 from matplotlib.backends.backend_pdf import PdfPages
 from pylab import *
 
-from core.Logging import myLogger
+from .Logging import myLogger
 
 
 class Pdf(object):

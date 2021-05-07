@@ -21,11 +21,14 @@ Module implementing logging capabilities
 """
 
 import time
+import os
+import sys
 from PyQt5 import QtCore, QtWidgets, QtGui
 
 __author__ = 'Klemens Fritzsche'
 
-defaultLogFileName = 'config/logmessages.txt'
+basedir = os.path.dirname(os.path.dirname(sys.modules.get(__name__).__file__))
+defaultLogFileName = os.path.join(basedir, 'config','logmessages.txt')
 
 
 class Logger(object):
@@ -66,7 +69,7 @@ class Logger(object):
         this function gets called after myConfig instance has been created.
         logging before that is possible with hardcoded values.
         """
-        from core.ConfigHandler import myConfig
+        from .ConfigHandler import myConfig
 
         self.show_error = myConfig.get_boolean("Logging", "log_showError")
         self.show_warning = myConfig.get_boolean("Logging", "log_showWarning")

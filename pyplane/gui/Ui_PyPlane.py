@@ -224,4 +224,5 @@ class Ui_pyplane(object):
         self.action_2.setText(_translate("pyplane", "..."))
         self.actionPyPlane_Help.setText(_translate("pyplane", "PyPlane Help"))
         self.actionAbout.setText(_translate("pyplane", "About"))
-import icons_rc
+
+from .. import icons_rc

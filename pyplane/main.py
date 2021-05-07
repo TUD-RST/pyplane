@@ -19,10 +19,10 @@
 import sys
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from core.ConfigHandler import myConfig
-from gui.App_PyPlane import PyplaneMainWindow
-from gui.Dlg_PyPlane_about import AboutDialog
-from core.Logging import myLogger
+from .core.ConfigHandler import myConfig
+from .gui.App_PyPlane import PyplaneMainWindow
+from .gui.Dlg_PyPlane_about import AboutDialog
+from .core.Logging import myLogger
 
 
 __author__ = 'Klemens Fritzsche, Jan Winkler'
@@ -41,6 +41,7 @@ class MainApp(PyplaneMainWindow):
     __PYPLANE_VERSION = "2.0beta4"
     __PYPLANE_DATE = "2021-05-05"
 
+
     def __init__(self):
         # superclass constructor
         PyplaneMainWindow.__init__(self)
@@ -52,7 +53,7 @@ class MainApp(PyplaneMainWindow):
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
-        
+
         # # connect buttons ------------------------------------------------------
         # # connect buttons: system
         self.clearButton.clicked.connect(self.clear_trajectories)
@@ -131,7 +132,7 @@ class MainApp(PyplaneMainWindow):
         # if not: read from config
         # TODO: new systems tab chosen -> check/uncheck toggle!
         # if self.systems == []:
-            # read current systems tab:        
+            # read current systems tab:
         # if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
             # self.toggle_nullclines_action.setChecked(True)
         self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
@@ -150,7 +151,7 @@ class MainApp(PyplaneMainWindow):
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
-        myLogger.initialize()      
+        myLogger.initialize()
 
     def clear_trajectories(self):
         system = self.get_current_system()
@@ -225,7 +226,11 @@ class MainApp(PyplaneMainWindow):
     def about(self):
         AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
 
-app = QtWidgets.QApplication(sys.argv)
-main = MainApp()
-main.show()
-sys.exit(app.exec_())
+def run_app():
+    app = QtWidgets.QApplication(sys.argv)
+    main = MainApp()
+    main.show()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    run_app()
