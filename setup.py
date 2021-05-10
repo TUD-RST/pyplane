@@ -15,5 +15,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
-    entry_points = {'console_scripts': ['pyplane=pyplane.main:run_app']},
+    entry_points={'console_scripts': ['pyplane=pyplane.app:run']},
 )

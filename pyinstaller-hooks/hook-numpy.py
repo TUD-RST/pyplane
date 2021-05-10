@@ -43,6 +43,10 @@ if is_win:
 # numpy.testing at the top level for historical reasons.
 # excludedimports = collect_submodules('numpy.testing')
 
+binary_exclude_list = ["mkl_avx.dll", "mkl_avx2.dll", "mkl_avx512.dll", "mkl_mc.dll", "mkl_mc3.dll",
+                       "mkl_sequential.dll", "mkl_tbb_thread.dll", "mkl_vml_avx.dll", "mkl_vml_avx2.dll",
+                       "mkl_vml_avx512.dll", "mkl_vml_cmpt.dll", "mkl_vml_def.dll", "mkl_vml_mc.dll",
+                       "mkl_vml_mc2.dll", "mkl_vml_mc3.dll"]
 binaries = []
 
 # package the DLL bundle that official numpy wheels for Windows ship
@@ -54,5 +58,7 @@ if is_win:
     for location in extra_dll_locations:
         dll_glob = os.path.join(os.path.dirname(
             get_module_file_attribute('numpy')), location, "*.dll")
-        if glob.glob(dll_glob):
-            binaries.append((dll_glob, "."))
+        bin_files = glob.glob(dll_glob)
+        for bin_file in bin_files:
+            if os.path.basename(bin_file) not in binary_exclude_list:
+                binaries.append((bin_file, "."))
