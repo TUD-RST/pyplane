@@ -8,16 +8,16 @@ sys.setrecursionlimit(sys.getrecursionlimit() * 5)
 
 block_cipher = None
 
-base_dir = os.getcwd()
-pyplane_dir = os.path.join(base_dir, 'pyplane')
+repo_dir = os.getcwd()
+module_dir = os.path.join(repo_dir, 'pyplane')
 
 # Config data and settings of PyPlane needs to be shipped as well
-data_files = [(filename, './library') for filename in glob.glob(os.path.join(pyplane_dir, 'library', '*.ppf'))]
-data_files += [(os.path.join(pyplane_dir, 'config', 'default'), './config')]
-data_files += [(os.path.join(pyplane_dir, 'core', 'config_description.py'), './core')]
+data_files = [(filename, './pyplane/library') for filename in glob.glob(os.path.join(module_dir, 'library', '*.ppf'))]
+data_files += [(os.path.join(module_dir, 'config', 'default'), './pyplane/config')]
+data_files += [(os.path.join(module_dir, 'core', 'config_description.py'), './pyplane/core')]
 
-a = Analysis([os.path.join(pyplane_dir, 'main.py')],
-             pathex=[pyplane_dir, os.path.join(pyplane_dir, 'core'), os.path.join(os.path.dirname(get_module_file_attribute('PyQt5')), 'Qt', 'bin'), os.path.dirname(get_module_file_attribute('zmq')), base_dir],
+a = Analysis([os.path.join(repo_dir, 'run_pyplane.py')],
+             pathex=[repo_dir, module_dir, os.path.join(module_dir, 'core')],
              binaries=[],
              datas=data_files,
              hiddenimports=['scipy.special._ufuncs_cxx', 'mpl_toolkits', 'scipy.linalg.cython_blas', 'scipy.linalg.cython_lapack', 'scipy._lib.messagestream'],
@@ -39,7 +39,7 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=True , icon=os.path.join(pyplane_dir, 'resources', 'pyplane_icon_32px.ico'))
+          console=True , icon=os.path.join(module_dir, 'resources', 'pyplane_icon_32px.ico'))
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
