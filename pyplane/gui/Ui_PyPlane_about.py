@@ -141,13 +141,14 @@ class Ui_DlgAbout(object):
         self.txtCopyright = QtWidgets.QLabel(self.verticalLayoutWidget)
         self.txtCopyright.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.txtCopyright.setWordWrap(True)
-        self.txtCopyright.setOpenExternalLinks(False)
+        self.txtCopyright.setOpenExternalLinks(True)
+        self.txtCopyright.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         self.txtCopyright.setObjectName("txtCopyright")
         self.verticalLayout.addWidget(self.txtCopyright)
         self.txtGPL = QtWidgets.QLabel(self.verticalLayoutWidget)
         self.txtGPL.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.txtGPL.setWordWrap(True)
-        self.txtGPL.setOpenExternalLinks(False)
+        self.txtGPL.setOpenExternalLinks(True)
         self.txtGPL.setObjectName("txtGPL")
         self.verticalLayout.addWidget(self.txtGPL)
 
@@ -183,11 +184,11 @@ class Ui_DlgAbout(object):
         self.txtCopyright.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Copyright (C) 2013-2017 by Klemens Fritzsche and Jan Winkler</p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Technische Universität Dresden </p>\n"
-"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Faculty of Electrical and Computer Engineering - Institute of Control Theory</p>\n"
-"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en</span></a></p></body></html>"))
+"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\'; font-size:10pt;\">Copyright (C) 2013-2017 by Klemens Fritzsche and Jan Winkler</span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\'; font-size:10pt;\">Technische Universität Dresden </span></p>\n"
+"<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\'; font-size:10pt;\">Faculty of Electrical and Computer Engineering - Institute of Control Theory</span></p>\n"
+"<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en\"><span style=\" font-size:10pt; text-decoration: underline; color:#0000ff;\">https://www.tu-dresden.de/ing/elektrotechnik/rst?set_language=en</span></a></p></body></html>"))
         self.txtGPL.setText(_translate("DlgAbout", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
