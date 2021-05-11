@@ -53,8 +53,9 @@ def exec_command(cmd, ok_return_value=0):
 # ToDo: 
 # Read in all ui-files automatically and convert them
 
-exec_command(["pyuic5", "pyplane/gui/Ui_PyPlane.ui", "-o", "pyplane/gui/Ui_PyPlane.py"])
-exec_command(["pyuic5", "pyplane/gui/Ui_PyPlane_about.ui", "-o", "pyplane/gui/Ui_PyPlane_about.py"])
+# --from-imports -> Ensure that we have "from . import incons_rc" in files using user defined icons
+exec_command(["pyuic5", "pyplane/gui/Ui_PyPlane.ui", "--from-imports", "-o", "pyplane/gui/Ui_PyPlane.py"])
+exec_command(["pyuic5", "pyplane/gui/Ui_PyPlane_about.ui", "--from-imports", "-o", "pyplane/gui/Ui_PyPlane_about.py"])
 exec_command(["pyuic5", "pyplane/gui/Ui_SettingsWidget.ui", "-o", "pyplane/gui/Ui_SettingsWidget.py"])
 exec_command(["pyuic5", "pyplane/gui/Ui_SystemTabWidget.ui", "-o", "pyplane/gui/Ui_SystemTabWidget.py"])
 exec_command(["pyuic5", "pyplane/gui/Ui_ThreeDWidget.ui", "-o", "pyplane/gui/Ui_ThreeDWidget.py"])
@@ -63,4 +64,4 @@ exec_command(["pyuic5", "pyplane/gui/Ui_ZoomWidget.ui", "-o", "pyplane/gui/Ui_Zo
 
 # Has to be done manually since pyrcc5 is an exe, icoms_rc.py must go into the root directory!
 # pyrcc resources/icons.qrc -o icons_rc.py
-exec_command(["pyrcc5", "pyplane/resources/icons.qrc", "-o", "pyplane/icons_rc.py"])
+exec_command(["pyrcc5", "pyplane/resources/icons.qrc", "-o", "pyplane/gui/icons_rc.py"])

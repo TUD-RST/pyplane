@@ -194,6 +194,4 @@ class Ui_DlgAbout(object):
 "</style></head><body style=\" font-family:\'Noto Sans\'; font-size:10pt; font-weight:400; font-style:normal;\">\n"
 "<p align=\"center\" style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">This program is free software, licensed under the terms of the GNU General Public License, Version 3: <a href=\"http://www.gnu.org/license/\"><span style=\" text-decoration: underline; color:#0000ff;\">http://www.gnu.org/license/</span></a></p>\n"
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Please consult <a href=\"https://github.com/TUD-RST/pyplane.git\"><span style=\" text-decoration: underline; color:#0000ff;\">https://github.com/TUD-RST/pyplane.git</span></a> for updated versions of this program!</p></body></html>"))
-
-from .. import icons_rc
-
+from . import icons_rc
