@@ -21,17 +21,11 @@ is published under the GNU GENERAL PUBLIC LICENSE Version 3.
   eigenvectors
 * Add arbitrary function into the phase plane area (i.e. contour lines of
   Ljapunov-functions)
-
-## LaTeX pretty printing
-
-An optionally installed and accessible LaTeX/dvipng environment produces much
-prettier results in the linearization tabs. If no LaTeX is installed, the
-program is still fully functional.
-
-## Example systems
-
-In the directory "library" you find several example systems which you can load
-via "Open - From File" or by pressing STRG+O
+* An optionally installed and accessible LaTeX/dvipng environment produces much
+  prettier results in the linearization tabs. If no LaTeX is installed, the
+  program is still fully functional.
+* Several example systems are shipped with PyPlane. You find them in the
+  directory `library`. Load them via "Open - From File" or by pressing STRG+O
 
 **Please don't hesitate to report bugs, comments, or suggestions!**
 
@@ -53,6 +47,9 @@ installed as follows:
 
 PyPlane can then be invoked from the command line by executing the command
 `pyplane` or via `python -m pyplane`
+
+*Note:* When some important missing features are implemented PyPlane will be
+also available via PyPi.
 
 ### Executing from the source code
 
@@ -86,7 +83,7 @@ LaTeX installation will produce better formatting results in the linearization
 tabs. However, even without LaTeX the program is fully functional.
 
 Double-click on the PyPlane icon on the desktop in order to launch the
-application. Start-up may take some time.
+application. **Start-up may take some time.**
 
 # Python 2
 
