@@ -88,9 +88,24 @@ application. **Start-up may take some time.**
 # Python 2
 
 The last version of this program which is fully compatible with Python 2.7
-is [version 1.1](https://github.com/TUD-RST/pyplane/releases/tag/PyPlane_v1.1.0)
-.
+is [version 1.1](https://github.com/TUD-RST/pyplane/releases/tag/PyPlane_v1.1.0).
 
+
+
+# Trouble shooting:
+
+Under Debian10 the following error message did occure:
+
+```
+qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
+This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+```
+
+The following commands helped in tracking down the problem and get pyplane installed:
+
+- `export QT_DEBUG_PLUGINS=1` (just for more detailed information)
+- `sudo ln -s /usr/lib/x86_64-linux-gnu/libxcb-util.so.0 /usr/lib/x86_64-linux-gnu/libxcb-util.so.1` ([source](https://github.com/tasmota/tasmotizer/issues/71#issuecomment-796238665))
+- `pip install PyQt5 PyQt5-sip PyQt5-Qt sip` (probably)
 
 
 
