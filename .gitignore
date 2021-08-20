@@ -1,5 +1,7 @@
 *.pyc
 /windows
+/dist
+/build
 logmessages.txt
 library/tmp.ppf
 .idea
