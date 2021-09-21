@@ -4,8 +4,8 @@ SetCompressor /SOLID lzma
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "PyPlane"
-!define PRODUCT_VERSION "2.0beta3"
-!define PRODUCT_PUBLISHER "Institut fuer Regelungs- und Steuerungstheorie"
+!define PRODUCT_VERSION "2.0"
+!define PRODUCT_PUBLISHER "Institute of Control Theory"
 !define PRODUCT_WEB_SITE "https://github.com/TUD-RST/pyplane.git"
 
 ; MUI 1.67 compatible ------
