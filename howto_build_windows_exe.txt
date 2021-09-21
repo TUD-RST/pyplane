@@ -1,11 +1,13 @@
-Instructions for building the Windows executable using PyInstaller 3.3.1 on Python 3.8.8
+Instructions for building the Windows executable using PyInstaller 4.3 on
+Python 3.8.8
 
-1. Make sure PyInstaller 4.2 is installed in your Python environment!
+1. Make sure PyInstaller 4.3 is installed in a Python virtual environment which
+   does only contain the packages required by PyPlane.
 
-2. Make sure that build_dir is not opened in any application or console, i.e.,
-   it can be deleted by the script.
+2. Make sure that build_dir in build_windows_exe.py is not opened in any
+   application or console, i.e., it can be deleted by the script.
    
-3. Run build_exe.py
+3. Run build_windows_exe.py from the Python virtual environment mentioned in 1.
 
 4. The resulting exe should be found in build_dir\PyPlane.
 
@@ -13,5 +15,6 @@ Instructions for building the Windows executable using PyInstaller 3.3.1 on Pyth
    import them using the hidden-import option in PyPlane.spec. This can be
    a time-consuming trial and error procedure.
    
-6. Open the file InstallerPyPlane.nsi, adjust the version information if required, and run the
-   file through NullSoft Installable System. Setup.exe will be placed into build_dir.
+6. Open the file InstallerPyPlane.nsi, adjust the version information
+   (if required), and run the file through NullSoft Installable System.
+   Setup.exe will be placed into build_dir.
