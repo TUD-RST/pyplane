@@ -26,12 +26,12 @@ import sympy as sp
 import pylab as pl
 import numpy as np
 
-from core.Logging import myLogger
-from core.Equation import Equation
-from core.ConfigHandler import myConfig
-from gui.Widgets import SystemTabWidget, PhaseplaneWidget, ZoomWidgetSimple, ThreeDWidget
-from core.TrajectoryHandler import TrajectoryHandler
-from core.FunctionHandler import FunctionHandler
+from .Logging import myLogger
+from .Equation import Equation
+from .ConfigHandler import myConfig
+from ..gui.Widgets import SystemTabWidget, PhaseplaneWidget, ZoomWidgetSimple, ThreeDWidget
+from .TrajectoryHandler import TrajectoryHandler
+from .FunctionHandler import FunctionHandler
 
 counter = 0
 
@@ -124,7 +124,7 @@ class System(object):
             d1 = (xmax-xmin)/10
             d2 = (ymax-ymin)/10
             d_large = (xmax-xmin)*(ymax-ymin)
-            
+
             EV0 = np.array([np.real(eigvec0[0]),np.real(eigvec0[1])])
             EV0_norm = np.sqrt(EV0[0]**2+EV0[1]**2)
             EV0_scaled = np.array([d1*(1/EV0_norm)*EV0[0],d1*(1/EV0_norm)*EV0[1]])
@@ -134,7 +134,7 @@ class System(object):
             EV1_scaled = np.array([d1*(1/EV1_norm)*EV1[0],d1*(1/EV1_norm)*EV1[1]])
 
             # plot equilibrium:
-            self.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1], 'ro', picker=2)
+            self.Phaseplane.Plot.canvas.axes.plot(equilibrium[0], equilibrium[1], 'ro', pickradius=2)
 
             # plot eigenvectors:
             color_eigenvec = myConfig.read("Linearization", "lin_eigenvector_color")
@@ -145,7 +145,7 @@ class System(object):
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV0_scaled[0], -d_large*EV0_scaled[1], head_width=0, head_length=0, color=color_eigenline)
             if myConfig.get_boolean("Linearization","lin_show_eigenvector"):
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], EV0_scaled[0], EV0_scaled[1], head_width=0, head_length=0, color=color_eigenvec)
-            
+
             if myConfig.get_boolean("Linearization","lin_show_eigenline"):
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], d_large*EV1_scaled[0], d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)
                 self.Phaseplane.Plot.canvas.axes.arrow(equilibrium[0], equilibrium[1], -d_large*EV1_scaled[0], -d_large*EV1_scaled[1], head_width=0, head_length=0, color=color_eigenline)

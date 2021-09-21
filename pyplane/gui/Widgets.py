@@ -18,22 +18,23 @@
 
 
 import ast
+import os
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from gui.Ui_SettingsWidget import Ui_SettingsWidget
-from gui.Ui_SystemTabWidget import Ui_SystemTabWidget
-from gui.Ui_ZoomWidget import Ui_ZoomWidget
-from gui.Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
-from gui.Ui_ThreeDWidget import Ui_ThreeDWidget
-from core.Canvas import Canvas, ThreeDCanvas
-from core.ConfigHandler import myConfig
-from core.Graph import Plot, ThreeDPlot, PhasePlot
-from core.NullclineHandler import NullclineHandler
-from core.Vectorfield import Vectorfield
-from core.StreamlineHandler import StreamlineHandler
-from core.EquilibriumHandler import EquilibriumHandler
-from core.Logging import myLogger
+from .Ui_SettingsWidget import Ui_SettingsWidget
+from .Ui_SystemTabWidget import Ui_SystemTabWidget
+from .Ui_ZoomWidget import Ui_ZoomWidget
+from .Ui_ZoomWidgetSimple import Ui_ZoomWidgetSimple
+from .Ui_ThreeDWidget import Ui_ThreeDWidget
+from ..core.Canvas import Canvas, ThreeDCanvas
+from ..core.ConfigHandler import myConfig
+from ..core.Graph import Plot, ThreeDPlot, PhasePlot
+from ..core.NullclineHandler import NullclineHandler
+from ..core.Vectorfield import Vectorfield
+from ..core.StreamlineHandler import StreamlineHandler
+from ..core.EquilibriumHandler import EquilibriumHandler
+from ..core.Logging import myLogger, basedir
 
 
 __author__ = 'Klemens Fritzsche'
@@ -50,7 +51,7 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
 
         # read config-descriptions from dictionary
         self.descr = {}
-        with open('core/config_description.py', 'r') as descr:
+        with open(os.path.join(basedir, 'core', 'config_description.py'), 'r') as descr:
             data = descr.read()
             self.descr = ast.literal_eval(data)
 
@@ -164,11 +165,11 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
             # print(self.stack_visible)
 
     def create_boolean_combo_box(self, name, value):
-        """ 
+        """
         Creates a combo-box with the two entries "true" and "false" and
         connects its signal "currentIndexChanged" with the method "new_value"
         via the "callback_factory"
-        
+
         Parameter:
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
@@ -182,14 +183,14 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
             cbox.setCurrentIndex(0)
         else:
             cbox.setCurrentIndex(1)
-        cbox.currentIndexChanged.connect(self.callback_factory(cbox, self.section, name))            
+        cbox.currentIndexChanged.connect(self.callback_factory(cbox, self.section, name))
         return cbox
-        
+
     def create_line_edit(self, name, value):
-        """ 
-        Creates a lineedit box and connects its signal "textEdited" 
+        """
+        Creates a lineedit box and connects its signal "textEdited"
         with the method "new_value" via the "callback_factory"
-        
+
         Parameter:
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
@@ -197,18 +198,18 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         lineedit = QtWidgets.QLineEdit(self)
         lineedit.setObjectName(name)
         lineedit.setFixedWidth(100)
-        lineedit.setAlignment(QtCore.Qt.AlignRight)           
+        lineedit.setAlignment(QtCore.Qt.AlignRight)
         lineedit.setText(value)
         lineedit.textEdited.connect(self.callback_factory(lineedit, self.section, name))
         return lineedit
-        
+
     def create_color_chooser(self, name, value):
-        """ 
-        Creates a combo-box with some basic colors and connects its signal 
-        "currentIndexChanged" with the method "new_value" via the 
+        """
+        Creates a combo-box with some basic colors and connects its signal
+        "currentIndexChanged" with the method "new_value" via the
         "callback_factory". The colors are presented in human readable names,
         but are represented by RGB-hex-strings in the background
-        
+
         Parameter:
         name  -- the name of the parameter represented by the value of the box
         value -- the current value of the parmeter
@@ -261,21 +262,21 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
                     print("Could not remove element")
 
     def new_value(self, input_widget, section, variable):
-        """ 
+        """
         Ensures that a changed parameter in the ui is written into the
-        configuration data. 
-        
+        configuration data.
+
         Parameter:
         input_widget -- the widget the value of which has been changed by the
                         user
         section      -- the configuration section the variable refers to
         variable     -- the name of the parameter
         """
-        
+
         # read lineedit
         #QtCore.pyqtRemoveInputHook()
         #embed()
-    
+
         if input_widget.metaObject().className() == "QLineEdit":
             new_value = str(input_widget.text())
         elif input_widget.metaObject().className() == "QComboBox":
@@ -283,7 +284,7 @@ class SettingsWidget(QtWidgets.QWidget, Ui_SettingsWidget):
         else:
             myLogger.debug_message("Unsupported widget type passed!")
             return
-            
+
         # write config file
         myConfig.write(section, variable, new_value)
         myLogger.debug_message("New value for " + str(variable) + ":" + new_value)
@@ -313,7 +314,7 @@ class ZoomWidgetSimple(QtWidgets.QWidget, Ui_ZoomWidgetSimple):
     def __init__(self, parent, parameter):
         QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
-        
+
         self.mySystem = parent
         self.param = parameter # "x" or "y"
         self.ylabel_str = self.param
@@ -346,7 +347,7 @@ class ThreeDWidget(QtWidgets.QWidget, Ui_ThreeDWidget):
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
-        
+
         self.mySystem = parent
 
         # Axis labels
@@ -379,7 +380,7 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         self.mySystem = parent
         QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
-        
+
         self.latex_installed = self.mySystem.myPyplane.latex_installed
         self.Layout = QtWidgets.QVBoxLayout(self.frame)
         self.Canvas = Canvas(self, self.latex_installed)
@@ -399,7 +400,7 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         self.xmaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_xmax")))
         self.yminLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymin")))
         self.ymaxLineEdit.setText(str(myConfig.read("Phaseplane", "pp_ymax")))
-        
+
         self.Plot = PhasePlot(self, self.Canvas)
         self.Plot.set_window_range()
 
@@ -447,7 +448,7 @@ class PhaseplaneWidget(QtWidgets.QWidget, Ui_ZoomWidget):
         eq_identifier = str(self.linBox.currentText())
         equilibrium = self.Equilibria.get_equilibrium_by_character_identifier(eq_identifier)
         jac = self.Equilibria.approx_ep_jacobian(equilibrium.coordinates)
-        
+
         # set system properties
         accuracy = int(myConfig.read("Linearization","lin_round_decimals"))
         xe = round(equilibrium.coordinates[0], accuracy)

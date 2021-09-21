@@ -17,16 +17,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import sys
-import sip
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-from core.ConfigHandler import myConfig
-from gui.App_PyPlane import PyplaneMainWindow
-from gui.Dlg_PyPlane_about import AboutDialog
-from core.Logging import myLogger
+from .core.ConfigHandler import myConfig
+from .gui.App_PyPlane import PyplaneMainWindow
+from .gui.Dlg_PyPlane_about import AboutDialog
+from .core.Logging import myLogger
 
-
-__author__ = 'Klemens Fritzsche'
+__author__ = 'Klemens Fritzsche, Jan Winkler'
 
 
 # noinspection PyUnresolvedReferences
@@ -38,26 +36,22 @@ class MainApp(PyplaneMainWindow):
         initializing,
         settings GUI logic (listview elements, variable description, etc)
     """
-    
-    __PYPLANE_VERSION = "2.0 beta2"
-    __PYPLANE_DATE = "2018-04-25"
+
+    __PYPLANE_VERSION = "2.0"
+    __PYPLANE_DATE = "2021-09-21"
 
     def __init__(self):
         # superclass constructor
         PyplaneMainWindow.__init__(self)
         QtCore.pyqtRemoveInputHook()
 
-        # If set to True the app crashes under MS Windows if it is immediately closed after startup without any
-        # further actions
-        sip.setdestroyonexit(False)
-        
         # Set Version-number
         self.setWindowTitle("PyPlane " + self.__PYPLANE_VERSION)
 
         # check config file if shown by default
         self.terminal_toggle = myConfig.get_boolean("Logging", "log_showTerminal")
         self.update_terminal()
-        
+
         # # connect buttons ------------------------------------------------------
         # # connect buttons: system
         self.clearButton.clicked.connect(self.clear_trajectories)
@@ -121,7 +115,7 @@ class MainApp(PyplaneMainWindow):
         # self.toggle_equilibrium_action.setChecked(False)
         self.toggle_equilibrium_action.triggered.connect(self.eq_helper_function)
         self.show_menu.addAction(self.toggle_equilibrium_action)
-        #self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
+        # self.show_menu.addAction('&Find an Equilibrium Point', self.myGraph.toggleEP)
 
         # linearize checkbox
         # self.linearize_action = QtWidgets.QAction('&Linearize', self.show_menu)
@@ -136,9 +130,9 @@ class MainApp(PyplaneMainWindow):
         # if not: read from config
         # TODO: new systems tab chosen -> check/uncheck toggle!
         # if self.systems == []:
-            # read current systems tab:        
+        # read current systems tab:
         # if myConfig.get_boolean("Nullclines", "nc_onByDefault"):
-            # self.toggle_nullclines_action.setChecked(True)
+        # self.toggle_nullclines_action.setChecked(True)
         self.toggle_nullclines_action.triggered.connect(self.toggle_nullclines)
         self.show_menu.addAction(self.toggle_nullclines_action)
 
@@ -155,7 +149,7 @@ class MainApp(PyplaneMainWindow):
 
         # from now on, plot only log messages as defined in config file.
         # for that, call initialize function in myLogger
-        myLogger.initialize()      
+        myLogger.initialize()
 
     def clear_trajectories(self):
         system = self.get_current_system()
@@ -195,9 +189,9 @@ class MainApp(PyplaneMainWindow):
             self.update_ui()
 
     # def linearize_helper_function(self):
-        # system = self.get_current_system()
-        # if system != None:
-            # system.Phaseplane.toggle_linearization_objects()
+    # system = self.get_current_system()
+    # if system != None:
+    # system.Phaseplane.toggle_linearization_objects()
 
     def toggle_nullclines(self):
         system = self.get_current_system()
@@ -230,7 +224,9 @@ class MainApp(PyplaneMainWindow):
     def about(self):
         AboutDialog(self.__PYPLANE_VERSION, self.__PYPLANE_DATE)
 
-app = QtWidgets.QApplication(sys.argv)
-main = MainApp()
-main.show()
-sys.exit(app.exec_())
+
+def run():
+    app = QtWidgets.QApplication(sys.argv)
+    main = MainApp()
+    main.show()
+    sys.exit(app.exec_())

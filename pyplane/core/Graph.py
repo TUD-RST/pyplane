@@ -18,9 +18,9 @@
 
 import sympy as sp
 
-from core.Canvas import Canvas
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
+from .Canvas import Canvas
+from .Logging import myLogger
+from .ConfigHandler import myConfig
 
 from PyQt5.QtWidgets import QMessageBox
 

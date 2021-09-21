@@ -21,10 +21,10 @@ __author__ = 'Klemens Fritzsche'
 import ast
 import numpy as np
 from scipy import linalg as LA
-from core.Logging import myLogger
-from core.ConfigHandler import myConfig
-from core.Canvas import Canvas
-from core.Container import Container
+from .Logging import myLogger
+from .ConfigHandler import myConfig
+from .Canvas import Canvas
+from .Container import Container
 
 
 class EquilibriumHandler(object):
@@ -142,7 +142,7 @@ class EquilibriumHandler(object):
         self.eq_plot = self.myWidget.Plot.canvas.axes.plot(z_equilibrium[0],
                                               z_equilibrium[1],
                                               'ro',
-                                              picker=5)
+                                              pickradius=5)
 
         # equilibrium point in t(x,y):
         # TODO: let user specify this in config!
