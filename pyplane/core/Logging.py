@@ -23,13 +23,25 @@ Module implementing logging capabilities
 import time
 import os
 import sys
+import platform
 from PyQt5 import QtCore, QtWidgets, QtGui
 
 __author__ = 'Klemens Fritzsche'
 
 basedir = os.path.dirname(os.path.dirname(sys.modules.get(__name__).__file__))
-defaultLogFileName = os.path.join(basedir, 'config','logmessages.txt')
 
+if platform.system() == "Linux":
+    try:
+        datadir = os.environ["XDG_DATA_HOME"] + "/pyplane/"
+    except KeyError:
+        datadir = os.environ["HOME"] + "/.local/share/pyplane/"
+    try:
+        os.makedirs(datadir)
+    except FileExistsError:
+        pass
+    defaultLogFileName = os.path.join(datadir, 'logmessages.txt')
+else:
+    defaultLogFileName = os.path.join(basedir, 'config', 'logmessages.txt')
 
 class Logger(object):
     """
@@ -76,6 +88,7 @@ class Logger(object):
         self.show_debug = myConfig.get_boolean("Logging", "log_showDbg")
 
         myLogger.debug_message("Logging class initialized.")
+        myLogger.message("Using logfile: {}".format(self.fname))
 
     def register_output(self, terminal):
         # output in logField
