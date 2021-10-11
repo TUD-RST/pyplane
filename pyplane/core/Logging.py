@@ -41,7 +41,7 @@ if platform.system() == "Linux":
         pass
     defaultLogFileName = os.path.join(datadir, 'logmessages.txt')
 else:
-    defaultLogFileName = os.path.join(basedir, 'config','logmessages.txt')
+    defaultLogFileName = os.path.join(basedir, 'config', 'logmessages.txt')
 
 class Logger(object):
     """
@@ -88,6 +88,7 @@ class Logger(object):
         self.show_debug = myConfig.get_boolean("Logging", "log_showDbg")
 
         myLogger.debug_message("Logging class initialized.")
+        myLogger.message("Using logfile: {}".format(self.fname))
 
     def register_output(self, terminal):
         # output in logField
