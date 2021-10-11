@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Pyplane
+GenericName=Phase Plane Analyzer
+Comment=Analyze Second order Dynamical Systems
+Exec=pyplane
+Icon=/usr/share/pixmaps/python.xpm
+Type=Application
+Terminal=false
+Categories=Utility;X-Red-Hat-Base;
+StartupNotify=true
+X-Desktop-File-Install-Version=2.0.0
