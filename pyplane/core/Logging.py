@@ -23,25 +23,23 @@ Module implementing logging capabilities
 import time
 import os
 import sys
-import platform
+import appdirs
 from PyQt5 import QtCore, QtWidgets, QtGui
 
 __author__ = 'Klemens Fritzsche'
 
+# Required by several other classes
+# ToDo: Move this to sth. meaningful
 basedir = os.path.dirname(os.path.dirname(sys.modules.get(__name__).__file__))
 
-if platform.system() == "Linux":
-    try:
-        datadir = os.environ["XDG_DATA_HOME"] + "/pyplane/"
-    except KeyError:
-        datadir = os.environ["HOME"] + "/.local/share/pyplane/"
-    try:
-        os.makedirs(datadir)
-    except FileExistsError:
-        pass
-    defaultLogFileName = os.path.join(datadir, 'logmessages.txt')
-else:
-    defaultLogFileName = os.path.join(basedir, 'config', 'logmessages.txt')
+# Logfile goes here:
+# Mac OS X: ~/Library/Logs/pyplane
+# Unix    : ~/.cache/pyplane/log  # or under $XDG_CACHE_HOME if defined
+# Windows : C:\Users\<username>\AppData\Local\pyplane\Logs
+logfile_dir = appdirs.user_log_dir(appname="pyplane")
+defaultLogFileName = os.path.join(logfile_dir, 'logmessages.txt')
+if not os.path.exists(logfile_dir):
+    os.makedirs(logfile_dir, exist_ok=True)
 
 class Logger(object):
     """
