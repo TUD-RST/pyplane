@@ -5,6 +5,7 @@ from setuptools import setup, find_packages
 with open("requirements.txt") as requirements_file:
     requirements = requirements_file.read()
 
+
 if platform.system() == 'Linux':    
     setup(
         name='PyPlane',
