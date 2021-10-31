@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Pyplane
+Comment=Phase plane analysis of nonlinear systems
+Categories=Science;DataVisualization;
+
+Icon=pyplane_logo
+Exec=pyplane
+Terminal=false
