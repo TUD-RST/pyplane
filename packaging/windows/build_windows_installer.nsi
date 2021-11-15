@@ -13,7 +13,7 @@ SetCompressor /SOLID lzma
 
 ; MUI Settings
 !define MUI_ABORTWARNING
-!define MUI_ICON "pyplane\resources\pyplane_icon_32px.ico"
+!define MUI_ICON "..\..\pyplane\resources\pyplane_icon_32px.ico"
 
 ; Welcome page
 ;!define WELCOME_TITLE 'PyPlane will install a folder on your desktop which contains the required files. A shortcut for launching the program will be put on the desktop, too. No modifications will be done in the registry!'
@@ -27,7 +27,7 @@ Please check $\n$\n${PRODUCT_WEB_SITE} $\n$\nfor updates regularly!"
 !insertmacro MUI_PAGE_WELCOME
 
 ; License page
-!insertmacro MUI_PAGE_LICENSE "LICENSE"
+!insertmacro MUI_PAGE_LICENSE "..\..\LICENSE"
 
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
@@ -50,13 +50,13 @@ FunctionEnd
 RequestExecutionLevel user
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "windows\build\PyPlane_${PRODUCT_VERSION}_Setup.exe"
+OutFile "build\PyPlane_${PRODUCT_VERSION}_Setup.exe"
 InstallDir "$DESKTOP\PyPlane"
 ShowInstDetails show
 
 Section "Hauptgruppe" SEC01
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
-  File /r "windows\build\PyPlane\*"
+  File /r "build\PyPlane\*"
   CreateShortCut "$DESKTOP\PyPlane.lnk" "$INSTDIR\PyPlane.exe"
 SectionEnd
