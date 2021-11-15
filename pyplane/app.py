@@ -37,8 +37,8 @@ class MainApp(PyplaneMainWindow):
         settings GUI logic (listview elements, variable description, etc)
     """
 
-    __PYPLANE_VERSION = "2.0"
-    __PYPLANE_DATE = "2021-09-21"
+    __PYPLANE_VERSION = "2.0.1"
+    __PYPLANE_DATE = "2021-11-15"
 
     def __init__(self):
         # superclass constructor
