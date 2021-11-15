@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.tud_rst.pyplane</id>
+  
+  <name>Pyplane</name>
+  <summary>Phase plane analysis of nonlinear systems</summary>
+  
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  
+  <description>
+    <p>
+      PyPlane is a free software for phase plane analysis of second order dynamical systems written in PYTHON and PyQT5. Comparable to MATLAB&apos;s pplane.
+    </p>
+  </description>
+  
+  <launchable type="desktop-id">io.github.tud_rst.pyplane.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/TUD-RST/pyplane/master/pyplane/resources/pyplane_screenshot.png</image>
+    </screenshot>
+  </screenshots>
+</component>

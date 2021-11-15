@@ -1,7 +1,7 @@
 # About
 
 PyPlane is a free software for phase plane analysis of second order dynamical
-systems written for PYTHON 3.8 and PyQT5 (compare MATLAB's
+systems written for PYTHON >= 3.8 and PyQT5 (compare MATLAB's
 [pplane](https://www.mathworks.com/matlabcentral/fileexchange/61636-pplane)). It
 is published under the GNU GENERAL PUBLIC LICENSE Version 3.
 
@@ -58,12 +58,12 @@ from the repository:
 
 **Pre-requisites:**
 
-* Python 3.8
-* NumPy (tested under version 1.20)
-* SciPy (tested under version 1.6)
-* Matplotlib (tested under version 3.3)
-* SymPy (tested under version 1.7)
-* PyQt5 (tested under version 5.13)
+* Python 3.8, 3.9
+* NumPy (tested under version 1.20, 1.21)
+* SciPy (tested under version 1.6, 1.7)
+* Matplotlib (tested under version 3.3, 3.4)
+* SymPy (tested under version 1.7, 1.9)
+* PyQt5 (tested under version 5.13, 5.15)
 
 **Launch of pylane**
 

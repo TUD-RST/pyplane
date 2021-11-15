@@ -8,7 +8,7 @@ sys.setrecursionlimit(sys.getrecursionlimit() * 5)
 
 block_cipher = None
 
-repo_dir = os.getcwd()
+repo_dir = os.path.realpath('../..')
 module_dir = os.path.join(repo_dir, 'pyplane')
 
 # Config data and settings of PyPlane needs to be shipped as well

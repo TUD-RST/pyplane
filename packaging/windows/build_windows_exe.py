@@ -15,15 +15,15 @@ spec_file = 'PyPlane.spec'
 
 # Directories where to build into
 script_dir = os.getcwd()
-build_dir = os.path.join(script_dir, 'windows', 'build')
-temp_dir = os.path.join(script_dir, 'windows', 'temp')
+build_dir = os.path.join(script_dir, 'build')
+temp_dir = os.path.join(script_dir, 'temp')
 
 # Build the command string
 cmd = ['--clean', '--distpath=%s' % build_dir, '--workpath=%s' % temp_dir, spec_file]
 
 # Clean-up environment
-#if os.path.exists(build_dir):
-#    shutil.rmtree(build_dir, ignore_errors=True)
+if os.path.exists(build_dir):
+    shutil.rmtree(build_dir, ignore_errors=True)
 
 # Call pyinstaller
 print('Executing pyinstaller %s' % ' '.join(cmd))
