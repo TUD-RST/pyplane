@@ -83,10 +83,7 @@ class StreamlineHandler(object):
                 except:
                     pass
 
-                #sl_arrows.remove() doesn't work
-                # doesn't work either: del sl.arrows
-                # as long as no other patches are used:
-                self.myWidget.Plot.canvas.axes.patches = []
+                self.myWidget.Plot.canvas.axes.patches.clear()
 
             myLogger.message("Streamlines removed")
         else:
